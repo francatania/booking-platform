@@ -1,14 +1,18 @@
 package com.booking.authservice.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.booking.authservice.entity.User;
+import com.booking.authservice.model.dto.AuthResponse;
+import com.booking.authservice.model.dto.LoginRequest;
 import com.booking.authservice.model.dto.RegisterRequest;
 import com.booking.authservice.model.dto.UserResponse;
 import com.booking.authservice.model.enums.UserRole;
+import com.booking.authservice.exception.UserAlreadyExistsException;
 import com.booking.authservice.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,26 +24,41 @@ public class UserService {
     
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-
+    private final JwtService jwtService;
 
 
     public UserResponse register(RegisterRequest dto){
 
         if(repository.existsByEmail(dto.getEmail())){
-            throw new RuntimeException("Email already in use");
+            throw new UserAlreadyExistsException(dto.getEmail());
         }
 
         User user = User.builder()
-        .email(dto.getEmail())
-        .username(dto.getUsername())
-        .passwordHash(passwordEncoder.encode(dto.getPassword()))
-        .role(UserRole.USER)
-        .createdAt(LocalDateTime.now())
-        .updatedAt(LocalDateTime.now())
-        .build();
+                        .email(dto.getEmail())
+                        .username(dto.getUsername())
+                        .passwordHash(passwordEncoder.encode(dto.getPassword()))
+                        .role(UserRole.USER)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .build();
 
         User saved = repository.save(user);
         return UserResponse.from(saved);
+    }
+
+    public AuthResponse login(LoginRequest dto){
+        Optional<User> user = repository.findByUsername(dto.getUsername());
+        if(user.isEmpty()){
+            throw new RuntimeException("Invalid credentials.");
+        }
+
+        if(!passwordEncoder.matches(dto.getPassword(), user.get().getPasswordHash())){
+            throw new RuntimeException("Invalid credentials.");
+        }
+
+        String token = jwtService.generateToken(user.get());
+        return AuthResponse.builder().token(token).build();
+
     }
 
 }
