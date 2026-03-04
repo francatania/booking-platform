@@ -12,6 +12,7 @@ import com.booking.authservice.model.dto.LoginRequest;
 import com.booking.authservice.model.dto.RegisterRequest;
 import com.booking.authservice.model.dto.UserResponse;
 import com.booking.authservice.model.enums.UserRole;
+import com.booking.authservice.exception.InvalidCredentialsException;
 import com.booking.authservice.exception.UserAlreadyExistsException;
 import com.booking.authservice.repository.UserRepository;
 
@@ -49,11 +50,11 @@ public class UserService {
     public AuthResponse login(LoginRequest dto){
         Optional<User> user = repository.findByUsername(dto.getUsername());
         if(user.isEmpty()){
-            throw new RuntimeException("Invalid credentials.");
+            throw new InvalidCredentialsException();
         }
 
         if(!passwordEncoder.matches(dto.getPassword(), user.get().getPasswordHash())){
-            throw new RuntimeException("Invalid credentials.");
+            throw new InvalidCredentialsException();
         }
 
         String token = jwtService.generateToken(user.get());

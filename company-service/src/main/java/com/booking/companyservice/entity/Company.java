@@ -44,5 +44,5 @@ public class Company {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "company")
-    private List<CompanyService> services;
+    private List<CompanyServiceEntity> services;
 }

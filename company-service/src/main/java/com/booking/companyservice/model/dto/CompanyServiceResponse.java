@@ -3,7 +3,7 @@ package com.booking.companyservice.model.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.booking.companyservice.entity.CompanyService;
+import com.booking.companyservice.entity.CompanyServiceEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +23,7 @@ public class CompanyServiceResponse {
     private Boolean isActive;
     private LocalDateTime createdAt;
 
-    public static CompanyServiceResponse from(CompanyService service) {
+    public static CompanyServiceResponse from(CompanyServiceEntity service) {
         return CompanyServiceResponse.builder()
                 .id(service.getId())
                 .companyId(service.getCompany().getId())

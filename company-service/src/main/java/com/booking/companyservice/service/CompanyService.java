@@ -40,7 +40,7 @@ public class CompanyService {
 
     public List<CompanyResponse> getCompanyList(){
         return repository.findAll().stream()
-                        .map(CompanyDetailResponse::from)
+                        .map(CompanyResponse::from)
                         .toList();
     }
 
@@ -52,4 +52,9 @@ public class CompanyService {
         
         return CompanyDetailResponse.from(company.get());
     }
+
+    public Company getCompanyEntity(Long id) {
+    return repository.findById(id)
+            .orElseThrow(() -> new CompanyNotFoundException(id));
+}
 }
