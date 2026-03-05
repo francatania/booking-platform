@@ -1,13 +1,9 @@
-package com.booking.authservice.service;
-
-import java.util.Date;
+package com.booking.companyservice.service;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.booking.authservice.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -19,26 +15,13 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
-    private long expiration;
-
-    public String generateToken(User user) {
-        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
-
-        return Jwts.builder()
-                .subject(user.getEmail())
-                .claim("role", user.getRole())
-                .claim("companyId", user.getCompanyId())
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key)
-                .compact();
+    private SecretKey getKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    private Claims extractClaims(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
+    public Claims extractClaims(String token) {
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(getKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -58,7 +41,7 @@ public class JwtService {
 
     public boolean isTokenValid(String token) {
         try {
-            extractEmail(token);
+            extractClaims(token);
             return true;
         } catch (Exception e) {
             return false;

@@ -1,9 +1,12 @@
 package com.booking.companyservice.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import com.booking.companyservice.config.UserPrincipal;
 import com.booking.companyservice.entity.Company;
 import com.booking.companyservice.entity.CompanyServiceEntity;
 import com.booking.companyservice.model.dto.CompanyServiceResponse;
@@ -27,10 +30,10 @@ public class CompanyServiceService {
                 .toList();
     }
 
-    public CompanyServiceResponse createService(CreateCompanyServiceRequest dto, Long companyId){
-        
-        Company company = companyService.getCompanyEntity(companyId);
+    public CompanyServiceResponse createService(CreateCompanyServiceRequest dto, Long companyId, UserPrincipal principal){
+        checkOwnership(principal, companyId);
 
+        Company company = companyService.getCompanyEntity(companyId);
 
         CompanyServiceEntity service = CompanyServiceEntity.builder()
                                     .company(company)
@@ -39,13 +42,16 @@ public class CompanyServiceService {
                                     .isActive(true)
                                     .name(dto.getName())
                                     .price(dto.getPrice())
+                                    .createdAt(LocalDateTime.now())
+                                    .updatedAt(LocalDateTime.now())
                                     .build();
         return CompanyServiceResponse.from(repository.save(service));
     }
 
-    public CompanyServiceResponse editService(UpdateCompanyServiceRequest dto, Long serviceId){
+    public CompanyServiceResponse editService(UpdateCompanyServiceRequest dto, Long serviceId, UserPrincipal principal){
         CompanyServiceEntity service = this.getServiceEntity(serviceId);
-        
+        checkOwnership(principal, service.getCompany().getId());
+
         if(dto.getName() != null){
             service.setName(dto.getName());
         }
@@ -67,15 +73,26 @@ public class CompanyServiceService {
                 .orElseThrow(() -> new CompanyServiceNotFoundException(id));
     }
 
-    public CompanyServiceResponse activateService(Long id) {
+    public CompanyServiceResponse activateService(Long id, UserPrincipal principal) {
         CompanyServiceEntity service = getServiceEntity(id);
+        checkOwnership(principal, service.getCompany().getId());
         service.setIsActive(true);
         return CompanyServiceResponse.from(repository.save(service));
     }
 
-    public CompanyServiceResponse deactivateService(Long id) {
+    public CompanyServiceResponse deactivateService(Long id, UserPrincipal principal) {
         CompanyServiceEntity service = getServiceEntity(id);
+        checkOwnership(principal, service.getCompany().getId());
         service.setIsActive(false);
         return CompanyServiceResponse.from(repository.save(service));
+    }
+
+    private void checkOwnership(UserPrincipal principal, Long companyId) {
+        if ("SUPER_ADMIN".equals(principal.role())) {
+            return;
+        }
+        if (!companyId.equals(principal.companyId())) {
+            throw new AccessDeniedException("You don't have permission to manage this company");
+        }
     }
 }

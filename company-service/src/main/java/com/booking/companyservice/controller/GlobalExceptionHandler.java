@@ -2,11 +2,13 @@ package com.booking.companyservice.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.booking.companyservice.exception.CompanyAlreadyExistsException;
 import com.booking.companyservice.exception.CompanyNotFoundException;
+import com.booking.companyservice.exception.CompanyServiceNotFoundException;
 import com.booking.companyservice.model.dto.ErrorResponse;
 
 @RestControllerAdvice
@@ -22,6 +24,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleCompanyNotFound(CompanyNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(CompanyServiceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleServiceNotFound(CompanyServiceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -1,6 +1,7 @@
 package com.booking.authservice.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +22,15 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     private final UserService service;
 
+    @PostMapping("/register-admin")
+    public ResponseEntity<UserResponse> registerAdmin(@RequestBody RegisterRequest dto){
+        UserResponse response = service.register(dto, true);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest dto){
-        UserResponse response = service.register(dto);
+        UserResponse response = service.register(dto, false);
         return ResponseEntity.ok(response);
     }
 

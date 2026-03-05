@@ -16,4 +16,6 @@ public class RegisterRequest {
 
     @Min(value = 6, message = "Password must have more than 5 characters.")
     private String password;
+
+    private Long companyId;
 }

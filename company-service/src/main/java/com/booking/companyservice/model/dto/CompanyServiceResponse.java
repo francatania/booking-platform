@@ -22,6 +22,7 @@ public class CompanyServiceResponse {
     private BigDecimal price;
     private Boolean isActive;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public static CompanyServiceResponse from(CompanyServiceEntity service) {
         return CompanyServiceResponse.builder()
@@ -33,6 +34,7 @@ public class CompanyServiceResponse {
                 .price(service.getPrice())
                 .isActive(service.getIsActive())
                 .createdAt(service.getCreatedAt())
+                .updatedAt(service.getUpdatedAt())
                 .build();
     }
 }

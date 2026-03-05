@@ -28,7 +28,7 @@ public class UserService {
     private final JwtService jwtService;
 
 
-    public UserResponse register(RegisterRequest dto){
+    public UserResponse register(RegisterRequest dto, boolean isAdmin){
 
         if(repository.existsByEmail(dto.getEmail())){
             throw new UserAlreadyExistsException(dto.getEmail());
@@ -38,7 +38,8 @@ public class UserService {
                         .email(dto.getEmail())
                         .username(dto.getUsername())
                         .passwordHash(passwordEncoder.encode(dto.getPassword()))
-                        .role(UserRole.USER)
+                        .role(isAdmin ? UserRole.ADMIN : UserRole.USER)
+                        .companyId(dto.getCompanyId())
                         .createdAt(LocalDateTime.now())
                         .updatedAt(LocalDateTime.now())
                         .build();

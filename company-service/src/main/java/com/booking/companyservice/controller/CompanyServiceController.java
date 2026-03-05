@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.booking.companyservice.config.UserPrincipal;
 import com.booking.companyservice.model.dto.CompanyServiceResponse;
 import com.booking.companyservice.model.dto.CreateCompanyServiceRequest;
 import com.booking.companyservice.model.dto.UpdateCompanyServiceRequest;
@@ -33,25 +35,35 @@ public class CompanyServiceController {
     @PostMapping("/companies/{companyId}/services")
     public ResponseEntity<CompanyServiceResponse> createService(
             @PathVariable Long companyId,
-            @RequestBody @Valid CreateCompanyServiceRequest dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createService(dto, companyId));
+            @RequestBody @Valid CreateCompanyServiceRequest dto,
+            Authentication authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createService(dto, companyId, principal));
     }
 
     @PatchMapping("/services/{id}")
     public ResponseEntity<CompanyServiceResponse> editService(
             @PathVariable Long id,
-            @RequestBody @Valid UpdateCompanyServiceRequest dto) {
-        return ResponseEntity.ok(service.editService(dto, id));
+            @RequestBody @Valid UpdateCompanyServiceRequest dto,
+            Authentication authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        return ResponseEntity.ok(service.editService(dto, id, principal));
     }
 
     @PatchMapping("/services/{id}/activate")
-    public ResponseEntity<CompanyServiceResponse> activateService(@PathVariable Long id) {
-        return ResponseEntity.ok(service.activateService(id));
+    public ResponseEntity<CompanyServiceResponse> activateService(
+            @PathVariable Long id,
+            Authentication authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        return ResponseEntity.ok(service.activateService(id, principal));
     }
 
     @PatchMapping("/services/{id}/deactivate")
-    public ResponseEntity<CompanyServiceResponse> deactivateService(@PathVariable Long id) {
-        return ResponseEntity.ok(service.deactivateService(id));
+    public ResponseEntity<CompanyServiceResponse> deactivateService(
+            @PathVariable Long id,
+            Authentication authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        return ResponseEntity.ok(service.deactivateService(id, principal));
     }
 
 }

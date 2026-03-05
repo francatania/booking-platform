@@ -15,8 +15,9 @@ public class UserResponse {
     private String username;
     private String email;
     private UserRole role;
+    private Long companyId;
 
     public static UserResponse from(User user) {
-        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getCompanyId());
     }
 }
