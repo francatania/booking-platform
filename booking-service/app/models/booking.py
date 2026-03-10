@@ -14,6 +14,7 @@ class Booking(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, nullable=False)
     service_id = Column(Integer, nullable=False)
+    company_id = Column(Integer, nullable=False)
     start_time = Column(DateTime, nullable=False)
     end_time = Column(DateTime, nullable=False) 
     status = Column(SAEnum(BookingStatus), nullable=False, default=BookingStatus.PENDING)

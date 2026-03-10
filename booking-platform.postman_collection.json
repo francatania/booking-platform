@@ -55,7 +55,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"francocatania@gmail.com\",\n  \"password\": \"123456\"\n}"
+              "raw": "{\n  \"username\": \"franchute\",\n  \"password\": \"123456\"\n}"
             }
           }
         }
@@ -150,6 +150,56 @@
           "request": {
             "method": "PATCH",
             "url": "{{company_url}}/services/1/deactivate",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "POST /bookings",
+          "request": {
+            "method": "POST",
+            "url": "{{booking_url}}/bookings",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_id\": 1,\n  \"company_id\": 1,\n  \"start_time\": \"2026-03-15T10:00:00\",\n  \"end_time\": \"2026-03-15T10:30:00\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /bookings/my",
+          "request": {
+            "method": "GET",
+            "url": "{{booking_url}}/bookings/my",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ]
+          }
+        },
+        {
+          "name": "GET /bookings/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{booking_url}}/bookings/1",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ]
+          }
+        },
+        {
+          "name": "PATCH /bookings/:id/cancel",
+          "request": {
+            "method": "PATCH",
+            "url": "{{booking_url}}/bookings/1/cancel",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]

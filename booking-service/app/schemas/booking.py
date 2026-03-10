@@ -3,9 +3,9 @@ from datetime import datetime
 
 class BookingCreate(BaseModel):
     service_id: int
-    user_id: int
-    start_time: int
-    end_time: int
+    company_id: int
+    start_time: datetime
+    end_time: datetime
 
 class BookingResponse(BaseModel):
     id: int
