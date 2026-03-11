@@ -14,6 +14,13 @@ import com.booking.companyservice.model.dto.ErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleInactiveService(IllegalStateException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+    }
+    
     @ExceptionHandler(CompanyAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleCompanyAlreadyExists(CompanyAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)

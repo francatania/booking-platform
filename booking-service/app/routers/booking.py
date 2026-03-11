@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies.auth import get_current_user, UserPrincipal
@@ -14,7 +14,7 @@ def create_booking(
     db: Session = Depends(get_db),
     current_user: UserPrincipal = Depends(get_current_user)
 ):
-    return service.create_booking(dto, current_user.user_id, db)
+    return service.create_booking(dto, current_user, db)
 
 @router.get("/my", response_model=list[BookingResponse])
 def get_my_bookings(

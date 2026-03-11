@@ -6,6 +6,7 @@ class BookingCreate(BaseModel):
     company_id: int
     start_time: datetime
     end_time: datetime
+    user_id: int | None = None
 
 class BookingResponse(BaseModel):
     id: int

@@ -76,7 +76,11 @@ public class CompanyServiceService implements ICompanyServiceService {
     }
 
     public CompanyServiceResponse getServiceById(Long id) {
-        return CompanyServiceResponse.from(getServiceEntity(id));
+        CompanyServiceEntity service = getServiceEntity(id);
+        if (!service.getIsActive()) {
+            throw new IllegalStateException("Service is not active");
+        }
+        return CompanyServiceResponse.from(service);
     }
 
     public CompanyServiceResponse activateService(Long id, UserPrincipal principal) {

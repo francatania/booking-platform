@@ -18,4 +18,6 @@ public interface ICompanyServiceService {
     CompanyServiceResponse activateService(Long id, UserPrincipal principal);
 
     CompanyServiceResponse deactivateService(Long id, UserPrincipal principal);
+
+    CompanyServiceResponse getServiceById(Long id);
 }
