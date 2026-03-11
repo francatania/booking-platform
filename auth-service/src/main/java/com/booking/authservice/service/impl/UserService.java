@@ -1,4 +1,4 @@
-package com.booking.authservice.service;
+package com.booking.authservice.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -15,17 +15,19 @@ import com.booking.authservice.model.enums.UserRole;
 import com.booking.authservice.exception.InvalidCredentialsException;
 import com.booking.authservice.exception.UserAlreadyExistsException;
 import com.booking.authservice.repository.UserRepository;
+import com.booking.authservice.service.interfaces.IJwtService;
+import com.booking.authservice.service.interfaces.IUserService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 
-public class UserService {
-    
+public class UserService implements IUserService {
+
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
 
 
     public UserResponse register(RegisterRequest dto, boolean isAdmin){

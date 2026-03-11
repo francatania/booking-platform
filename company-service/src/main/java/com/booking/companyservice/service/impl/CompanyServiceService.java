@@ -1,4 +1,4 @@
-package com.booking.companyservice.service;
+package com.booking.companyservice.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,13 +14,15 @@ import com.booking.companyservice.model.dto.CreateCompanyServiceRequest;
 import com.booking.companyservice.model.dto.UpdateCompanyServiceRequest;
 import com.booking.companyservice.exception.CompanyServiceNotFoundException;
 import com.booking.companyservice.repository.CompanyServiceRepository;
+import com.booking.companyservice.service.interfaces.ICompanyService;
+import com.booking.companyservice.service.interfaces.ICompanyServiceService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CompanyServiceService {
-    private final CompanyService companyService;
+public class CompanyServiceService implements ICompanyServiceService {
+    private final ICompanyService companyService;
     private final CompanyServiceRepository repository;
 
     public List<CompanyServiceResponse> getServicesByCompany(Long companyId) {
@@ -71,6 +73,10 @@ public class CompanyServiceService {
     private CompanyServiceEntity getServiceEntity(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new CompanyServiceNotFoundException(id));
+    }
+
+    public CompanyServiceResponse getServiceById(Long id) {
+        return CompanyServiceResponse.from(getServiceEntity(id));
     }
 
     public CompanyServiceResponse activateService(Long id, UserPrincipal principal) {

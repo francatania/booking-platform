@@ -11,7 +11,7 @@ import com.booking.authservice.model.dto.AuthResponse;
 import com.booking.authservice.model.dto.LoginRequest;
 import com.booking.authservice.model.dto.RegisterRequest;
 import com.booking.authservice.model.dto.UserResponse;
-import com.booking.authservice.service.UserService;
+import com.booking.authservice.service.interfaces.IUserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class UserController {
-    private final UserService service;
+    private final IUserService service;
 
     @PostMapping("/register-admin")
     public ResponseEntity<UserResponse> registerAdmin(@RequestBody RegisterRequest dto){

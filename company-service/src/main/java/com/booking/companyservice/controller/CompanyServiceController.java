@@ -16,7 +16,7 @@ import com.booking.companyservice.config.UserPrincipal;
 import com.booking.companyservice.model.dto.CompanyServiceResponse;
 import com.booking.companyservice.model.dto.CreateCompanyServiceRequest;
 import com.booking.companyservice.model.dto.UpdateCompanyServiceRequest;
-import com.booking.companyservice.service.CompanyServiceService;
+import com.booking.companyservice.service.interfaces.ICompanyServiceService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CompanyServiceController {
 
-    private final CompanyServiceService service;
+    private final ICompanyServiceService service;
 
     @GetMapping("/companies/{companyId}/services")
     public ResponseEntity<List<CompanyServiceResponse>> getServicesByCompany(@PathVariable Long companyId) {

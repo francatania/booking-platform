@@ -1,4 +1,4 @@
-package com.booking.companyservice.service;
+package com.booking.companyservice.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,12 +13,13 @@ import com.booking.companyservice.model.dto.CompanyDetailResponse;
 import com.booking.companyservice.model.dto.CompanyResponse;
 import com.booking.companyservice.model.dto.CreateCompanyRequest;
 import com.booking.companyservice.repository.CompanyRepository;
+import com.booking.companyservice.service.interfaces.ICompanyService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CompanyService {
+public class CompanyService implements ICompanyService {
     private final CompanyRepository repository;
 
     public CompanyDetailResponse createCompany(CreateCompanyRequest dto){
@@ -49,12 +50,12 @@ public class CompanyService {
         if(company.isEmpty()){
             throw new CompanyNotFoundException(id);
         }
-        
+
         return CompanyDetailResponse.from(company.get());
     }
 
     public Company getCompanyEntity(Long id) {
-    return repository.findById(id)
-            .orElseThrow(() -> new CompanyNotFoundException(id));
-}
+        return repository.findById(id)
+                .orElseThrow(() -> new CompanyNotFoundException(id));
+    }
 }

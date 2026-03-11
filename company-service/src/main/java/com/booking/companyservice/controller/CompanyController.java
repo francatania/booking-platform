@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.booking.companyservice.model.dto.CompanyDetailResponse;
 import com.booking.companyservice.model.dto.CompanyResponse;
 import com.booking.companyservice.model.dto.CreateCompanyRequest;
-import com.booking.companyservice.service.CompanyService;
+import com.booking.companyservice.service.interfaces.ICompanyService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/companies")
 @RequiredArgsConstructor
 public class CompanyController {
-    private final CompanyService service;
+    private final ICompanyService service;
 
     @PostMapping
     public ResponseEntity<CompanyDetailResponse> createCompany(@RequestBody @Valid CreateCompanyRequest dto) {
