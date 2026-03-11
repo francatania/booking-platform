@@ -26,9 +26,7 @@ def get_my_bookings(
 @router.get("/{booking_id}", response_model=BookingResponse)
 def get_booking(
     booking_id: int,
-    db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(get_current_user)
-):
+    db: Session = Depends(get_db),):
     return service.get_booking(booking_id, db)
 
 @router.patch("/{booking_id}/cancel", response_model=BookingResponse)

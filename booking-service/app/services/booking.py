@@ -3,8 +3,15 @@ from app.models.booking import Booking, BookingStatus
 from app.models.booking_config import BookingConfig
 from app.schemas.booking import BookingCreate
 from app.dependencies.auth import UserPrincipal
-from fastapi import HTTPException
 from app.dependencies.company_client import validate_service
+from app.exceptions import (
+    MissingUserIdException,
+    BookingNotFoundException,
+    BookingConflictException,
+    BookingGapConflictException,
+    BookingForbiddenException,
+    BookingAlreadyCancelledException,
+)
 from datetime import timedelta
 
 class BookingService:
@@ -13,7 +20,7 @@ class BookingService:
             target_user_id = current_user.user_id
         else:
             if dto.user_id is None:
-                raise HTTPException(status_code=400, detail="user_id is required for admins")
+                raise MissingUserIdException()
             target_user_id = dto.user_id
 
         validate_service(dto.service_id)
@@ -42,7 +49,7 @@ class BookingService:
         ).first()
 
         if raw_conflict:
-            raise HTTPException(status_code=409, detail="Booking conflicts with an existing booking")
+            raise BookingConflictException()
 
         config = db.query(BookingConfig).filter(BookingConfig.company_id == company_id).first()
         gap_minutes = config.gap_minutes if config else 0
@@ -58,7 +65,7 @@ class BookingService:
             ).first()
 
             if gap_conflict:
-                raise HTTPException(status_code=409, detail="Booking conflicts with company gap policy")
+                raise BookingGapConflictException()
 
 
     
@@ -68,20 +75,20 @@ class BookingService:
     def get_booking(self, booking_id: int, db: Session):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()
         if booking is None:
-            raise HTTPException(status_code=404, detail="Booking not found")
+            raise BookingNotFoundException()
         return booking
-    
+
     def cancel_booking(self, booking_id: int, user_id: int, db: Session):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()
-        
+
         if booking is None:
-            raise HTTPException(status_code=404, detail="Booking not found")
-        
+            raise BookingNotFoundException()
+
         if booking.user_id != user_id:
-            raise HTTPException(status_code=403, detail="Not your booking")
-        
+            raise BookingForbiddenException()
+
         if booking.status == BookingStatus.CANCELLED:
-            raise HTTPException(status_code=400, detail="Booking already cancelled")
+            raise BookingAlreadyCancelledException()
         
         booking.status = BookingStatus.CANCELLED
         db.commit()
