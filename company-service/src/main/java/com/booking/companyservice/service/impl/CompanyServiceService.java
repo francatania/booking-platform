@@ -101,6 +101,9 @@ public class CompanyServiceService implements ICompanyServiceService {
         if ("SUPER_ADMIN".equals(principal.role())) {
             return;
         }
+        if (!"ADMIN".equals(principal.role())) {
+        throw new AccessDeniedException("Only admins can manage services");
+    }
         if (!companyId.equals(principal.companyId())) {
             throw new AccessDeniedException("You don't have permission to manage this company");
         }
