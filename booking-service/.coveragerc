@@ -1,0 +1,6 @@
+[run]
+omit =
+    app/main.py
+    app/database.py
+    app/dependencies/auth.py
+    app/dependencies/company_client.py
