@@ -30,6 +30,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.GET, "/ping").permitAll()
                 .requestMatchers(HttpMethod.GET, "/companies").permitAll()
                 .requestMatchers(HttpMethod.GET, "/companies/{id}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/companies/{id}/services").permitAll()

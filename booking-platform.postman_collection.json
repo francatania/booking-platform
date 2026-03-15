@@ -3,7 +3,43 @@
     "name": "booking-platform",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost" }
+  ],
   "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health (gateway)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        },
+        {
+          "name": "GET /auth/ping (auth-service)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/ping"
+          }
+        },
+        {
+          "name": "GET /companies/ping (company-service)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/companies/ping"
+          }
+        },
+        {
+          "name": "GET /bookings/ping (booking-service)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/bookings/ping"
+          }
+        }
+      ]
+    },
     {
       "name": "Auth",
       "item": [
@@ -11,11 +47,11 @@
           "name": "POST /auth/register",
           "request": {
             "method": "POST",
-            "url": "{{auth_url}}/auth/register",
+            "url": "{{base_url}}/auth/register",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"franchute\",\n  \"email\": \"francocatania@gmail.com\",\n  \"password\": \"123456\",\n  \"companyId\": 1\n}"
+              "raw": "{\n  \"username\": \"newuser\",\n  \"email\": \"newuser@test.com\",\n  \"password\": \"password123\"\n}"
             }
           }
         },
@@ -23,14 +59,14 @@
           "name": "POST /auth/register-admin",
           "request": {
             "method": "POST",
-            "url": "{{auth_url}}/auth/register-admin",
+            "url": "{{base_url}}/auth/register-admin",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\",\n  \"companyId\": 1\n}"
+              "raw": "{\n  \"username\": \"newadmin\",\n  \"email\": \"newadmin@test.com\",\n  \"password\": \"password123\",\n  \"companyId\": 2\n}"
             }
           }
         },
@@ -51,11 +87,11 @@
           ],
           "request": {
             "method": "POST",
-            "url": "{{auth_url}}/auth/login",
+            "url": "{{base_url}}/auth/login",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"franchute\",\n  \"password\": \"123456\"\n}"
+              "raw": "{\n  \"username\": \"user\",\n  \"password\": \"password123\"\n}"
             }
           }
         }
@@ -68,21 +104,21 @@
           "name": "GET /companies",
           "request": {
             "method": "GET",
-            "url": "{{company_url}}/companies"
+            "url": "{{base_url}}/companies"
           }
         },
         {
           "name": "GET /companies/:id",
           "request": {
             "method": "GET",
-            "url": "{{company_url}}/companies/1"
+            "url": "{{base_url}}/companies/1"
           }
         },
         {
           "name": "POST /companies",
           "request": {
             "method": "POST",
-            "url": "{{company_url}}/companies",
+            "url": "{{base_url}}/companies",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
@@ -102,21 +138,21 @@
           "name": "GET /companies/:id/services",
           "request": {
             "method": "GET",
-            "url": "{{company_url}}/companies/1/services"
+            "url": "{{base_url}}/companies/1/services"
           }
         },
         {
           "name": "POST /companies/:id/services",
           "request": {
             "method": "POST",
-            "url": "{{company_url}}/companies/1/services",
+            "url": "{{base_url}}/companies/1/services",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Corte clásico\",\n  \"description\": \"Corte con tijera\",\n  \"durationMinutes\": 30,\n  \"price\": 1500.00\n}"
+              "raw": "{\n  \"name\": \"Alisado\",\n  \"description\": \"Alisado completo\",\n  \"durationMinutes\": 90,\n  \"price\": 12000.00\n}"
             }
           }
         },
@@ -124,14 +160,14 @@
           "name": "PATCH /services/:id",
           "request": {
             "method": "PATCH",
-            "url": "{{company_url}}/services/1",
+            "url": "{{base_url}}/services/1",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"price\": 2000.00\n}"
+              "raw": "{\n  \"price\": 5500.00\n}"
             }
           }
         },
@@ -139,7 +175,7 @@
           "name": "PATCH /services/:id/activate",
           "request": {
             "method": "PATCH",
-            "url": "{{company_url}}/services/1/activate",
+            "url": "{{base_url}}/services/1/activate",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]
@@ -149,7 +185,7 @@
           "name": "PATCH /services/:id/deactivate",
           "request": {
             "method": "PATCH",
-            "url": "{{company_url}}/services/1/deactivate",
+            "url": "{{base_url}}/services/1/deactivate",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]
@@ -164,7 +200,7 @@
           "name": "POST /bookings",
           "request": {
             "method": "POST",
-            "url": "{{booking_url}}/bookings",
+            "url": "{{base_url}}/bookings",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
@@ -179,7 +215,7 @@
           "name": "GET /bookings/my",
           "request": {
             "method": "GET",
-            "url": "{{booking_url}}/bookings/my",
+            "url": "{{base_url}}/bookings/my",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]
@@ -189,7 +225,7 @@
           "name": "GET /bookings/:id",
           "request": {
             "method": "GET",
-            "url": "{{booking_url}}/bookings/1",
+            "url": "{{base_url}}/bookings/1",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]
@@ -199,7 +235,7 @@
           "name": "PATCH /bookings/:id/cancel",
           "request": {
             "method": "PATCH",
-            "url": "{{booking_url}}/bookings/1/cancel",
+            "url": "{{base_url}}/bookings/1/cancel",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]
