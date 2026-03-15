@@ -1,238 +1,212 @@
-# Microservices Architecture (Backend)
+# Booking Platform
 
-This project implements a booking platform based on a **microservices architecture**, composed of the following components:
+Microservices-based booking platform for scheduling appointments at service-oriented businesses (barbershops, spas, studios, etc.).
 
-- `auth-service` – Authentication, user management, and JWT issuance (Spring Boot + PostgreSQL).
-- `company-service` – Management of companies and offered services (Spring Boot + PostgreSQL).
-- `booking-service` – Reservation management (FastAPI + PostgreSQL).
-- `gateway` – Nginx acting as API Gateway / reverse proxy.
-
-Service-to-service communication is primarily **REST-based**, complemented by **domain events** for specific use cases (e.g., user registration and booking creation).
+Built with **Spring Boot**, **FastAPI**, **Nginx**, **PostgreSQL** and **Docker Compose**.
 
 ---
 
-## 1. auth-service
+## Architecture
 
-**Technologies:** Spring Boot, Spring Security, JWT, Spring Data JPA, PostgreSQL  
+```
+                         ┌──────────────────┐
+                         │     Client       │
+                         │  (Postman/Web)   │
+                         └────────┬─────────┘
+                                  │ :80
+                         ┌────────▼─────────┐
+                         │   Nginx Gateway  │
+                         │   Rate Limiting  │
+                         │   Reverse Proxy  │
+                         └──┬─────┬──────┬──┘
+                            │     │      │
+              ┌─────────────┘     │      └─────────────┐
+              │                   │                    │
+    ┌─────────▼──────┐  ┌────────▼───────┐  ┌─────────▼──────┐
+    │  auth-service   │  │ company-service │  │ booking-service │
+    │  Spring Boot    │  │  Spring Boot    │  │    FastAPI       │
+    │  :8081          │  │  :8082          │  │    :8000         │
+    └─────────┬──────┘  └────────┬───────┘  └──┬──────────────┘
+              │                  │              │
+              │                  │   HTTP ◄─────┘
+              │                  │  (validate service)
+              │                  │
+    ┌─────────▼──────────────────▼──────────────────────────┐
+    │                    PostgreSQL                          │
+    │         auth_db  │  company_db  │  booking_db          │
+    └───────────────────────────────────────────────────────┘
+```
 
-### Scope / Responsibilities
-
-- User registration and authentication.
-- JWT token generation and validation.
-- Basic user profile management (roles, minimal user data).
-- Single source of truth for user identity.
-
-### Data Model (simplified)
-
-- `User`
-  - `id`
-  - `username`
-  - `email`
-  - `passwordHash`
-  - `role` (e.g., `USER`, `ADMIN`)
-  - `createdAt`, `updatedAt`
-
-### REST API (examples)
-
-- `POST /auth/register`
-  - Creates a new user.
-- `POST /auth/login`
-  - Validates credentials and returns a JWT.
-- `GET /auth/me`
-  - Returns basic information of the authenticated user (based on JWT).
-
-### Communication with Other Services
-
-#### REST
-
-- **JWT provider**: Other services (such as `booking-service`) validate the JWT issued by `auth-service` to identify users.
-- Optionally exposes internal endpoints such as:
-  - `GET /internal/users/{id}`
-  - `GET /internal/users/by-username/{username}`  
-  for identity-related lookups if needed.
-
-#### Domain Events
-
-> Event broker implementation to be defined (e.g., RabbitMQ, Kafka, etc.).  
-> Described here at an architectural level.
-
-**Published events:**
-
-- `UserRegistered`
-  - Payload: `userId`, `username`, `email`, `registeredAt`
-  - Potential consumers:
-    - Notification services
-    - Analytics services
+**Key design decisions:**
+- **Database per service** -- each microservice owns its data, no shared tables
+- **JWT-based auth** -- stateless, tokens validated locally by each service
+- **Service-to-service REST** -- booking-service calls company-service internally to validate services
+- **Gateway pattern** -- single entry point, clients never talk to services directly
 
 ---
 
-## 2. company-service
+## Tech Stack
 
-**Technologies:** Spring Boot, Spring Data JPA, PostgreSQL  
-
-### Scope / Responsibilities
-
-- Management of **companies** offering services (barbershops, sports courts, studios, etc.).
-- Management of **services** associated with each company.
-- Source of truth for service catalog information (what can be booked).
-
-### Data Model (simplified)
-
-- `Company`
-  - `id`
-  - `name`
-  - `description`
-  - `address`
-  - `phone`
-  - `createdAt`, `updatedAt`
-
-- `Service`
-  - `id`
-  - `companyId`
-  - `name`
-  - `description`
-  - `durationMinutes`
-  - `price`
-  - `isActive`
-  - `createdAt`, `updatedAt`
-
-### REST API (examples)
-
-- `GET /companies`
-  - List available companies.
-- `GET /companies/{id}`
-  - Company details.
-- `GET /companies/{id}/services`
-  - List services offered by a company.
-- `POST /companies`
-- `POST /companies/{id}/services`
-- `PUT /services/{id}`
-- `DELETE /services/{id}`
-
-### Communication with Other Services
-
-#### REST
-
-- Can be called by `booking-service` to validate:
-  - Whether a service exists.
-  - Whether a service is active.
-
-Example internal endpoint:
-- `GET /internal/services/{serviceId}`
-
-#### Domain Events
-
-**Published events (optional):**
-
-- `ServiceCreated`
-- `ServiceUpdated`
-- `ServiceDeactivated`
-
-This allows other services (e.g., recommendation, notification) to react to catalog changes without tight coupling.
+| Component | Technology |
+|-----------|-----------|
+| Auth Service | Java 17, Spring Boot 3.2, Spring Security, JJWT |
+| Company Service | Java 17, Spring Boot 3.2, Spring Security, JJWT |
+| Booking Service | Python 3.12, FastAPI, SQLAlchemy, httpx |
+| Gateway | Nginx 1.25 |
+| Database | PostgreSQL 16 |
+| Containerization | Docker, Docker Compose |
+| Testing | JUnit + Mockito (Java), pytest + unittest.mock (Python) |
 
 ---
 
-## 3. booking-service
+## Services
 
-**Technologies:** FastAPI, SQLAlchemy (or chosen ORM), PostgreSQL  
+### auth-service
 
-### Scope / Responsibilities
+Handles user registration, login and JWT issuance.
 
-- Management of **reservations** made by users.
-- Validation of booking business rules (availability, time constraints, etc.).
-- Source of truth for booking history and status.
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST | `/auth/register` | Public | Register a new user |
+| POST | `/auth/register-admin` | SUPER_ADMIN | Register an admin with company assignment |
+| POST | `/auth/login` | Public | Login, returns JWT |
+| GET | `/auth/ping` | Public | Health check |
 
-### Data Model (simplified)
+**Roles:** `USER`, `ADMIN`, `SUPER_ADMIN`
 
-- `Booking`
-  - `id`
-  - `userId`
-  - `serviceId`
-  - `companyId` (optional, for query optimization)
-  - `startTime`
-  - `endTime`
-  - `status` (`PENDING`, `CONFIRMED`, `CANCELED`, etc.)
-  - `createdAt`, `updatedAt`
-
-### REST API (examples)
-
-- `POST /bookings`
-  - Creates a booking for the authenticated user.
-- `GET /bookings/my`
-  - Lists bookings for the authenticated user.
-- `GET /bookings/{id}`
-  - Returns booking details (if authorized).
-- `PATCH /bookings/{id}/cancel`
-  - Cancels a booking.
-
-### Communication with Other Services
-
-#### REST
-
-- **With auth-service**
-  - Validates the JWT included in the `Authorization` header.
-  - Extracts `userId` from the token (without necessarily calling auth-service each time).
-
-- **With company-service**
-  - Validates that the `serviceId` exists and is active when creating a booking.
-  - Optionally retrieves service duration/price if not duplicated locally.
-
-Example internal call:
-- `GET http://company-service:8082/internal/services/{serviceId}`
-
-#### Domain Events
-
-**Published events:**
-
-- `BookingCreated`
-  - Payload: `bookingId`, `userId`, `serviceId`, `companyId`, `startTime`, `status`, `createdAt`
-- `BookingCanceled`
-  - Payload: `bookingId`, `userId`, `serviceId`, `companyId`, `canceledAt`
-
-**Potential consumers:**
-
-- Notification services (email, messaging).
-- Analytics/reporting services.
-- External integrations.
+JWT payload includes: `userId`, `email`, `role`, `companyId`
 
 ---
 
-## 4. gateway (Nginx)
+### company-service
 
-**Technologies:** Nginx
+Manages companies and their service catalog.
 
-### Scope / Responsibilities
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET | `/companies` | Public | List all companies |
+| GET | `/companies/{id}` | Public | Company details |
+| GET | `/companies/{id}/services` | Public | List company services |
+| POST | `/companies` | SUPER_ADMIN | Create company |
+| POST | `/companies/{id}/services` | ADMIN (owner) | Create service |
+| PATCH | `/services/{id}` | ADMIN (owner) | Update service |
+| PATCH | `/services/{id}/activate` | ADMIN (owner) | Activate service |
+| PATCH | `/services/{id}/deactivate` | ADMIN (owner) | Deactivate service |
+| GET | `/internal/services/{id}` | Internal only | Validate service (blocked by gateway) |
+| GET | `/companies/ping` | Public | Health check |
 
-- Acts as an **API Gateway / reverse proxy**.
-- Provides a single entry point for external clients (e.g., Angular frontend).
-- Routes incoming requests to internal microservices:
+**Ownership check:** ADMINs can only manage services from their own company.
 
-  - `/auth/*` → `auth-service`
-  - `/companies/*` → `company-service`
-  - `/bookings/*` → `booking-service`
+---
 
-- Optionally handles:
-  - CORS configuration
-  - Request logging
-  - Compression
-  - Timeouts
-  - Static frontend serving (future enhancement)
+### booking-service
 
-### Conceptual Configuration Example
+Handles reservations with anti-collision logic.
 
-```nginx
-server {
-    listen 80;
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST | `/bookings` | Authenticated | Create booking |
+| GET | `/bookings/my` | Authenticated | List user's bookings |
+| GET | `/bookings/{id}` | Authenticated | Get booking details |
+| PATCH | `/bookings/{id}/cancel` | Owner | Cancel booking |
+| GET | `/bookings/ping` | Public | Health check |
 
-    location /auth/ {
-        proxy_pass http://auth-service:8081/;
-    }
+**Business rules:**
+- Users book for themselves; admins can book on behalf of any user
+- Validates that the service exists and is active (HTTP call to company-service)
+- **Anti-collision:** prevents overlapping bookings for the same user
+- **Configurable gap:** per-company gap between bookings (e.g., 15 min for barber, 30 min for spa)
 
-    location /companies/ {
-        proxy_pass http://company-service:8082/;
-    }
+---
 
-    location /bookings/ {
-        proxy_pass http://booking-service:8000/;
-    }
-}
+## Gateway (Nginx)
+
+Single entry point on port 80. All external traffic flows through here.
+
+**Routing:**
+| Path | Upstream |
+|------|----------|
+| `/auth/*` | auth-service:8081 |
+| `/companies/*` | company-service:8082 |
+| `/services/*` | company-service:8082 |
+| `/bookings/*` | booking-service:8000 |
+| `/internal/*` | Blocked (403) |
+| `/health` | Gateway status |
+
+**Rate limiting:**
+- Auth endpoints: **5 req/min** (brute force protection)
+- API endpoints: **30 req/s**
+- Returns `429 Too Many Requests` when exceeded
+
+**Other features:** gzip compression, proxy timeouts, hidden server tokens
+
+---
+
+## Running the Project
+
+### Prerequisites
+- Docker and Docker Compose
+
+### Start everything
+```bash
+docker compose up --build
+```
+
+This will:
+1. Start PostgreSQL and create 3 databases (`auth_db`, `company_db`, `booking_db`)
+2. Run the seed script with test users, companies, services and bookings
+3. Build and start all three services (running unit tests during build)
+4. Start the Nginx gateway
+
+### Default test credentials
+| User | Email | Password | Role |
+|------|-------|----------|------|
+| superadmin | superadmin@test.com | password123 | SUPER_ADMIN |
+| admin | admin@test.com | password123 | ADMIN (company 1) |
+| user | user@test.com | password123 | USER |
+
+### Useful commands
+```bash
+docker compose up -d                    # Start in background
+docker compose up --build gateway       # Rebuild a single service
+docker compose down                     # Stop all containers
+docker compose down -v                  # Stop and reset databases
+docker compose logs -f booking-service  # Follow logs of a service
+```
+
+### Testing with Postman
+Import `booking-platform.postman_collection.json`. The collection uses `http://localhost` as base URL and auto-captures the JWT token on login.
+
+---
+
+## Testing
+
+Unit tests run automatically during Docker build. If any test fails, the image won't be built.
+
+**Run tests locally:**
+
+```bash
+# Java services
+cd auth-service && mvn test
+cd company-service && mvn test
+
+# Python service
+cd booking-service
+source venv/bin/activate
+pytest tests/ --cov=app --cov-report=term-missing
+```
+
+---
+
+## Project Structure
+
+```
+booking-platform/
+├── auth-service/          # Spring Boot - Authentication & JWT
+├── company-service/       # Spring Boot - Companies & Services
+├── booking-service/       # FastAPI - Reservations
+├── gateway/               # Nginx config
+├── docker/                # DB init script with seed data
+├── docker-compose.yml     # Full stack orchestration
+└── booking-platform.postman_collection.json
+```
