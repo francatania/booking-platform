@@ -1,0 +1,39 @@
+<form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 p-8 bg-white rounded-lg shadow-md w-full max-w-md">
+  <div class="flex flex-col gap-1">
+    <label for="username" class="font-semibold text-gray-700">Username</label>
+    <input
+      id="username"
+      type="text"
+      [(ngModel)]="credentials.username"
+      name="username"
+      placeholder="Enter your username"
+      required
+      class="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    />
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label for="password" class="font-semibold text-gray-700">Password</label>
+    <input
+      id="password"
+      type="password"
+      [(ngModel)]="credentials.password"
+      name="password"
+      placeholder="Enter your password"
+      required
+      class="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    />
+  </div>
+
+  @if (errorMessage) {
+    <div class="text-sm text-red-600 bg-red-50 p-3 rounded-md">{{ errorMessage }}</div>
+  }
+
+  <button
+    type="submit"
+    [disabled]="isLoading"
+    class="py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+  >
+    {{ isLoading ? 'Logging in...' : 'Login' }}
+  </button>
+</form>
