@@ -2,6 +2,9 @@ package com.booking.companyservice.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,6 +29,11 @@ import lombok.RequiredArgsConstructor;
 public class CompanyServiceController {
 
     private final ICompanyServiceService service;
+
+    @GetMapping("/services")
+    public ResponseEntity<Page<CompanyServiceResponse>> getAllServices(@PageableDefault(size = 10, sort = "name") Pageable pageable){
+        return ResponseEntity.ok(service.getAllServices(pageable));
+    }
 
     @GetMapping("/companies/{companyId}/services")
     public ResponseEntity<List<CompanyServiceResponse>> getServicesByCompany(@PathVariable Long companyId) {

@@ -2,6 +2,9 @@ package com.booking.companyservice.service.interfaces;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.booking.companyservice.config.UserPrincipal;
 import com.booking.companyservice.model.dto.CompanyServiceResponse;
 import com.booking.companyservice.model.dto.CreateCompanyServiceRequest;
@@ -20,4 +23,5 @@ public interface ICompanyServiceService {
     CompanyServiceResponse deactivateService(Long id, UserPrincipal principal);
 
     CompanyServiceResponse getServiceById(Long id);
+    Page<CompanyServiceResponse> getAllServices(Pageable pageable);
 }

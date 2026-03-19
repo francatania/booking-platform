@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/companies").permitAll()
                 .requestMatchers(HttpMethod.GET, "/companies/{id}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/companies/{id}/services").permitAll()
+                .requestMatchers(HttpMethod.GET, "/services").permitAll()
                 .requestMatchers(HttpMethod.GET, "/internal/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/companies").hasRole("SUPER_ADMIN")
                 .anyRequest().authenticated()

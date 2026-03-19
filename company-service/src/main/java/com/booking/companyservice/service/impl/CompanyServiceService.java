@@ -3,6 +3,8 @@ package com.booking.companyservice.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -107,5 +109,10 @@ public class CompanyServiceService implements ICompanyServiceService {
         if (!companyId.equals(principal.companyId())) {
             throw new AccessDeniedException("You don't have permission to manage this company");
         }
+    }
+
+    @Override
+    public Page<CompanyServiceResponse> getAllServices(Pageable pageable) {
+        return repository.findAll(pageable).map(CompanyServiceResponse::from);
     }
 }
