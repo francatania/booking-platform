@@ -1,0 +1,13 @@
+<nav class="bg-white shadow-sm border-b border-gray-200 px-8 py-4">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <span class="text-lg font-semibold text-gray-800">Booking Platform</span>
+    <div class="flex items-center gap-6">
+      @if (role === 'USER') {
+        <a routerLink="/my-bookings" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">My Bookings</a>
+      }
+      <span class="text-sm text-gray-500">{{ username }}</span>
+      <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-700">{{ role }}</span>
+      <button (click)="onLogout()" class="text-sm text-red-500 hover:text-red-700 transition-colors cursor-pointer">Logout</button>
+    </div>
+  </div>
+</nav>

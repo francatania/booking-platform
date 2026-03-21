@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CompanyServiceResponse } from '../../../core/models/company.model';
 import { CompanyServiceService } from '../../../core/services/company.service.service';
 import { ServiceListComponent } from '../components/service-list.component/service-list.component';
+import { NavbarComponent } from '../../../shared/components/navbar.component/navbar.component';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-home-page',
-  imports: [CommonModule, ServiceListComponent],
+  imports: [CommonModule, ServiceListComponent, NavbarComponent],
   templateUrl: './home.page.html'
 })
 export class HomePage {
@@ -14,10 +16,18 @@ export class HomePage {
   services: CompanyServiceResponse[] = []
   currentPage = 0;
   totalPages = 0;
+  username = '';
+  role = '';
 
-  constructor(private companyServiceService: CompanyServiceService){}
+  constructor(
+    private companyServiceService: CompanyServiceService,
+    private userService: UserService
+  ){}
 
   ngOnInit() {
+    const user = this.userService.getUser();
+    this.username = user?.sub ?? '';
+    this.role = user?.role ?? '';
     this.loadServices();
   }
 
