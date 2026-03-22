@@ -5,10 +5,11 @@ import { CompanyServiceService } from '../../../core/services/company.service.se
 import { ServiceListComponent } from '../components/service-list.component/service-list.component';
 import { NavbarComponent } from '../../../shared/components/navbar.component/navbar.component';
 import { UserService } from '../../../core/services/user.service';
+import { BookingFormComponent } from '../components/booking-form.component/booking-form.component';
 
 @Component({
   selector: 'app-home-page',
-  imports: [CommonModule, ServiceListComponent, NavbarComponent],
+  imports: [CommonModule, ServiceListComponent, NavbarComponent,BookingFormComponent],
   templateUrl: './home.page.html'
 })
 export class HomePage {
@@ -18,11 +19,26 @@ export class HomePage {
   totalPages = 0;
   username = '';
   role = '';
-
+  serviceSelected: CompanyServiceResponse | null= null;
+  
   constructor(
     private companyServiceService: CompanyServiceService,
     private userService: UserService
   ){}
+
+  onServiceSelected(service: CompanyServiceResponse){
+    this.serviceSelected = service;
+  }
+
+  onBookingCreated(){
+    this.serviceSelected = null;
+  }
+
+  onBookingCancelled(){
+    this.serviceSelected = null;
+  }
+
+
 
   ngOnInit() {
     const user = this.userService.getUser();

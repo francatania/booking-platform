@@ -7,6 +7,14 @@
       [currentPage]="currentPage"
       [totalPages]="totalPages"
       (pageChange)="onPageChange($event)"
+      (serviceSelected)="onServiceSelected($event)"
     />
+    @if (serviceSelected) {
+      <app-booking-form
+        [service]="serviceSelected"
+        (bookingCreated)="onBookingCreated()"
+        (cancelled)="onBookingCancelled()"
+      />
+    }
   </div>
 </div>

@@ -13,6 +13,7 @@ export class ServiceListComponent {
   @Input() currentPage = 0;
   @Input() totalPages = 0;
   @Output() pageChange = new EventEmitter<number>();
+  @Output() serviceSelected = new EventEmitter<CompanyServiceResponse>();
 
   goToPreviousPage() {
     this.pageChange.emit(this.currentPage - 1);
@@ -20,5 +21,9 @@ export class ServiceListComponent {
 
   goToNextPage() {
     this.pageChange.emit(this.currentPage + 1);
+  }
+
+  onServiceSelected(service: CompanyServiceResponse){
+    this.serviceSelected.emit(service);
   }
 }
