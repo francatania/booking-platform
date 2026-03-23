@@ -1,0 +1,67 @@
+<div class="min-h-screen bg-gray-50">
+  <div class="max-w-6xl mx-auto p-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">My Bookings</h1>
+
+    <full-calendar [options]="calendarOptions" />
+
+    @if (selectedBooking) {
+      <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">Booking #{{ selectedBooking.id }}</h2>
+
+          <div class="flex flex-col gap-2 text-sm text-gray-600 mb-6">
+            <span><span class="font-medium">Service:</span> #{{ selectedBooking.service_id }}</span>
+            <span><span class="font-medium">Start:</span> {{ selectedBooking.start_time | date:'medium' }}</span>
+            <span><span class="font-medium">End:</span> {{ selectedBooking.end_time | date:'medium' }}</span>
+            <span>
+              <span class="font-medium">Status:</span>
+              <span [class]="selectedBooking.status === 'PENDING' ? 'text-blue-600' : 'text-gray-400'">
+                {{ selectedBooking.status }}
+              </span>
+            </span>
+          </div>
+
+          <div class="flex gap-3">
+            <button
+              (click)="closeMenu()"
+              class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+            >
+              Close
+            </button>
+            @if (selectedBooking.status === 'PENDING') {
+              <button
+                class="flex-1 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors cursor-pointer"
+                (click)="onCancelClick()"
+              >
+                Cancel
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (showConfirm) {
+      <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-60">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Cancel booking</h3>
+          <p class="text-sm text-gray-500 mb-6">Are you sure you want to cancel this booking? This action cannot be undone.</p>
+          <div class="flex gap-3">
+            <button
+              (click)="showConfirm = false"
+              class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer"
+            >
+              Go back
+            </button>
+            <button
+              (click)="confirmCancel()"
+              class="flex-1 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 cursor-pointer"
+            >
+              Yes, cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

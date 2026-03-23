@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BookingService } from './booking.service';
 import { NotificationService } from './notification.service';
-import { BookingCreate } from '../models/booking.model';
+import { BookingCreate, BookingResponse } from '../models/booking.model';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +31,7 @@ export class AppStateService {
     });
   }
 
-  /*cancelBooking(id: number, onSuccess?: () => void) {
+  cancelBooking(id: number, onSuccess?: () => void) {
     this.bookingService.cancelBooking(id).subscribe({
       next: () => {
         this.notificationService.success('Booking cancelled.');
@@ -41,5 +41,12 @@ export class AppStateService {
         this.notificationService.error(err.error?.error || err.error?.detail || 'Something went wrong.');
       }
     });
-  }*/
+  }
+
+  getMyBookings(onSuccess: (booking: BookingResponse[]) => void){
+    this.bookingService.getMyBookings().subscribe({
+      next: onSuccess,
+      error: (err)=> this.notificationService.error(err.error?.detail)
+    })
+  }
 }

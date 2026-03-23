@@ -15,4 +15,12 @@ export class BookingService {
   createBooking(dto: BookingCreate): Observable<BookingResponse>{
     return this.http.post<BookingResponse>(`${this.BASE_URL}/bookings`, dto);
   }
+
+  getMyBookings(): Observable<BookingResponse[]> {
+    return this.http.get<BookingResponse[]>(`${this.BASE_URL}/bookings/my`);
+  }
+
+  cancelBooking(id: number): Observable<BookingResponse> {
+    return this.http.patch<BookingResponse>(`${this.BASE_URL}/bookings/${id}/cancel`, {});
+  }
 }
