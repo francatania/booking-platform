@@ -18,4 +18,14 @@ class BookingResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        from_attributes = True 
+        from_attributes = True
+
+class RescheduleRequest(BaseModel):
+    start_time: datetime
+    end_time: datetime
+
+class RescheduleResponse(BookingResponse):
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True

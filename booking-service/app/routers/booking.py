@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies.auth import get_current_user, UserPrincipal
-from app.schemas.booking import BookingCreate, BookingResponse
+from app.schemas.booking import BookingCreate, BookingResponse, RescheduleRequest, RescheduleResponse
 from app.services.booking import BookingService
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
@@ -35,4 +35,12 @@ def cancel_booking(
     db: Session = Depends(get_db),
     current_user: UserPrincipal = Depends(get_current_user)
 ):
-    return service.cancel_booking(booking_id, current_user.user_id, db)
+    return service.cancel_booking(booking_id, current_user, db)
+
+@router.patch("/{booking_id}/reschedule", response_model=RescheduleResponse)
+def reschedule_booking(
+    booking_id:int,
+    dto: RescheduleRequest,
+    current_user: UserPrincipal = Depends(get_current_user),
+    db: Session = Depends(get_db)):
+        return service.reschedule(booking_id, current_user, dto, db)

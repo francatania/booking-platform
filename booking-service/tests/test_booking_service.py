@@ -149,25 +149,25 @@ def test_get_booking_whenDoesnotExists_raisesException(service, db):
 
 def test_cancel_booking_whenDoesnotExists_raisesBookingNotFoundException(service,db):
     with pytest.raises(BookingNotFoundException):
-        service.cancel_booking(1,1,db)
+        service.cancel_booking(1, USER, db)
 
 def test_cancel_booking_whenUserIdDoesnotMatch_raisesBookingForbiddenException(service,db):
-    booking = build_booking(user_id=1)
+    booking = build_booking(user_id=99)
     db.query.return_value.filter.return_value.first.return_value = booking
     with pytest.raises(BookingForbiddenException):
-        service.cancel_booking(1,2,db)
+        service.cancel_booking(1, USER, db)
 
 def test_cancel_booking_whenBookingAlreadyCancelled_raisesBookingAlreadyCancelledException(service,db):
     booking = build_booking(status=BookingStatus.CANCELLED)
     db.query.return_value.filter.return_value.first.return_value = booking
     with pytest.raises(BookingAlreadyCancelledException):
-        service.cancel_booking(1,1,db)
+        service.cancel_booking(1, USER, db)
 
 def test_cancel_booking_whenIsOk_returnsBooking(service, db):
     booking = build_booking()
     db.query.return_value.filter.return_value.first.return_value = booking
 
-    result = service.cancel_booking(1,1,db)
+    result = service.cancel_booking(1, USER, db)
     assert result.user_id == booking.user_id
     assert result.id == booking.id
     assert result.status == BookingStatus.CANCELLED

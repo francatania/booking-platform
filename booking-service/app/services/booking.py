@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Session
 from app.models.booking import Booking, BookingStatus
 from app.models.booking_config import BookingConfig
-from app.schemas.booking import BookingCreate
+from app.schemas.booking import BookingCreate, RescheduleRequest
 from app.dependencies.auth import UserPrincipal
 from app.dependencies.company_client import validate_service
 from app.exceptions import (
+    InvalidBookingTimeException,
     MissingUserIdException,
     BookingNotFoundException,
     BookingConflictException,
@@ -12,7 +13,7 @@ from app.exceptions import (
     BookingForbiddenException,
     BookingAlreadyCancelledException,
 )
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 class BookingService:
     def create_booking(self, dto: BookingCreate, current_user: UserPrincipal, db:Session):
@@ -38,6 +39,19 @@ class BookingService:
         db.add(booking)
         db.commit()
         db.refresh(booking)
+        return booking
+    
+    def _find_booking_to_patch(self, booking_id: int, current_user: UserPrincipal, db: Session):
+        booking = db.query(Booking).filter(Booking.id == booking_id).first()
+
+        if booking is None:
+            raise BookingNotFoundException()
+
+        if current_user.role == "USER" and booking.user_id != current_user.user_id:
+            raise BookingForbiddenException()
+
+        if booking.status == BookingStatus.CANCELLED:
+            raise BookingAlreadyCancelledException()
         return booking
     
     def _check_collision(self, user_id: int, company_id: int, start_time, end_time, db: Session):
@@ -78,19 +92,23 @@ class BookingService:
             raise BookingNotFoundException()
         return booking
 
-    def cancel_booking(self, booking_id: int, user_id: int, db: Session):
-        booking = db.query(Booking).filter(Booking.id == booking_id).first()
-
-        if booking is None:
-            raise BookingNotFoundException()
-
-        if booking.user_id != user_id:
-            raise BookingForbiddenException()
-
-        if booking.status == BookingStatus.CANCELLED:
-            raise BookingAlreadyCancelledException()
-        
+    def cancel_booking(self, booking_id: int, current_user: UserPrincipal, db: Session):
+        booking = self._find_booking_to_patch(booking_id, current_user, db)
         booking.status = BookingStatus.CANCELLED
+        db.commit()
+        db.refresh(booking)
+        return booking
+
+    def reschedule(self, booking_id:int, current_user: UserPrincipal, dto: RescheduleRequest, db: Session):
+
+        if dto.start_time >= dto.end_time:
+            raise InvalidBookingTimeException()
+
+        booking = self._find_booking_to_patch(booking_id, current_user, db)
+        self._check_collision(current_user.user_id, booking.company_id, dto.start_time, dto.end_time, db)
+
+        booking.start_time = dto.start_time
+        booking.end_time = dto.end_time
         db.commit()
         db.refresh(booking)
         return booking

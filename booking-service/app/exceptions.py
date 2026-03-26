@@ -21,3 +21,7 @@ class BookingForbiddenException(Exception):
 class BookingAlreadyCancelledException(Exception):
     def __init__(self):
         super().__init__("Booking already cancelled")
+
+class InvalidBookingTimeException(Exception):
+    def __init__(self):
+        super().__init__("start_time must be before end_time")

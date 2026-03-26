@@ -108,14 +108,25 @@ Handles reservations with anti-collision logic.
 | POST | `/bookings` | Authenticated | Create booking |
 | GET | `/bookings/my` | Authenticated | List user's bookings |
 | GET | `/bookings/{id}` | Authenticated | Get booking details |
-| PATCH | `/bookings/{id}/cancel` | Owner | Cancel booking |
+| PATCH | `/bookings/{id}/cancel` | USER (owner) / ADMIN | Cancel booking |
+| PATCH | `/bookings/{id}/reschedule` | USER (owner) / ADMIN | Reschedule booking |
 | GET | `/bookings/ping` | Public | Health check |
 
-**Business rules:**
-- Users book for themselves; admins can book on behalf of any user
-- Validates that the service exists and is active (HTTP call to company-service)
-- **Anti-collision:** prevents overlapping bookings for the same user
-- **Configurable gap:** per-company gap between bookings (e.g., 15 min for barber, 30 min for spa)
+**Role rules:**
+- `USER` — can only create, cancel or reschedule their own bookings
+- `ADMIN` — can create bookings on behalf of any user (must provide `user_id`), and can cancel or reschedule any user's booking
+- `SUPER_ADMIN` — platform implementer role: creates companies and registers admins. Not intended for booking operations.
+
+**Anti-collision logic (two independent checks):**
+1. **Global overlap check** — the user cannot have two bookings that overlap in time, regardless of company. If any existing active booking conflicts with the requested time window → `409`
+2. **Company gap check** — each company has a configurable `gap_minutes` (stored in `booking_config`). If the requested booking starts within `gap_minutes` of another booking at the same company → `409`
+
+Example: Company A has `gap_minutes = 30`. If a user has a booking at Company A ending at 10:00, a new booking at Company A starting at 10:20 would be rejected (only 20 min gap, less than the required 30).
+
+**Other rules:**
+- Service must exist and be active (validated via HTTP call to company-service)
+- `start_time` must be before `end_time`
+- Cancelled bookings cannot be cancelled or rescheduled again
 
 ---
 
