@@ -28,6 +28,7 @@ public class JwtService implements IJwtService {
 
         return Jwts.builder()
                 .subject(user.getEmail())
+                .claim("username", user.getUsername())
                 .claim("role", user.getRole())
                 .claim("companyId", user.getCompanyId())
                 .claim("userId", user.getId())
