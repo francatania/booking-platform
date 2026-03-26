@@ -1,3 +1,8 @@
+export interface RescheduleRequest {
+  start_time: string;
+  end_time: string;
+}
+
 export interface BookingCreate {
   service_id: number;
   company_id: number;

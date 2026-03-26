@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-50">
+<div class="bg-gray-50">
   <div class="max-w-6xl mx-auto p-8">
     <h1 class="text-3xl font-bold text-gray-800 mb-6">My Bookings</h1>
 
@@ -36,6 +36,30 @@
                 Cancel
               </button>
             }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (pendingDrop) {
+      <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-60">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Confirm reschedule</h3>
+          <p class="text-sm text-gray-500 mb-1">New start: <span class="font-medium text-gray-700">{{ pendingDrop.event.start | date:'medium' }}</span></p>
+          <p class="text-sm text-gray-500 mb-6">New end: <span class="font-medium text-gray-700">{{ pendingDrop.event.end | date:'medium' }}</span></p>
+          <div class="flex gap-3">
+            <button
+              (click)="cancelReschedule()"
+              class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer"
+            >
+              Go back
+            </button>
+            <button
+              (click)="confirmReschedule()"
+              class="flex-1 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer"
+            >
+              Confirm
+            </button>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 export interface UserPayload {
   sub: string;
   userId: number;
-  email: string;
+  username: string;
   role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
   companyId?: number;
 }

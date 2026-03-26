@@ -1,13 +1,38 @@
-<nav class="bg-white shadow-sm border-b border-gray-200 px-8 py-4">
-  <div class="max-w-6xl mx-auto flex items-center justify-between">
+<nav class="bg-white shadow-sm border-b border-gray-200 px-8 py-2">
+  <div class="max-w-[80%] mx-auto flex items-center justify-between ">
     <span class="text-lg font-semibold text-gray-800">Booking Platform</span>
+
     <div class="flex items-center gap-6">
+      <a routerLink="/home" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Services</a>
       @if (role === 'USER') {
         <a routerLink="/my-bookings" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">My Bookings</a>
       }
-      <span class="text-sm text-gray-500">{{ username }}</span>
-      <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-700">{{ role }}</span>
-      <button (click)="onLogout()" class="text-sm text-red-500 hover:text-red-700 transition-colors cursor-pointer">Logout</button>
+      @if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
+        <a routerLink="/admin" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Admin</a>
+      }
+
+      <button mat-icon-button [matMenuTriggerFor]="userMenu">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <mat-menu #userMenu="matMenu">
+        <div class="px-4 py-2 flex flex-col gap-1 pointer-events-none">
+          <div class="flex justify-between">
+           <span class="text-sm font-medium py-0.5 rounded-full bg-blue-100 text-blue-700 w-fit">{{ role }}</span>
+           <span> |</span>
+            <span class="text-sm font-medium text-gray-800">{{ username }}</span>
+
+          </div>
+
+          <span class="text-sm font-medium text-gray-800">{{ email }}</span>
+
+        </div>
+        <mat-divider />
+        <button mat-menu-item (click)="onLogout()">
+          <mat-icon color="warn">logout</mat-icon>
+          <span class="text-red-500">Logout</span>
+        </button>
+      </mat-menu>
     </div>
   </div>
 </nav>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CalendarOptions, EventClickArg } from '@fullcalendar/core';
+import { CalendarOptions, EventClickArg, EventDropArg } from '@fullcalendar/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -18,6 +18,7 @@ export class MyBookings implements OnInit {
   bookings: BookingResponse[] = [];
   selectedBooking: BookingResponse | null = null;
   showConfirm = false;
+  pendingDrop: EventDropArg | null = null;
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -27,9 +28,12 @@ export class MyBookings implements OnInit {
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
-    editable: false,
+    height: '80vh',
+    scrollTime: new Date().toTimeString().slice(0, 8),
+    editable: true,
     events: [],
-    eventClick: (info: EventClickArg) => this.handleEventClick(info)
+    eventClick: (info: EventClickArg) => this.handleEventClick(info),
+    eventDrop: (info: EventDropArg) => this.handleEventDrop(info)
   };
 
   constructor(private appState: AppStateService) {}
@@ -55,8 +59,24 @@ export class MyBookings implements OnInit {
     });
   }
 
+  handleEventDrop(info: EventDropArg) {
+    const booking: BookingResponse = info.event.extendedProps['booking'];
+
+    if (booking.status === 'CANCELLED') {
+      info.revert();
+      return;
+    }
+
+    this.pendingDrop = info;
+  }
+
   handleEventClick(info: EventClickArg) {
     this.selectedBooking = info.event.extendedProps['booking'];
+  }
+
+  private toLocalISO(date: Date): string {
+    const offset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - offset).toISOString().slice(0, 19);
   }
 
   closeMenu() {
@@ -66,6 +86,26 @@ export class MyBookings implements OnInit {
 
   onCancelClick() {
     this.showConfirm = true;
+  }
+
+  confirmReschedule() {
+    const info = this.pendingDrop!;
+    const booking: BookingResponse = info.event.extendedProps['booking'];
+    const start = info.event.start!;
+    const end = info.event.end ?? new Date(start.getTime() + (new Date(booking.end_time).getTime() - new Date(booking.start_time).getTime()));
+
+    this.pendingDrop = null;
+    this.appState.rescheduleBooking(
+      booking.id,
+      { start_time: this.toLocalISO(start), end_time: this.toLocalISO(end) },
+      () => this.loadBookings(),
+      () => info.revert()
+    );
+  }
+
+  cancelReschedule() {
+    this.pendingDrop!.revert();
+    this.pendingDrop = null;
   }
 
   confirmCancel() {

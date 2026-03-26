@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BookingService } from './booking.service';
 import { NotificationService } from './notification.service';
-import { BookingCreate, BookingResponse } from '../models/booking.model';
+import { BookingCreate, BookingResponse, RescheduleRequest } from '../models/booking.model';
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +39,24 @@ export class AppStateService {
       },
       error: (err) => {
         this.notificationService.error(err.error?.error || err.error?.detail || 'Something went wrong.');
+        
+      }
+    });
+  }
+
+  rescheduleBooking(id: number, dto: RescheduleRequest, onSuccess?: () => void, onError?: () => void) {
+    this.bookingService.rescheduleBooking(id, dto).subscribe({
+      next: () => {
+        this.notificationService.success('Booking rescheduled.');
+        onSuccess?.();
+      },
+      error: (err) => {
+        this.notificationService.error(
+          err.status === 409
+            ? 'That time slot is already taken. Please choose another time.'
+            : err.error?.detail || 'Could not reschedule booking.'
+        );
+        onError?.();
       }
     });
   }

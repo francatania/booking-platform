@@ -1,30 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CompanyServiceResponse } from '../../../core/models/company.model';
 import { CompanyServiceService } from '../../../core/services/company.service.service';
 import { ServiceListComponent } from '../components/service-list.component/service-list.component';
-import { NavbarComponent } from '../../../shared/components/navbar.component/navbar.component';
-import { UserService } from '../../../core/services/user.service';
 import { BookingFormComponent } from '../components/booking-form.component/booking-form.component';
 
 @Component({
   selector: 'app-home-page',
-  imports: [CommonModule, ServiceListComponent, NavbarComponent,BookingFormComponent],
+  imports: [CommonModule, ServiceListComponent, BookingFormComponent],
   templateUrl: './home.page.html'
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
   services: CompanyServiceResponse[] = []
   currentPage = 0;
   totalPages = 0;
-  username = '';
-  role = '';
   serviceSelected: CompanyServiceResponse | null= null;
-  
-  constructor(
-    private companyServiceService: CompanyServiceService,
-    private userService: UserService
-  ){}
+
+  constructor(private companyServiceService: CompanyServiceService){}
 
   onServiceSelected(service: CompanyServiceResponse){
     this.serviceSelected = service;
@@ -38,12 +31,7 @@ export class HomePage {
     this.serviceSelected = null;
   }
 
-
-
   ngOnInit() {
-    const user = this.userService.getUser();
-    this.username = user?.sub ?? '';
-    this.role = user?.role ?? '';
     this.loadServices();
   }
 

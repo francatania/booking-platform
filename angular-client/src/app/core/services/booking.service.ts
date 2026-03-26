@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BookingCreate, BookingResponse } from '../models/booking.model';
+import { BookingCreate, BookingResponse, RescheduleRequest } from '../models/booking.model';
 
 
 @Injectable({
@@ -22,5 +22,9 @@ export class BookingService {
 
   cancelBooking(id: number): Observable<BookingResponse> {
     return this.http.patch<BookingResponse>(`${this.BASE_URL}/bookings/${id}/cancel`, {});
+  }
+
+  rescheduleBooking(id: number, dto: RescheduleRequest): Observable<BookingResponse> {
+    return this.http.patch<BookingResponse>(`${this.BASE_URL}/bookings/${id}/reschedule`, dto);
   }
 }
