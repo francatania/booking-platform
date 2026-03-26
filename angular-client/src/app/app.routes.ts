@@ -4,16 +4,19 @@ import { HomePage } from './features/home/pages/home.page';
 import { AdminPage } from './features/admin/pages/admin.page';
 import { MyBookings } from './features/booking/pages/my-bookings/my-bookings';
 import { AuthLayoutComponent } from './shared/layouts/auth-layout.component/auth-layout.component';
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPage },
   {
     path: '',
     component: AuthLayoutComponent,
+    canActivate: [authGuard],
     children: [
-      { path: 'home', component: HomePage },
-      { path: 'my-bookings', component: MyBookings },
-      { path: 'admin', component: AdminPage },
+      { path: 'home', component: HomePage, canActivate: [roleGuard(['USER', 'ADMIN', 'SUPER_ADMIN'])] },
+      { path: 'my-bookings', component: MyBookings, canActivate: [roleGuard(['USER'])] },
+      { path: 'admin', component: AdminPage, canActivate: [roleGuard(['ADMIN', 'SUPER_ADMIN'])] },
     ]
   },
   { path: '**', redirectTo: 'login' },
