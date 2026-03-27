@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.models.booking import Booking, BookingStatus
 from app.models.booking_config import BookingConfig
-from app.schemas.booking import BookingCreate, RescheduleRequest
+from app.schemas.booking import BookingCreate, RescheduleRequest, BookingStatsResponse, BookingPeriodStat
 from app.dependencies.auth import UserPrincipal
 from app.dependencies.company_client import validate_service
 from app.exceptions import (
@@ -33,6 +34,7 @@ class BookingService:
             company_id=dto.company_id,
             start_time=dto.start_time,
             end_time=dto.end_time,
+            price=dto.price,
             status=BookingStatus.PENDING,
         )
 
@@ -112,3 +114,49 @@ class BookingService:
         db.commit()
         db.refresh(booking)
         return booking
+    
+    def getStats(self, company_id: int, start_date: datetime, end_date: datetime, db:Session):
+        bookings = db.query(Booking).filter(Booking.company_id == company_id,
+                                            Booking.start_time >= start_date,
+                                            Booking.start_time <= end_date)
+
+        pending_count = bookings.filter(Booking.status == BookingStatus.PENDING).count()
+        cancelled_count = bookings.filter(Booking.status == BookingStatus.CANCELLED).count()
+        confirmed_count = bookings.filter(Booking.status == BookingStatus.CONFIRMED).count()
+        completed_count = bookings.filter(Booking.status == BookingStatus.COMPLETED).count()
+
+
+        revenue = bookings.filter(Booking.status == BookingStatus.COMPLETED).with_entities(func.sum(Booking.price)).scalar() or 0
+
+        period_rows = (
+            db.query(
+                func.date(Booking.start_time).label("date"),
+                func.count(Booking.id).label("count"),
+                func.sum(Booking.price).label("revenue"),
+            )
+            .filter(
+                Booking.company_id == company_id,
+                Booking.start_time >= start_date,
+                Booking.start_time <= end_date,
+            )
+            .group_by(func.date(Booking.start_time))
+            .order_by(func.date(Booking.start_time))
+            .all()
+        )
+
+        bookings_by_period = [
+            BookingPeriodStat(date=row.date, count=row.count, revenue=row.revenue or 0)
+            for row in period_rows
+        ]
+
+        return BookingStatsResponse(
+            total_bookings=bookings.count(),
+            bookings_by_status={
+                "PENDING": pending_count,
+                "CONFIRMED": confirmed_count,
+                "CANCELLED": cancelled_count,
+                "COMPLETED": completed_count
+            },
+            total_revenue=revenue,
+            bookings_by_period=bookings_by_period,
+        )

@@ -30,3 +30,10 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_
         raise HTTPException(status_code=401, detail="Invalid token")
 
     return UserPrincipal(user_id=user_id, email=email, role=role, company_id=company_id)
+
+def require_roles(*roles: str):
+    def dependency(current_user: UserPrincipal = Depends(get_current_user)) -> UserPrincipal:
+        if current_user.role not in roles:
+            raise HTTPException(status_code=403, detail="Insufficient permissions")
+        return current_user
+    return dependency

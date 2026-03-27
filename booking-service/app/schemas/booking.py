@@ -1,11 +1,13 @@
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, date
+from decimal import Decimal
 
 class BookingCreate(BaseModel):
     service_id: int
     company_id: int
     start_time: datetime
     end_time: datetime
+    price: Decimal
     user_id: int | None = None
 
 class BookingResponse(BaseModel):
@@ -14,11 +16,23 @@ class BookingResponse(BaseModel):
     service_id: int
     start_time: datetime
     end_time: datetime
+    price: Decimal
     status: str
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+class BookingPeriodStat(BaseModel):
+    date: date
+    count: int
+    revenue: Decimal
+
+class BookingStatsResponse(BaseModel):
+    total_bookings: int
+    bookings_by_status: dict[str, int]
+    total_revenue: Decimal
+    bookings_by_period: list[BookingPeriodStat]
 
 class RescheduleRequest(BaseModel):
     start_time: datetime

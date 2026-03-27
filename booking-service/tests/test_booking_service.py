@@ -39,13 +39,14 @@ def build_booking(id=1, user_id=1, status=BookingStatus.PENDING):
     booking.status = status
     return booking
 
-def build_booking_dto(service_id=5, company_id=5, start_time=START, end_time=END, user_id=None):
+def build_booking_dto(service_id=5, company_id=5, start_time=START, end_time=END, user_id=None, price=5000.00):
     dto = MagicMock(spec=BookingCreate)
     dto.service_id = service_id
     dto.company_id = company_id
     dto.start_time = start_time
     dto.end_time = end_time
     dto.user_id = user_id
+    dto.price = price
     return dto
 
 def make_query_side_effect(gap_minutes=0, raw_collision=False, gap_collision=False):

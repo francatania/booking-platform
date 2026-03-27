@@ -52,37 +52,37 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "company_db" <<-'EO
     );
 
     INSERT INTO company (name, description, address, phone) VALUES
-        ('Barber Shop', 'The best barber shop in town', 'Av. Corrientes 1234, CABA', '+54 11 1234-5678'),
-        ('Spa Relax', 'Premium spa and wellness center', 'Av. Santa Fe 5678, CABA', '+54 11 8765-4321'),
-        ('Clinica Dental Smile', 'Odontologia integral', 'Av. Callao 890, CABA', '+54 11 2233-4455'),
-        ('Centro de Yoga', 'Clases y sesiones de yoga y meditacion', 'Av. del Libertador 3456, CABA', '+54 11 6677-8899'),
-        ('Fisioterapia Movimiento', 'Rehabilitacion y kinesiologia', 'Av. Rivadavia 7890, CABA', '+54 11 9988-7766');
+        ('Classic Barber Shop', 'The best barber shop in town', '1234 Corrientes Ave, CABA', '+54 11 1234-5678'),
+        ('Relax Spa', 'Premium spa and wellness center', '5678 Santa Fe Ave, CABA', '+54 11 8765-4321'),
+        ('Smile Dental Clinic', 'Comprehensive dental care', '890 Callao Ave, CABA', '+54 11 2233-4455'),
+        ('Yoga Center', 'Yoga and meditation classes', '3456 Libertador Ave, CABA', '+54 11 6677-8899'),
+        ('Movement Physiotherapy', 'Rehabilitation and physiotherapy', '7890 Rivadavia Ave, CABA', '+54 11 9988-7766');
 
     INSERT INTO company_services (company_id, name, description, duration_minutes, price, is_active) VALUES
-        (1, 'Corte de pelo', 'Corte clasico o moderno', 30, 5000.00, true),
-        (1, 'Barba', 'Recorte y perfilado de barba', 20, 3000.00, true),
-        (1, 'Corte + Barba', 'Combo completo', 45, 7000.00, true),
-        (1, 'Tintura', 'Coloracion completa', 60, 10000.00, false),
-        (1, 'Keratina', 'Tratamiento de keratina', 120, 18000.00, true),
-        (2, 'Masaje relajante', 'Masaje de cuerpo completo', 60, 15000.00, true),
-        (2, 'Facial express', 'Limpieza facial profunda', 30, 8000.00, true),
-        (2, 'Masaje deportivo', 'Masaje para recuperacion muscular', 45, 12000.00, true),
-        (2, 'Aromaterapia', 'Sesion de aromaterapia con aceites esenciales', 60, 14000.00, true),
-        (2, 'Exfoliacion corporal', 'Tratamiento de exfoliacion completo', 50, 11000.00, true),
-        (3, 'Limpieza dental', 'Profilaxis y pulido dental', 45, 9000.00, true),
-        (3, 'Blanqueamiento', 'Blanqueamiento dental profesional', 60, 25000.00, true),
-        (3, 'Consulta general', 'Revision y diagnostico odontologico', 30, 6000.00, true),
-        (3, 'Ortodoncia - consulta', 'Evaluacion para brackets o alineadores', 40, 8000.00, true),
-        (3, 'Extraccion simple', 'Extraccion de pieza dental', 30, 12000.00, true),
-        (4, 'Clase de yoga', 'Clase grupal de yoga', 60, 4000.00, true),
-        (4, 'Sesion privada yoga', 'Clase individual personalizada', 60, 9000.00, true),
-        (4, 'Meditacion guiada', 'Sesion de meditacion y mindfulness', 45, 5000.00, true),
-        (4, 'Yoga prenatal', 'Clase especial para embarazadas', 60, 5500.00, true),
-        (5, 'Kinesiologia', 'Sesion de kinesiologia y rehabilitacion', 50, 8000.00, true),
-        (5, 'Masaje terapeutico', 'Masaje orientado a patologias musculares', 40, 10000.00, true),
-        (5, 'Electroterapia', 'Tratamiento con corrientes terapeuticas', 30, 7000.00, true),
-        (5, 'Evaluacion postural', 'Analisis y correccion postural', 60, 9500.00, true),
-        (5, 'Pilates terapeutico', 'Pilates enfocado en rehabilitacion', 50, 8500.00, true);
+        (1, 'Haircut', 'Classic or modern haircut', 30, 5000.00, true),
+        (1, 'Beard Trim', 'Beard shaping and trimming', 20, 3000.00, true),
+        (1, 'Haircut + Beard', 'Full combo', 45, 7000.00, true),
+        (1, 'Hair Coloring', 'Full hair coloring', 60, 10000.00, false),
+        (1, 'Keratin Treatment', 'Professional keratin treatment', 120, 18000.00, true),
+        (2, 'Relaxing Massage', 'Full body relaxing massage', 60, 15000.00, true),
+        (2, 'Express Facial', 'Deep facial cleansing', 30, 8000.00, true),
+        (2, 'Sports Massage', 'Muscle recovery massage', 45, 12000.00, true),
+        (2, 'Aromatherapy', 'Aromatherapy session with essential oils', 60, 14000.00, true),
+        (2, 'Body Scrub', 'Full body exfoliation treatment', 50, 11000.00, true),
+        (3, 'Dental Cleaning', 'Prophylaxis and dental polish', 45, 9000.00, true),
+        (3, 'Teeth Whitening', 'Professional teeth whitening', 60, 25000.00, true),
+        (3, 'General Checkup', 'Dental revision and diagnosis', 30, 6000.00, true),
+        (3, 'Orthodontics Consult', 'Evaluation for braces or aligners', 40, 8000.00, true),
+        (3, 'Simple Extraction', 'Tooth extraction', 30, 12000.00, true),
+        (4, 'Yoga Class', 'Group yoga class', 60, 4000.00, true),
+        (4, 'Private Yoga Session', 'Personalized one-on-one class', 60, 9000.00, true),
+        (4, 'Guided Meditation', 'Meditation and mindfulness session', 45, 5000.00, true),
+        (4, 'Prenatal Yoga', 'Special class for pregnant women', 60, 5500.00, true),
+        (5, 'Physiotherapy Session', 'Physiotherapy and rehabilitation', 50, 8000.00, true),
+        (5, 'Therapeutic Massage', 'Massage for muscular conditions', 40, 10000.00, true),
+        (5, 'Electrotherapy', 'Treatment with therapeutic currents', 30, 7000.00, true),
+        (5, 'Postural Assessment', 'Postural analysis and correction', 60, 9500.00, true),
+        (5, 'Therapeutic Pilates', 'Pilates focused on rehabilitation', 50, 8500.00, true);
 EOSQL
 
 # Seed booking_db
@@ -94,6 +94,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "booking_db" <<-'EO
         company_id INTEGER NOT NULL,
         start_time TIMESTAMP NOT NULL,
         end_time TIMESTAMP NOT NULL,
+        price NUMERIC(10, 2) NOT NULL,
         status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -112,8 +113,18 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "booking_db" <<-'EO
         (4, 0),
         (5, 10);
 
-    INSERT INTO booking (user_id, service_id, company_id, start_time, end_time, status) VALUES
-        (3, 1, 1, '2025-07-01 10:00:00', '2025-07-01 10:30:00', 'PENDING'),
-        (3, 5, 2, '2025-07-01 14:00:00', '2025-07-01 15:00:00', 'PENDING'),
-        (3, 2, 1, '2025-06-15 11:00:00', '2025-06-15 11:20:00', 'CANCELLED');
+    INSERT INTO booking (user_id, service_id, company_id, start_time, end_time, price, status) VALUES
+        (3, 1, 1, '2026-03-01 09:00:00', '2026-03-01 09:30:00', 5000.00, 'COMPLETED'),
+        (3, 2, 1, '2026-03-01 10:00:00', '2026-03-01 10:20:00', 3000.00, 'COMPLETED'),
+        (3, 3, 1, '2026-03-03 11:00:00', '2026-03-03 11:45:00', 7000.00, 'COMPLETED'),
+        (3, 1, 1, '2026-03-05 09:00:00', '2026-03-05 09:30:00', 5000.00, 'CANCELLED'),
+        (3, 5, 1, '2026-03-07 10:00:00', '2026-03-07 12:00:00', 18000.00, 'CONFIRMED'),
+        (3, 1, 1, '2026-03-10 09:00:00', '2026-03-10 09:30:00', 5000.00, 'COMPLETED'),
+        (3, 3, 1, '2026-03-12 11:00:00', '2026-03-12 11:45:00', 7000.00, 'COMPLETED'),
+        (3, 2, 1, '2026-03-15 10:00:00', '2026-03-15 10:20:00', 3000.00, 'CONFIRMED'),
+        (3, 1, 1, '2026-03-18 09:00:00', '2026-03-18 09:30:00', 5000.00, 'CANCELLED'),
+        (3, 5, 1, '2026-03-20 10:00:00', '2026-03-20 12:00:00', 18000.00, 'COMPLETED'),
+        (3, 3, 1, '2026-03-22 11:00:00', '2026-03-22 11:45:00', 7000.00, 'COMPLETED'),
+        (3, 1, 1, '2026-03-25 09:00:00', '2026-03-25 09:30:00', 5000.00, 'PENDING'),
+        (3, 2, 1, '2026-03-27 10:00:00', '2026-03-27 10:20:00', 3000.00, 'PENDING');
 EOSQL

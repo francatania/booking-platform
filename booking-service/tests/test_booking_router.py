@@ -36,6 +36,7 @@ def build_booking_response(id=1, user_id=1, service_id=5):
         service_id=service_id,
         start_time=datetime(2025, 6, 1, 10, 0),
         end_time=datetime(2025, 6, 1, 11, 0),
+        price=5000.00,
         status="PENDING",
         created_at=datetime(2025, 6, 1, 9, 0),
     )
@@ -49,6 +50,7 @@ def test_create_booking_returns201():
             service_id=5,
             start_time=datetime(2025, 6, 1, 10, 0),
             end_time=datetime(2025, 6, 1, 11, 0),
+            price=5000.00,
             status="PENDING",
             created_at=datetime(2025, 6, 1, 9, 0),
         )
@@ -57,7 +59,8 @@ def test_create_booking_returns201():
             "service_id": 5,
             "company_id": 10,
             "start_time": "2025-06-01T10:00:00",
-            "end_time": "2025-06-01T11:00:00"
+            "end_time": "2025-06-01T11:00:00",
+            "price": 5000.00
         })
 
         assert response.status_code == 201
@@ -77,6 +80,7 @@ def test_get_my_bookings_returnsList():
             service_id=5,
             start_time=datetime(2025, 6, 1, 10, 0),
             end_time=datetime(2025, 6, 1, 11, 0),
+            price=5000.00,
             status="PENDING",
             created_at=datetime(2025, 6, 1, 9, 0),
         ),MagicMock(
@@ -85,6 +89,7 @@ def test_get_my_bookings_returnsList():
             service_id=4,
             start_time=datetime(2025, 7, 1, 10, 0),
             end_time=datetime(2025, 7, 1, 11, 0),
+            price=3000.00,
             status="PENDING",
             created_at=datetime(2025, 6, 1, 9, 0),
         )]

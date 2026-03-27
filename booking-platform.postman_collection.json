@@ -223,7 +223,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"service_id\": 1,\n  \"company_id\": 1,\n  \"start_time\": \"2026-03-15T10:00:00\",\n  \"end_time\": \"2026-03-15T10:30:00\"\n}"
+              "raw": "{\n  \"service_id\": 1,\n  \"company_id\": 1,\n  \"start_time\": \"2026-03-15T10:00:00\",\n  \"end_time\": \"2026-03-15T10:30:00\",\n  \"price\": 5000.00\n}"
             }
           }
         },
@@ -252,6 +252,39 @@
           "request": {
             "method": "PATCH",
             "url": "{{base_url}}/bookings/1/cancel",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ]
+          }
+        },
+        {
+          "name": "PATCH /bookings/:id/reschedule",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/bookings/1/reschedule",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"start_time\": \"2026-03-20T10:00:00\",\n  \"end_time\": \"2026-03-20T10:30:00\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /bookings/stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/bookings/stats?from_date=2026-03-01T00:00:00&to_date=2026-03-31T23:59:59",
+              "host": ["{{base_url}}"],
+              "path": ["bookings", "stats"],
+              "query": [
+                { "key": "from_date", "value": "2026-03-01T00:00:00" },
+                { "key": "to_date", "value": "2026-03-31T23:59:59" }
+              ]
+            },
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]
