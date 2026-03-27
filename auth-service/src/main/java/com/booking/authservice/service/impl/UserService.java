@@ -30,17 +30,28 @@ public class UserService implements IUserService {
     private final IJwtService jwtService;
 
 
-    public UserResponse register(RegisterRequest dto, boolean isAdmin){
+    public UserResponse register(RegisterRequest dto, boolean isNotUser){
+        UserRole newRol;
 
         if(repository.existsByEmail(dto.getEmail())){
             throw new UserAlreadyExistsException(dto.getEmail());
+        }
+
+        if(isNotUser){
+            UserRole requested = dto.getRole();
+            if(requested == null || requested == UserRole.USER || requested == UserRole.SUPER_ADMIN){
+                throw new IllegalArgumentException("Invalid role. Allowed: ADMIN, MANAGER, OPERATOR");
+            }
+            newRol = requested;
+        }else{
+            newRol = UserRole.USER;
         }
 
         User user = User.builder()
                         .email(dto.getEmail())
                         .username(dto.getUsername())
                         .passwordHash(passwordEncoder.encode(dto.getPassword()))
-                        .role(isAdmin ? UserRole.ADMIN : UserRole.USER)
+                        .role(newRol)
                         .companyId(dto.getCompanyId())
                         .createdAt(LocalDateTime.now())
                         .updatedAt(LocalDateTime.now())

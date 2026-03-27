@@ -7,7 +7,7 @@ import com.booking.authservice.model.dto.UserResponse;
 
 public interface IUserService {
 
-    UserResponse register(RegisterRequest dto, boolean isAdmin);
+    UserResponse register(RegisterRequest dto, boolean isNotUser);
 
     AuthResponse login(LoginRequest dto);
 }

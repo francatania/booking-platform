@@ -1,5 +1,7 @@
 package com.booking.authservice.model.dto;
 
+import com.booking.authservice.model.enums.UserRole;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,4 +20,6 @@ public class RegisterRequest {
     private String password;
 
     private Long companyId;
+
+    private UserRole role;
 }
