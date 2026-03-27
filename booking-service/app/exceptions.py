@@ -25,3 +25,7 @@ class BookingAlreadyCancelledException(Exception):
 class InvalidBookingTimeException(Exception):
     def __init__(self):
         super().__init__("start_time must be before end_time")
+
+class InvalidStatusTransitionException(Exception):
+    def __init__(self, current, target):
+        super().__init__(f"Cannot transition from {current} to {target}")

@@ -10,6 +10,7 @@ from app.exceptions import (
     BookingGapConflictException,
     BookingForbiddenException,
     BookingAlreadyCancelledException,
+    InvalidStatusTransitionException,
 )
 
 Base.metadata.create_all(bind=engine)
@@ -39,6 +40,10 @@ def handle_forbidden(_request: Request, exc: BookingForbiddenException):
 @app.exception_handler(BookingAlreadyCancelledException)
 def handle_already_cancelled(_request: Request, exc: BookingAlreadyCancelledException):
     return JSONResponse(status_code=400, content={"detail": str(exc)})
+
+@app.exception_handler(InvalidStatusTransitionException)
+def handle_invalid_transition(_request: Request, exc: InvalidStatusTransitionException):
+    return JSONResponse(status_code=409, content={"detail": str(exc)})
 
 app.include_router(booking_router.router)
 

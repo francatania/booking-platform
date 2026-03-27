@@ -83,6 +83,27 @@ export class AppStateService {
     });
   }
 
+  getCompanyBookings(status: string, onSuccess: (bookings: BookingResponse[]) => void) {
+    this.bookingService.getCompanyBookings(status).subscribe({
+      next: onSuccess,
+      error: () => this.notificationService.error('Could not load bookings.')
+    });
+  }
+
+  confirmBooking(id: number, onSuccess?: () => void) {
+    this.bookingService.confirmBooking(id).subscribe({
+      next: () => { this.notificationService.success('Booking confirmed.'); onSuccess?.(); },
+      error: (err) => this.notificationService.error(err.error?.detail || 'Could not confirm booking.')
+    });
+  }
+
+  completeBooking(id: number, onSuccess?: () => void) {
+    this.bookingService.completeBooking(id).subscribe({
+      next: () => { this.notificationService.success('Booking marked as completed.'); onSuccess?.(); },
+      error: (err) => this.notificationService.error(err.error?.detail || 'Could not complete booking.')
+    });
+  }
+
   getStats(fromDate: string, toDate: string, onSuccess: (stats: BookingStats) => void) {
     this.bookingService.getStats(fromDate, toDate).subscribe({
       next: onSuccess,

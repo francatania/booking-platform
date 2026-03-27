@@ -94,6 +94,7 @@ class UserServiceTest {
     @Test
     void register_newAdmin(){
         RegisterRequest dto = this.buildRegisterDto();
+        dto.setRole(UserRole.ADMIN);
         User saved = User.builder()
             .email(dto.getEmail())
             .username(dto.getUsername())

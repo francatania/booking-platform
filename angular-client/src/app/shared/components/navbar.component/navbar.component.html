@@ -3,13 +3,21 @@
     <span class="text-lg font-semibold text-gray-800">Booking Platform</span>
 
     <div class="flex items-center gap-6">
-      <a routerLink="/home" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Services</a>
+
       @if (role === 'USER') {
+        <a routerLink="/home" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Services</a>
+
         <a routerLink="/my-bookings" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">My Bookings</a>
       }
-      @if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
-        <a routerLink="/admin" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Admin</a>
+
+      @if (role === 'ADMIN' || role === 'MANAGER') {
+        <a routerLink="/admin" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Dashboard</a>
       }
+
+      @if (role === 'OPERATOR' || role === 'ADMIN') {
+        <a routerLink="/operator" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Operator</a>
+      }
+
 
       <button mat-icon-button [matMenuTriggerFor]="userMenu">
         <mat-icon>menu</mat-icon>

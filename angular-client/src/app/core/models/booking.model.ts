@@ -20,7 +20,7 @@ export interface BookingPeriodStat {
 
 export interface BookingStats {
   total_bookings: number;
-  bookings_by_status: { [status: string]: number };
+  bookings_by_status: { [status: string]: number | undefined };
   total_revenue: number;
   bookings_by_period: BookingPeriodStat[];
 }

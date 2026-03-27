@@ -34,5 +34,19 @@ export class BookingService {
     });
   }
 
+  getCompanyBookings(status?: string): Observable<BookingResponse[]> {
+    const params: Record<string, string> = {};
+    if (status) params['status'] = status;
+    return this.http.get<BookingResponse[]>(`${this.BASE_URL}/bookings/company`, { params });
+  }
+
+  confirmBooking(id: number): Observable<BookingResponse> {
+    return this.http.patch<BookingResponse>(`${this.BASE_URL}/bookings/${id}/confirm`, {});
+  }
+
+  completeBooking(id: number): Observable<BookingResponse> {
+    return this.http.patch<BookingResponse>(`${this.BASE_URL}/bookings/${id}/complete`, {});
+  }
+
 
 }

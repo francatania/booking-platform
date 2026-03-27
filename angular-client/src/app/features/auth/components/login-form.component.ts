@@ -33,8 +33,12 @@ export class LoginFormComponent {
         const role = this.userService.getRole();
         if (role === 'USER') {
           this.router.navigate(['/home']);
-        } else {
+        } else if (role === 'OPERATOR') {
+          this.router.navigate(['/operator']);
+        } else if (role === 'MANAGER' || role === 'ADMIN') {
           this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/login']);
         }
       },
       error: (err) => {

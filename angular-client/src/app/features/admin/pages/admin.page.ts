@@ -45,7 +45,7 @@ export class AdminPage implements OnInit {
     this.pieData = {
       labels: Object.keys(stats.bookings_by_status),
       datasets: [{
-        data: Object.values(stats.bookings_by_status),
+        data: Object.values(stats.bookings_by_status).map(v => v ?? 0),
         backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
       }]
     };

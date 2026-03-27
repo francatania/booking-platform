@@ -24,12 +24,36 @@ def get_my_bookings(
 ):
     return service.get_my_bookings(current_user.user_id, db)
 
+@router.get("/company", response_model=list[BookingResponse])
+def get_company_bookings(
+    status: str | None = None,
+    db: Session = Depends(get_db),
+    current_user: UserPrincipal = Depends(require_roles("OPERATOR", "ADMIN"))
+):
+    return service.get_company_bookings(current_user.company_id, status, db)
+
+@router.patch("/{booking_id}/confirm", response_model=BookingResponse)
+def confirm_booking(
+    booking_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserPrincipal = Depends(require_roles("OPERATOR"))
+):
+    return service.confirm_booking(booking_id, db)
+
+@router.patch("/{booking_id}/complete", response_model=BookingResponse)
+def complete_booking(
+    booking_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserPrincipal = Depends(require_roles("OPERATOR", "SUPER_ADMIN"))
+):
+    return service.complete_booking(booking_id, db)
+
 @router.get("/stats", response_model=BookingStatsResponse)
 def get_stats(
     from_date: datetime,
     to_date: datetime,
     db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(require_roles("ADMIN"))
+    current_user: UserPrincipal = Depends(require_roles("ADMIN", "MANAGER"))
 ):
     return service.getStats(current_user.company_id, from_date, to_date, db)
 

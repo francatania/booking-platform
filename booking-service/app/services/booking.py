@@ -7,6 +7,7 @@ from app.dependencies.auth import UserPrincipal
 from app.dependencies.company_client import validate_service
 from app.exceptions import (
     InvalidBookingTimeException,
+    InvalidStatusTransitionException,
     MissingUserIdException,
     BookingNotFoundException,
     BookingConflictException,
@@ -115,6 +116,34 @@ class BookingService:
         db.refresh(booking)
         return booking
     
+    def get_company_bookings(self, company_id: int, status: str | None, db: Session):
+        query = db.query(Booking).filter(Booking.company_id == company_id)
+        if status:
+            query = query.filter(Booking.status == BookingStatus[status])
+        return query.order_by(Booking.start_time).all()
+
+    def confirm_booking(self, booking_id: int, db: Session):
+        booking = db.query(Booking).filter(Booking.id == booking_id).first()
+        if booking is None:
+            raise BookingNotFoundException()
+        if booking.status != BookingStatus.PENDING:
+            raise InvalidStatusTransitionException(booking.status.value, "CONFIRMED")
+        booking.status = BookingStatus.CONFIRMED
+        db.commit()
+        db.refresh(booking)
+        return booking
+
+    def complete_booking(self, booking_id: int, db: Session):
+        booking = db.query(Booking).filter(Booking.id == booking_id).first()
+        if booking is None:
+            raise BookingNotFoundException()
+        if booking.status != BookingStatus.CONFIRMED:
+            raise InvalidStatusTransitionException(booking.status.value, "COMPLETED")
+        booking.status = BookingStatus.COMPLETED
+        db.commit()
+        db.refresh(booking)
+        return booking
+
     def getStats(self, company_id: int, start_date: datetime, end_date: datetime, db:Session):
         bookings = db.query(Booking).filter(Booking.company_id == company_id,
                                             Booking.start_time >= start_date,
