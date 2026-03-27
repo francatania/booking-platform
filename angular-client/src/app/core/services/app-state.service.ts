@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BookingService } from './booking.service';
 import { NotificationService } from './notification.service';
-import { BookingCreate, BookingResponse, RescheduleRequest } from '../models/booking.model';
+import { BookingCreate, BookingResponse, BookingStats, RescheduleRequest } from '../models/booking.model';
+import { CompanyServiceService } from './company.service.service';
+import { CompanyServiceResponse, PageResponse } from '../models/company.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +11,8 @@ import { BookingCreate, BookingResponse, RescheduleRequest } from '../models/boo
 export class AppStateService {
   constructor(
     private bookingService: BookingService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private companyServiceService: CompanyServiceService
   ) {}
 
   createBooking(dto: BookingCreate, onSuccess?: () => void, onError?: (msg: string) => void) {
@@ -66,5 +69,24 @@ export class AppStateService {
       next: onSuccess,
       error: (err)=> this.notificationService.error(err.error?.detail)
     })
+  }
+
+  getServices(page: number, onSuccess: (response: PageResponse<CompanyServiceResponse>) => void) {
+    this.companyServiceService.getServices(page).subscribe({
+      next: (response) => {
+        if (response.content.length === 0) {
+          this.notificationService.warning('No services available at the moment.');
+        }
+        onSuccess(response);
+      },
+      error: () => this.notificationService.error('Could not load services. Please try again.')
+    });
+  }
+
+  getStats(fromDate: string, toDate: string, onSuccess: (stats: BookingStats) => void) {
+    this.bookingService.getStats(fromDate, toDate).subscribe({
+      next: onSuccess,
+      error: () => this.notificationService.error('Could not load stats.')
+    });
   }
 }

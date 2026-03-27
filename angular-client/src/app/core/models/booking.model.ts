@@ -12,6 +12,19 @@ export interface BookingCreate {
   user_id?: number;
 }
 
+export interface BookingPeriodStat {
+  date: string;
+  count: number;
+  revenue: number;
+}
+
+export interface BookingStats {
+  total_bookings: number;
+  bookings_by_status: { [status: string]: number };
+  total_revenue: number;
+  bookings_by_period: BookingPeriodStat[];
+}
+
 export interface BookingResponse {
   id: number;
   user_id: number;

@@ -15,4 +15,6 @@ export class CompanyServiceService {
   getServices(page = 0, size = 10): Observable<PageResponse<CompanyServiceResponse>>{
     return this.http.get<PageResponse<CompanyServiceResponse>>(`${this.BASE_URL}/services`, {params: {page, size}})
   }
+
+
 }

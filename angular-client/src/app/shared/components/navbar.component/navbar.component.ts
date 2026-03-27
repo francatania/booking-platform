@@ -17,6 +17,7 @@ export class NavbarComponent {
   @Input() username: string = "";
   @Input() role: string = "";
   @Input() email: string = "";
+  @Input() companyName: string = "";
 
   constructor(private userService: UserService, private router: Router){}
 

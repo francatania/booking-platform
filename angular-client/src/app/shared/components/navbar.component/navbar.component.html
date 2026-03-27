@@ -17,6 +17,10 @@
 
       <mat-menu #userMenu="matMenu">
         <div class="px-4 py-2 flex flex-col gap-1 pointer-events-none">
+          @if(role != ""){
+            <span class="text-sm font-bold text-gray-800">{{ companyName }}</span>
+          }
+
           <div class="flex justify-between">
            <span class="text-sm font-medium py-0.5 rounded-full bg-blue-100 text-blue-700 w-fit">{{ role }}</span>
            <span> |</span>

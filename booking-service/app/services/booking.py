@@ -138,6 +138,7 @@ class BookingService:
                 Booking.company_id == company_id,
                 Booking.start_time >= start_date,
                 Booking.start_time <= end_date,
+                Booking.status == BookingStatus.COMPLETED
             )
             .group_by(func.date(Booking.start_time))
             .order_by(func.date(Booking.start_time))
