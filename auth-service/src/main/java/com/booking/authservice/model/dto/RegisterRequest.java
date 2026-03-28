@@ -13,6 +13,10 @@ public class RegisterRequest {
     @Max(value = 20, message = "Username can't have more than 20 characters.")
     private String username;
 
+    private String firstName;
+
+    private String lastName;
+
     @Email
     private String email;
 

@@ -77,6 +77,12 @@ public class CompanyServiceService implements ICompanyServiceService {
                 .orElseThrow(() -> new CompanyServiceNotFoundException(id));
     }
 
+    public List<CompanyServiceResponse> getServicesByIds(List<Long> ids) {
+        return repository.findAllByIdIn(ids).stream()
+                .map(CompanyServiceResponse::from)
+                .toList();
+    }
+
     public CompanyServiceResponse getServiceById(Long id) {
         CompanyServiceEntity service = getServiceEntity(id);
         if (!service.getIsActive()) {

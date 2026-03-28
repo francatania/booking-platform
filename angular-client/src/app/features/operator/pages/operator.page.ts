@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppStateService } from '../../../core/services/app-state.service';
-import { BookingResponse } from '../../../core/models/booking.model';
+import { BookingDetailResponse } from '../../../core/models/booking.model';
 
 @Component({
   selector: 'app-operator-page',
@@ -10,8 +10,8 @@ import { BookingResponse } from '../../../core/models/booking.model';
 })
 export class OperatorPage implements OnInit {
   activeTab: 'pending' | 'confirmed' = 'pending';
-  pendingBookings: BookingResponse[] = [];
-  confirmedBookings: BookingResponse[] = [];
+  pendingBookings: BookingDetailResponse[] = [];
+  confirmedBookings: BookingDetailResponse[] = [];
 
   constructor(private appState: AppStateService) {}
 

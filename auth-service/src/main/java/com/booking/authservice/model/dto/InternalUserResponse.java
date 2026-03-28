@@ -1,7 +1,6 @@
 package com.booking.authservice.model.dto;
 
 import com.booking.authservice.entity.User;
-import com.booking.authservice.model.enums.UserRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,24 +11,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
+public class InternalUserResponse {
     private Long id;
     private String username;
     private String firstName;
     private String lastName;
-    private String email;
-    private UserRole role;
-    private Long companyId;
 
-    public static UserResponse from(User user) {
-        return UserResponse.builder()
+    public static InternalUserResponse from(User user) {
+        return InternalUserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .companyId(user.getCompanyId())
                 .build();
     }
 }

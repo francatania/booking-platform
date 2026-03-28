@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BookingCreate, BookingResponse, BookingStats, RescheduleRequest } from '../models/booking.model';
+import { BookingCreate, BookingDetailResponse, BookingResponse, BookingStats, RescheduleRequest } from '../models/booking.model';
 
 
 @Injectable({
@@ -34,10 +34,10 @@ export class BookingService {
     });
   }
 
-  getCompanyBookings(status?: string): Observable<BookingResponse[]> {
+  getCompanyBookings(status?: string): Observable<BookingDetailResponse[]> {
     const params: Record<string, string> = {};
     if (status) params['status'] = status;
-    return this.http.get<BookingResponse[]>(`${this.BASE_URL}/bookings/company`, { params });
+    return this.http.get<BookingDetailResponse[]>(`${this.BASE_URL}/bookings/company`, { params });
   }
 
   confirmBooking(id: number): Observable<BookingResponse> {

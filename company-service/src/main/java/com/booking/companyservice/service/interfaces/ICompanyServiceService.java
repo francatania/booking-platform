@@ -23,5 +23,6 @@ public interface ICompanyServiceService {
     CompanyServiceResponse deactivateService(Long id, UserPrincipal principal);
 
     CompanyServiceResponse getServiceById(Long id);
+    List<CompanyServiceResponse> getServicesByIds(List<Long> ids);
     Page<CompanyServiceResponse> getAllServices(Pageable pageable);
 }

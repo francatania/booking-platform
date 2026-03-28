@@ -51,7 +51,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"newuser\",\n  \"email\": \"newuser@test.com\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"username\": \"newuser\",\n  \"firstName\": \"New\",\n  \"lastName\": \"User\",\n  \"email\": \"newuser@test.com\",\n  \"password\": \"password123\"\n}"
             }
           }
         },
@@ -66,7 +66,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"newadmin\",\n  \"email\": \"newadmin@test.com\",\n  \"password\": \"password123\",\n  \"companyId\": 2\n}"
+              "raw": "{\n  \"username\": \"newadmin\",\n  \"firstName\": \"New\",\n  \"lastName\": \"Admin\",\n  \"email\": \"newadmin@test.com\",\n  \"password\": \"password123\",\n  \"companyId\": 2,\n  \"role\": \"ADMIN\"\n}"
             }
           }
         },
@@ -93,6 +93,13 @@
               "mode": "raw",
               "raw": "{\n  \"username\": \"user\",\n  \"password\": \"password123\"\n}"
             }
+          }
+        },
+        {
+          "name": "GET /internal/users?ids=",
+          "request": {
+            "method": "GET",
+            "url": "{{auth_url}}/internal/users?ids=1,2,3"
           }
         }
       ]
@@ -205,6 +212,13 @@
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]
+          }
+        },
+        {
+          "name": "GET /internal/services?ids=",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/internal/services?ids=1,2,3"
           }
         }
       ]

@@ -50,6 +50,8 @@ public class UserService implements IUserService {
         User user = User.builder()
                         .email(dto.getEmail())
                         .username(dto.getUsername())
+                        .firstName(dto.getFirstName())
+                        .lastName(dto.getLastName())
                         .passwordHash(passwordEncoder.encode(dto.getPassword()))
                         .role(newRol)
                         .companyId(dto.getCompanyId())

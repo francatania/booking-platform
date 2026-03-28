@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BookingService } from './booking.service';
 import { NotificationService } from './notification.service';
-import { BookingCreate, BookingResponse, BookingStats, RescheduleRequest } from '../models/booking.model';
+import { BookingCreate, BookingDetailResponse, BookingResponse, BookingStats, RescheduleRequest } from '../models/booking.model';
 import { CompanyServiceService } from './company.service.service';
 import { CompanyServiceResponse, PageResponse } from '../models/company.model';
 
@@ -83,7 +83,7 @@ export class AppStateService {
     });
   }
 
-  getCompanyBookings(status: string, onSuccess: (bookings: BookingResponse[]) => void) {
+  getCompanyBookings(status: string, onSuccess: (bookings: BookingDetailResponse[]) => void) {
     this.bookingService.getCompanyBookings(status).subscribe({
       next: onSuccess,
       error: () => this.notificationService.error('Could not load bookings.')

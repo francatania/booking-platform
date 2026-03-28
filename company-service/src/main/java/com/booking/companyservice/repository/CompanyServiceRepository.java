@@ -15,4 +15,6 @@ public interface CompanyServiceRepository extends JpaRepository<CompanyServiceEn
     List<CompanyServiceEntity> findByCompanyId(Long companyId);
 
     Page<CompanyServiceEntity> findByIsActiveTrue(Pageable pageable);
+
+    List<CompanyServiceEntity> findAllByIdIn(List<Long> ids);
 }

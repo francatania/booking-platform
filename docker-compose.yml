@@ -61,6 +61,7 @@ services:
       DB_PASSWORD: franco123
       JWT_SECRET: mySecretKey1234567890mySecretKey1234567890
       COMPANY_SERVICE_URL: http://company-service:8082/api
+      AUTH_SERVICE_URL: http://auth-service:8081/api
     depends_on:
       postgres:
         condition: service_healthy

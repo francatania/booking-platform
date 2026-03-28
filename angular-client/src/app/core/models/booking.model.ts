@@ -25,6 +25,22 @@ export interface BookingStats {
   bookings_by_period: BookingPeriodStat[];
 }
 
+export interface BookingDetailResponse {
+  id: number;
+  user_id: number;
+  service_id: number;
+  company_id: number;
+  user_username: string;
+  user_first_name: string;
+  user_last_name: string;
+  service_name: string;
+  start_time: string;
+  end_time: string;
+  price: number;
+  status: string;
+  created_at: string;
+}
+
 export interface BookingResponse {
   id: number;
   user_id: number;

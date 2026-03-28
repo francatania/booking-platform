@@ -2,9 +2,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.models.booking import Booking, BookingStatus
 from app.models.booking_config import BookingConfig
-from app.schemas.booking import BookingCreate, RescheduleRequest, BookingStatsResponse, BookingPeriodStat
+from app.schemas.booking import BookingCreate, BookingDetailResponse, RescheduleRequest, BookingStatsResponse, BookingPeriodStat
 from app.dependencies.auth import UserPrincipal
-from app.dependencies.company_client import validate_service
+from app.dependencies.company_client import validate_service, get_services_by_ids
+from app.dependencies.auth_client import get_users_by_ids
 from app.exceptions import (
     InvalidBookingTimeException,
     InvalidStatusTransitionException,
@@ -116,11 +117,36 @@ class BookingService:
         db.refresh(booking)
         return booking
     
-    def get_company_bookings(self, company_id: int, status: str | None, db: Session):
+    def get_company_bookings(self, company_id: int, status: str | None, db: Session) -> list[BookingDetailResponse]:
         query = db.query(Booking).filter(Booking.company_id == company_id)
         if status:
             query = query.filter(Booking.status == BookingStatus[status])
-        return query.order_by(Booking.start_time).all()
+        bookings = query.order_by(Booking.start_time).all()
+
+        service_ids = list({b.service_id for b in bookings})
+        user_ids = list({b.user_id for b in bookings})
+
+        services = get_services_by_ids(service_ids)
+        users = get_users_by_ids(user_ids)
+
+        return [
+            BookingDetailResponse(
+                id=b.id,
+                user_id=b.user_id,
+                service_id=b.service_id,
+                company_id=b.company_id,
+                user_username=users.get(b.user_id, {}).get("username", ""),
+                user_first_name=users.get(b.user_id, {}).get("firstName", ""),
+                user_last_name=users.get(b.user_id, {}).get("lastName", ""),
+                service_name=services.get(b.service_id, ""),
+                start_time=b.start_time,
+                end_time=b.end_time,
+                price=b.price,
+                status=b.status.value,
+                created_at=b.created_at,
+            )
+            for b in bookings
+        ]
 
     def confirm_booking(self, booking_id: int, db: Session):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()

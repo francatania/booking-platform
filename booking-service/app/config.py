@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     db_password: str = "franco123"
     jwt_secret: str = "mySecretKey1234567890mySecretKey1234567890"
     company_service_url: str = "http://localhost:8082/api"
+    auth_service_url: str = "http://localhost:8081/api"
 
     @property
     def database_url(self) -> str:

@@ -29,9 +29,9 @@
           @for (booking of pendingBookings; track booking.id) {
             <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 flex items-center justify-between">
               <div class="flex flex-col gap-1">
-                <span class="text-sm font-medium text-gray-800">Booking #{{ booking.id }} — Service #{{ booking.service_id }}</span>
+                <span class="text-sm font-medium text-gray-800">{{ booking.service_name }}</span>
                 <span class="text-xs text-gray-500">{{ booking.start_time | date:'medium' }} → {{ booking.end_time | date:'shortTime' }}</span>
-                <span class="text-xs text-gray-500">User #{{ booking.user_id }} · ${{ booking.price }}</span>
+                <span class="text-xs text-gray-500">{{ booking.user_first_name }} {{ booking.user_last_name }} · ${{ booking.price }}</span>
               </div>
               <div class="flex gap-2">
                 <button (click)="onConfirm(booking.id)" class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 cursor-pointer">
@@ -55,9 +55,9 @@
           @for (booking of confirmedBookings; track booking.id) {
             <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 flex items-center justify-between">
               <div class="flex flex-col gap-1">
-                <span class="text-sm font-medium text-gray-800">Booking #{{ booking.id }} — Service #{{ booking.service_id }}</span>
+                <span class="text-sm font-medium text-gray-800">{{ booking.service_name }}</span>
                 <span class="text-xs text-gray-500">{{ booking.start_time | date:'medium' }} → {{ booking.end_time | date:'shortTime' }}</span>
-                <span class="text-xs text-gray-500">User #{{ booking.user_id }} · ${{ booking.price }}</span>
+                <span class="text-xs text-gray-500">{{ booking.user_first_name }} {{ booking.user_last_name }} · ${{ booking.price }}</span>
               </div>
               <button (click)="onComplete(booking.id)" class="px-3 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 cursor-pointer">
                 Mark as Completed

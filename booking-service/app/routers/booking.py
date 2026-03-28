@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies.auth import get_current_user, UserPrincipal, require_roles
-from app.schemas.booking import BookingCreate, BookingResponse, RescheduleRequest, RescheduleResponse, BookingStatsResponse
+from app.schemas.booking import BookingCreate, BookingResponse, BookingDetailResponse, RescheduleRequest, RescheduleResponse, BookingStatsResponse
 from datetime import datetime
 from app.services.booking import BookingService
 
@@ -24,7 +24,7 @@ def get_my_bookings(
 ):
     return service.get_my_bookings(current_user.user_id, db)
 
-@router.get("/company", response_model=list[BookingResponse])
+@router.get("/company", response_model=list[BookingDetailResponse])
 def get_company_bookings(
     status: str | None = None,
     db: Session = Depends(get_db),
