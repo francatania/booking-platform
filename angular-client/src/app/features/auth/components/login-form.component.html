@@ -40,13 +40,17 @@
           </svg>
         }
       </button>
+          
     </div>
+
   </div>
 
   @if (errorMessage) {
     <div class="text-sm text-red-600 bg-red-50 p-3 rounded-md">{{ errorMessage }}</div>
   }
-
+  <div class="flex w-full justify-center">
+    <app-language-switcher></app-language-switcher>
+  </div>
   <button
     type="submit"
     [disabled]="isLoading"

@@ -1,0 +1,18 @@
+  <div class="gap-2 flex">
+    <mat-icon>language</mat-icon>
+
+    <div>
+        
+    <button
+      type="button"
+      (click)="lang.switch('en')"
+      [class]="lang.current === 'en' ? 'px-3 py-1 text-sm font-medium bg-blue-600 text-white rounded-l-md' : 'px-3 py-1 text-sm font-medium bg-gray-200 text-gray-600 rounded-l-md hover:bg-gray-300 cursor-pointer'"
+    >EN</button>
+    <button
+      type="button"
+      (click)="lang.switch('es')"
+      [class]="lang.current === 'es' ? 'px-3 py-1 text-sm font-medium bg-blue-600 text-white rounded-r-md' : 'px-3 py-1 text-sm font-medium bg-gray-200 text-gray-600 rounded-r-md hover:bg-gray-300 cursor-pointer'"
+    >ES</button>
+    </div>
+
+  </div>

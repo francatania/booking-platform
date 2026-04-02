@@ -6,10 +6,11 @@ import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { LoginRequest } from '../../../core/models/auth.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher.component/language-switcher.component';
 
 @Component({
   selector: 'app-login-form',
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, LanguageSwitcherComponent],
   templateUrl: './login-form.component.html'
 })
 export class LoginFormComponent {

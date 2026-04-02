@@ -1,5 +1,5 @@
 {
-  "LOGIN.TITLE": "Booking Platform",
+  "LOGIN.TITLE": "Bookly",
   "LOGIN.USERNAME": "Username",
   "LOGIN.PASSWORD": "Password",
   "LOGIN.USERNAME_PLACEHOLDER": "Enter your username",
@@ -8,7 +8,7 @@
   "LOGIN.LOADING": "Logging in...",
   "LOGIN.FAILED": "Login failed",
 
-  "NAVBAR.BRAND": "Booking Platform",
+  "NAVBAR.BRAND": "Bookly",
   "NAVBAR.SERVICES": "Services",
   "NAVBAR.MY_BOOKINGS": "My Bookings",
   "NAVBAR.DASHBOARD": "Dashboard",

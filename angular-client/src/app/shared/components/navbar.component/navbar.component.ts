@@ -9,10 +9,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../../core/services/language.service';
+import { LanguageSwitcherComponent } from '../language-switcher.component/language-switcher.component';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterLink, MatMenuModule, MatButtonModule, MatIconModule, MatDividerModule, TranslateModule],
+  imports: [CommonModule, RouterLink, MatMenuModule, MatButtonModule, MatIconModule, MatDividerModule, TranslateModule, LanguageSwitcherComponent],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
