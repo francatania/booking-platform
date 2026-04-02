@@ -1,20 +1,20 @@
 <div class="bg-gray-50">
   <div class="max-w-6xl mx-auto p-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">My Bookings</h1>
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ 'MY_BOOKINGS.TITLE' | translate }}</h1>
 
     <full-calendar [options]="calendarOptions" />
 
     @if (selectedBooking) {
       <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
-          <h2 class="text-lg font-bold text-gray-800 mb-4">Booking #{{ selectedBooking.id }}</h2>
+          <h2 class="text-lg font-bold text-gray-800 mb-4">{{ selectedBooking.service_name }}</h2>
 
           <div class="flex flex-col gap-2 text-sm text-gray-600 mb-6">
-            <span><span class="font-medium">Service:</span> #{{ selectedBooking.service_id }}</span>
-            <span><span class="font-medium">Start:</span> {{ selectedBooking.start_time | date:'medium' }}</span>
-            <span><span class="font-medium">End:</span> {{ selectedBooking.end_time | date:'medium' }}</span>
+            <span><span class="font-medium">{{ 'MY_BOOKINGS.BOOKING' | translate }}:</span> #{{ selectedBooking.id }}</span>
+            <span><span class="font-medium">{{ 'MY_BOOKINGS.START' | translate }}:</span> {{ selectedBooking.start_time | date:'medium' }}</span>
+            <span><span class="font-medium">{{ 'MY_BOOKINGS.END' | translate }}:</span> {{ selectedBooking.end_time | date:'medium' }}</span>
             <span>
-              <span class="font-medium">Status:</span>
+              <span class="font-medium">{{ 'MY_BOOKINGS.STATUS' | translate }}:</span>
               <span [class]="selectedBooking.status === 'PENDING' ? 'text-blue-600' : 'text-gray-400'">
                 {{ selectedBooking.status }}
               </span>
@@ -26,14 +26,14 @@
               (click)="closeMenu()"
               class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
             >
-              Close
+              {{ 'MY_BOOKINGS.CLOSE' | translate }}
             </button>
             @if (selectedBooking.status === 'PENDING') {
               <button
                 class="flex-1 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors cursor-pointer"
                 (click)="onCancelClick()"
               >
-                Cancel
+                {{ 'MY_BOOKINGS.CANCEL' | translate }}
               </button>
             }
           </div>
@@ -44,21 +44,21 @@
     @if (pendingDrop) {
       <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-60">
         <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-          <h3 class="text-lg font-bold text-gray-800 mb-2">Confirm reschedule</h3>
-          <p class="text-sm text-gray-500 mb-1">New start: <span class="font-medium text-gray-700">{{ pendingDrop.event.start | date:'medium' }}</span></p>
-          <p class="text-sm text-gray-500 mb-6">New end: <span class="font-medium text-gray-700">{{ pendingDrop.event.end | date:'medium' }}</span></p>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">{{ 'MY_BOOKINGS.CONFIRM_RESCHEDULE' | translate }}</h3>
+          <p class="text-sm text-gray-500 mb-1">{{ 'MY_BOOKINGS.NEW_START' | translate }}: <span class="font-medium text-gray-700">{{ pendingDrop.event.start | date:'medium' }}</span></p>
+          <p class="text-sm text-gray-500 mb-6">{{ 'MY_BOOKINGS.NEW_END' | translate }}: <span class="font-medium text-gray-700">{{ pendingDrop.event.end | date:'medium' }}</span></p>
           <div class="flex gap-3">
             <button
               (click)="cancelReschedule()"
               class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer"
             >
-              Go back
+              {{ 'MY_BOOKINGS.GO_BACK' | translate }}
             </button>
             <button
               (click)="confirmReschedule()"
               class="flex-1 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer"
             >
-              Confirm
+              {{ 'MY_BOOKINGS.CONFIRM' | translate }}
             </button>
           </div>
         </div>
@@ -68,20 +68,20 @@
     @if (showConfirm) {
       <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-60">
         <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-          <h3 class="text-lg font-bold text-gray-800 mb-2">Cancel booking</h3>
-          <p class="text-sm text-gray-500 mb-6">Are you sure you want to cancel this booking? This action cannot be undone.</p>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">{{ 'MY_BOOKINGS.CANCEL_BOOKING' | translate }}</h3>
+          <p class="text-sm text-gray-500 mb-6">{{ 'MY_BOOKINGS.CANCEL_CONFIRM_TEXT' | translate }}</p>
           <div class="flex gap-3">
             <button
               (click)="showConfirm = false"
               class="flex-1 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer"
             >
-              Go back
+              {{ 'MY_BOOKINGS.GO_BACK' | translate }}
             </button>
             <button
               (click)="confirmCancel()"
               class="flex-1 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 cursor-pointer"
             >
-              Yes, cancel
+              {{ 'MY_BOOKINGS.YES_CANCEL' | translate }}
             </button>
           </div>
         </div>

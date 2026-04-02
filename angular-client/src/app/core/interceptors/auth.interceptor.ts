@@ -1,13 +1,14 @@
 import { HttpInterceptorFn } from "@angular/common/http";
 
-export const authInterceptor: HttpInterceptorFn = (req, next) =>{
-    const token = localStorage.getItem('token')
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+    const token = localStorage.getItem('token');
+    const lang = localStorage.getItem('lang') || 'en';
 
-    if(token){
-        const cloned = req.clone({
-            setHeaders: {Authorization: `Bearer ${token}` }
-        });
-        return next(cloned);
+    const headers: Record<string, string> = { 'Accept-Language': lang };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
     }
-    return next(req);
+
+    const cloned = req.clone({ setHeaders: headers });
+    return next(cloned);
 }

@@ -36,7 +36,13 @@ def build_booking(id=1, user_id=1, status=BookingStatus.PENDING):
     booking = MagicMock(spec=Booking)
     booking.id = id
     booking.user_id = user_id
+    booking.service_id = 5
+    booking.company_id = 10
+    booking.price = 5000.00
+    booking.start_time = START
+    booking.end_time = END
     booking.status = status
+    booking.created_at = datetime(2025, 6, 1, 9, 0)
     return booking
 
 def build_booking_dto(service_id=5, company_id=5, start_time=START, end_time=END, user_id=None, price=5000.00):
@@ -69,31 +75,37 @@ def make_query_side_effect(gap_minutes=0, raw_collision=False, gap_collision=Fal
 
 def test_create_booking_whenIsUser(service, db):
     dto = build_booking_dto()
+    def mock_refresh(obj):
+        obj.id = 1
+        obj.created_at = datetime(2025, 6, 1, 9, 0)
+    db.refresh.side_effect = mock_refresh
 
-    with patch("app.services.booking.validate_service"):
+    with patch("app.services.booking.validate_service"), \
+         patch("app.services.booking.get_services_by_ids", return_value={}):
         result = service.create_booking(dto, USER, db)
 
-    db.add.assert_called_once_with(result)
+    db.add.assert_called_once()
     db.commit.assert_called_once()
-    db.refresh.assert_called_once_with(result)
-    assert result.user_id == USER.user_id     
+    assert result.user_id == USER.user_id
     assert result.service_id == dto.service_id
-    assert result.company_id == dto.company_id
-    assert result.status == BookingStatus.PENDING
+    assert result.status == BookingStatus.PENDING.value
 
 def test_create_booking_whenIsAdmin(service, db):
     dto = build_booking_dto(user_id=1)
+    def mock_refresh(obj):
+        obj.id = 1
+        obj.created_at = datetime(2025, 6, 1, 9, 0)
+    db.refresh.side_effect = mock_refresh
 
-    with patch("app.services.booking.validate_service"):
+    with patch("app.services.booking.validate_service"), \
+         patch("app.services.booking.get_services_by_ids", return_value={}):
         result = service.create_booking(dto, ADMIN, db)
 
-    db.add.assert_called_once_with(result)
+    db.add.assert_called_once()
     db.commit.assert_called_once()
-    db.refresh.assert_called_once_with(result)
-    assert result.user_id == USER.user_id     
+    assert result.user_id == USER.user_id
     assert result.service_id == dto.service_id
-    assert result.company_id == dto.company_id
-    assert result.status == BookingStatus.PENDING
+    assert result.status == BookingStatus.PENDING.value
 
 def test_create_booking_whenAdminAndNoUserId_raisesException(service, db):
     dto = build_booking_dto()
@@ -131,17 +143,20 @@ def test_get_my_bookings_returnsBookingList(service, db):
     ]
     db.query.return_value.filter.return_value.all.return_value = bookings
 
-    result = service.get_my_bookings(user_id=1, db=db)
+    with patch("app.services.booking.get_services_by_ids", return_value={}):
+        result = service.get_my_bookings(user_id=1, db=db)
 
-    assert result == bookings
+    assert len(result) == 2
 
 def test_get_booking_whenExists_returnsBooking(service, db):
     booking = build_booking(id=1)
     db.query.return_value.filter.return_value.first.return_value = booking
 
-    result = service.get_booking(booking_id=1, db=db)
+    with patch("app.services.booking.get_services_by_ids", return_value={}):
+        result = service.get_booking(booking_id=1, db=db)
 
-    assert result == booking
+    assert result.id == booking.id
+    assert result.user_id == booking.user_id
 
 def test_get_booking_whenDoesnotExists_raisesException(service, db):
 
@@ -168,7 +183,9 @@ def test_cancel_booking_whenIsOk_returnsBooking(service, db):
     booking = build_booking()
     db.query.return_value.filter.return_value.first.return_value = booking
 
-    result = service.cancel_booking(1, USER, db)
+    with patch("app.services.booking.get_services_by_ids", return_value={}):
+        result = service.cancel_booking(1, USER, db)
+
     assert result.user_id == booking.user_id
     assert result.id == booking.id
-    assert result.status == BookingStatus.CANCELLED
+    assert result.status == BookingStatus.CANCELLED.value

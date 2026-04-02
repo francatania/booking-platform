@@ -1,31 +1,33 @@
 class MissingUserIdException(Exception):
-    def __init__(self):
-        super().__init__("user_id is required for admins")
+    message_key = "missing_user_id"
 
 class BookingNotFoundException(Exception):
-    def __init__(self):
-        super().__init__("Booking not found")
+    message_key = "booking_not_found"
 
 class BookingConflictException(Exception):
-    def __init__(self):
-        super().__init__("Booking conflicts with an existing booking")
+    message_key = "booking_conflict"
 
 class BookingGapConflictException(Exception):
-    def __init__(self):
-        super().__init__("Booking conflicts with company gap policy")
+    message_key = "booking_gap_conflict"
 
 class BookingForbiddenException(Exception):
-    def __init__(self):
-        super().__init__("Not your booking")
+    message_key = "booking_forbidden"
 
 class BookingAlreadyCancelledException(Exception):
-    def __init__(self):
-        super().__init__("Booking already cancelled")
+    message_key = "booking_already_cancelled"
 
 class InvalidBookingTimeException(Exception):
-    def __init__(self):
-        super().__init__("start_time must be before end_time")
+    message_key = "invalid_booking_time"
 
 class InvalidStatusTransitionException(Exception):
+    message_key = "invalid_status_transition"
+
     def __init__(self, current, target):
-        super().__init__(f"Cannot transition from {current} to {target}")
+        self.current = current
+        self.target = target
+
+class InvalidTokenException(Exception):
+    message_key = "invalid_token"
+
+class InsufficientPermissionsException(Exception):
+    message_key = "insufficient_permissions"

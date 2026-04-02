@@ -12,10 +12,10 @@ public class UpdateCompanyServiceRequest {
 
     private String description;
 
-    @Min(value = 1, message = "Duration must be at least 1 minute")
+    @Min(value = 1, message = "{duration.min}")
     private Integer durationMinutes;
 
-    @Min(value = 0, message = "Price must be positive")
+    @Min(value = 0, message = "{price.min}")
     private BigDecimal price;
 
     private Boolean isActive;

@@ -4,10 +4,11 @@ import { CompanyServiceResponse } from '../../../core/models/company.model';
 import { ServiceListComponent } from '../components/service-list.component/service-list.component';
 import { BookingFormComponent } from '../components/booking-form.component/booking-form.component';
 import { AppStateService } from '../../../core/services/app-state.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home-page',
-  imports: [CommonModule, ServiceListComponent, BookingFormComponent],
+  imports: [CommonModule, ServiceListComponent, BookingFormComponent, TranslateModule],
   templateUrl: './home.page.html'
 })
 export class HomePage implements OnInit {

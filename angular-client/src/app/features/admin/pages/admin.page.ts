@@ -5,10 +5,11 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartData, ChartOptions } from 'chart.js';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { BookingStats } from '../../../core/models/booking.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-admin-page',
-  imports: [CommonModule, FormsModule, BaseChartDirective],
+  imports: [CommonModule, FormsModule, BaseChartDirective, TranslateModule],
   templateUrl: './admin.page.html'
 })
 export class AdminPage implements OnInit {
@@ -24,7 +25,7 @@ export class AdminPage implements OnInit {
   pieOptions: ChartOptions<'pie'> = { responsive: true };
   barOptions: ChartOptions<'bar'> = { responsive: true, plugins: { legend: { position: 'top' } } };
 
-  constructor(private appState: AppStateService) {}
+  constructor(private appState: AppStateService, private translate: TranslateService) {}
 
   ngOnInit() {
     this.loadStats();
@@ -54,7 +55,7 @@ export class AdminPage implements OnInit {
       labels: stats.bookings_by_period.map(p => p.date),
       datasets: [
         {
-          label: 'Revenue by Day',
+          label: this.translate.instant('ADMIN.REVENUE_BY_DAY'),
           data: stats.bookings_by_period.map(p => Number(p.revenue)),
           backgroundColor: '#10b981'
         }
@@ -66,7 +67,7 @@ export class AdminPage implements OnInit {
       labels: Array.from(monthlyRevenue.keys()),
       datasets: [
         {
-          label: 'Revenue by Month',
+          label: this.translate.instant('ADMIN.REVENUE_BY_MONTH'),
           data: Array.from(monthlyRevenue.values()),
           backgroundColor: '#6366f1'
         }

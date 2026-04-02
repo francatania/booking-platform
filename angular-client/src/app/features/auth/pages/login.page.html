@@ -1,4 +1,14 @@
-<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-  <h1 class="mb-8 text-3xl font-bold text-gray-800">Booking Platform</h1>
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 relative">
+  <div class="absolute top-4 right-6 flex gap-1">
+    <button
+      (click)="lang.switch('en')"
+      [class]="lang.current === 'en' ? 'px-3 py-1 text-sm font-medium bg-blue-600 text-white rounded-l-md' : 'px-3 py-1 text-sm font-medium bg-gray-200 text-gray-600 rounded-l-md hover:bg-gray-300 cursor-pointer'"
+    >EN</button>
+    <button
+      (click)="lang.switch('es')"
+      [class]="lang.current === 'es' ? 'px-3 py-1 text-sm font-medium bg-blue-600 text-white rounded-r-md' : 'px-3 py-1 text-sm font-medium bg-gray-200 text-gray-600 rounded-r-md hover:bg-gray-300 cursor-pointer'"
+    >ES</button>
+  </div>
+  <h1 class="mb-8 text-3xl font-bold text-gray-800">{{ 'LOGIN.TITLE' | translate }}</h1>
   <app-login-form />
 </div>

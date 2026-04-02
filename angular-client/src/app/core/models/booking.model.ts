@@ -45,9 +45,11 @@ export interface BookingResponse {
   id: number;
   user_id: number;
   service_id: number;
+  service_name: string;
   price: number;
   start_time: string;
   end_time: string;
-  status: 'PENDING' | 'CANCELLED';
+  status: 'PENDING' | 'CANCELLED' | 'CONFIRMED' | 'COMPLETED';
   created_at: string;
+  updated_at: string | null;
 }

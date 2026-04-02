@@ -5,10 +5,11 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { LoginRequest } from '../../../core/models/auth.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login-form',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './login-form.component.html'
 })
 export class LoginFormComponent {
@@ -20,7 +21,8 @@ export class LoginFormComponent {
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   onSubmit() {
@@ -42,7 +44,7 @@ export class LoginFormComponent {
         }
       },
       error: (err) => {
-        this.errorMessage = err.error?.error || 'Login failed';
+        this.errorMessage = err.error?.error || this.translate.instant('LOGIN.FAILED');
         this.isLoading = false;
       }
     });

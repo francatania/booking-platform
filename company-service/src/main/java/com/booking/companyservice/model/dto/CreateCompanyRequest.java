@@ -6,14 +6,14 @@ import lombok.Data;
 @Data
 public class CreateCompanyRequest {
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "{name.required}")
     private String name;
 
     private String description;
 
-    @NotBlank(message = "Address is required")
+    @NotBlank(message = "{address.required}")
     private String address;
 
-    @NotBlank(message = "Phone is required")
+    @NotBlank(message = "{phone.required}")
     private String phone;
 }

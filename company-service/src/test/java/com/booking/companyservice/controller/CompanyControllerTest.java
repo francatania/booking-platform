@@ -5,6 +5,7 @@ import com.booking.companyservice.exception.CompanyNotFoundException;
 import com.booking.companyservice.model.dto.CompanyDetailResponse;
 import com.booking.companyservice.model.dto.CompanyResponse;
 import com.booking.companyservice.model.dto.CreateCompanyRequest;
+import com.booking.companyservice.service.impl.MessageService;
 import com.booking.companyservice.service.interfaces.ICompanyService;
 import com.booking.companyservice.service.interfaces.IJwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,6 +41,9 @@ class CompanyControllerTest {
 
     @MockBean
     private IJwtService jwtService;
+
+    @MockBean
+    private MessageService messageService;
 
     private CreateCompanyRequest buildRequest() {
         CreateCompanyRequest dto = new CreateCompanyRequest();

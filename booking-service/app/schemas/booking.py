@@ -14,11 +14,13 @@ class BookingResponse(BaseModel):
     id: int
     user_id: int
     service_id: int
+    service_name: str
     start_time: datetime
     end_time: datetime
     price: Decimal
     status: str
     created_at: datetime
+    updated_at: datetime | None = None
 
     class Config:
         from_attributes = True
@@ -56,8 +58,3 @@ class RescheduleRequest(BaseModel):
     start_time: datetime
     end_time: datetime
 
-class RescheduleResponse(BookingResponse):
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True

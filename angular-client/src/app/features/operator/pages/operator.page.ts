@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { BookingDetailResponse } from '../../../core/models/booking.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-operator-page',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './operator.page.html'
 })
 export class OperatorPage implements OnInit {

@@ -2,6 +2,7 @@ package com.booking.authservice.controller;
 
 import com.booking.authservice.exception.InvalidCredentialsException;
 import com.booking.authservice.exception.UserAlreadyExistsException;
+import com.booking.authservice.service.impl.MessageService;
 import com.booking.authservice.model.dto.AuthResponse;
 import com.booking.authservice.model.dto.LoginRequest;
 import com.booking.authservice.model.dto.RegisterRequest;
@@ -42,6 +43,8 @@ class UserControllerTest {
     @MockBean
     private IJwtService jwtService;
 
+    @MockBean
+    private MessageService messageService;
 
     @Test
     void register_whenValidRequest_returns200() throws Exception {

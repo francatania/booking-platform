@@ -1,47 +1,47 @@
 <div class="bg-gray-50 min-h-screen p-8">
   <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ 'ADMIN.TITLE' | translate }}</h1>
 
     <div class="flex items-end gap-4 mb-8">
       <div class="flex flex-col gap-1">
-        <label class="text-sm text-gray-600">From</label>
+        <label class="text-sm text-gray-600">{{ 'ADMIN.FROM' | translate }}</label>
         <input type="date" [(ngModel)]="fromDate" class="border border-gray-300 rounded-md px-3 py-2 text-sm" />
       </div>
       <div class="flex flex-col gap-1">
-        <label class="text-sm text-gray-600">To</label>
+        <label class="text-sm text-gray-600">{{ 'ADMIN.TO' | translate }}</label>
         <input type="date" [(ngModel)]="toDate" class="border border-gray-300 rounded-md px-3 py-2 text-sm" />
       </div>
       <button (click)="loadStats()" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 cursor-pointer">
-        Apply
+        {{ 'ADMIN.APPLY' | translate }}
       </button>
     </div>
 
     @if (stats) {
       <div class="grid grid-cols-3 gap-4 mb-8">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <p class="text-sm text-gray-500 mb-1">Total Bookings</p>
+          <p class="text-sm text-gray-500 mb-1">{{ 'ADMIN.TOTAL_BOOKINGS' | translate }}</p>
           <p class="text-3xl font-bold text-gray-800">{{ stats.total_bookings }}</p>
         </div>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <p class="text-sm text-gray-500 mb-1">Total Revenue</p>
+          <p class="text-sm text-gray-500 mb-1">{{ 'ADMIN.TOTAL_REVENUE' | translate }}</p>
           <p class="text-3xl font-bold text-green-600">{{ stats.total_revenue | currency:'ARS':'symbol':'1.0-0' }}</p>
         </div>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <p class="text-sm text-gray-500 mb-1">Completed</p>
+          <p class="text-sm text-gray-500 mb-1">{{ 'ADMIN.COMPLETED' | translate }}</p>
           <p class="text-3xl font-bold text-blue-600">{{ stats.bookings_by_status['COMPLETED'] ?? 0 }}</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-6 mb-6">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-lg font-semibold text-gray-700 mb-4">Bookings by Status</h2>
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">{{ 'ADMIN.BOOKINGS_BY_STATUS' | translate }}</h2>
           <canvas baseChart [data]="pieData" type="pie" [options]="pieOptions"></canvas>
         </div>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-lg font-semibold text-gray-700 mb-4">Revenue by Day</h2>
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">{{ 'ADMIN.REVENUE_BY_DAY' | translate }}</h2>
           <canvas baseChart [data]="barData" type="bar" [options]="barOptions"></canvas>
 
-          <h2 class="text-lg font-semibold text-gray-700 mb-4 mt-2">Revenue by Month</h2>
+          <h2 class="text-lg font-semibold text-gray-700 mb-4 mt-2">{{ 'ADMIN.REVENUE_BY_MONTH' | translate }}</h2>
           <canvas baseChart [data]="barMonthlyData" type="bar" [options]="barOptions"></canvas>
         </div>
       </div>

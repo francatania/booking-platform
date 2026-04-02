@@ -1,7 +1,14 @@
 package com.booking.companyservice.exception;
 
-public class CompanyAlreadyExistsException extends RuntimeException{
-    public CompanyAlreadyExistsException(String name){
-        super("Company already exists with name: " + name);
+import lombok.Getter;
+
+@Getter
+public class CompanyAlreadyExistsException extends RuntimeException {
+
+    private final String name;
+
+    public CompanyAlreadyExistsException(String name) {
+        super(name);
+        this.name = name;
     }
 }

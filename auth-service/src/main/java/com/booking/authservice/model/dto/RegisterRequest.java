@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class RegisterRequest {
 
-    @Max(value = 20, message = "Username can't have more than 20 characters.")
+    @Max(value = 20, message = "{username.max.length}")
     private String username;
 
     private String firstName;
@@ -20,7 +20,7 @@ public class RegisterRequest {
     @Email
     private String email;
 
-    @Min(value = 6, message = "Password must have more than 5 characters.")
+    @Min(value = 6, message = "{password.min.length}")
     private String password;
 
     private Long companyId;

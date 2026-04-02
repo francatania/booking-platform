@@ -1,23 +1,33 @@
 <nav class="bg-white shadow-sm border-b border-gray-200 px-8 py-2">
   <div class="max-w-[80%] mx-auto flex items-center justify-between ">
-    <span class="text-lg font-semibold text-gray-800">Booking Platform</span>
+    <span class="text-lg font-semibold text-gray-800">{{ 'NAVBAR.BRAND' | translate }}</span>
 
     <div class="flex items-center gap-6">
 
       @if (role === 'USER') {
-        <a routerLink="/home" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Services</a>
+        <a routerLink="/home" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">{{ 'NAVBAR.SERVICES' | translate }}</a>
 
-        <a routerLink="/my-bookings" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">My Bookings</a>
+        <a routerLink="/my-bookings" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">{{ 'NAVBAR.MY_BOOKINGS' | translate }}</a>
       }
 
       @if (role === 'ADMIN' || role === 'MANAGER') {
-        <a routerLink="/admin" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Dashboard</a>
+        <a routerLink="/admin" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">{{ 'NAVBAR.DASHBOARD' | translate }}</a>
       }
 
       @if (role === 'OPERATOR' || role === 'ADMIN') {
-        <a routerLink="/operator" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">Operator</a>
+        <a routerLink="/operator" class="text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">{{ 'NAVBAR.OPERATOR' | translate }}</a>
       }
 
+      <div class="flex">
+        <button
+          (click)="lang.switch('en')"
+          [class]="lang.current === 'en' ? 'px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-l-md' : 'px-2 py-1 text-xs font-medium bg-gray-200 text-gray-600 rounded-l-md hover:bg-gray-300 cursor-pointer'"
+        >EN</button>
+        <button
+          (click)="lang.switch('es')"
+          [class]="lang.current === 'es' ? 'px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-r-md' : 'px-2 py-1 text-xs font-medium bg-gray-200 text-gray-600 rounded-r-md hover:bg-gray-300 cursor-pointer'"
+        >ES</button>
+      </div>
 
       <button mat-icon-button [matMenuTriggerFor]="userMenu">
         <mat-icon>menu</mat-icon>
@@ -42,7 +52,7 @@
         <mat-divider />
         <button mat-menu-item (click)="onLogout()">
           <mat-icon color="warn">logout</mat-icon>
-          <span class="text-red-500">Logout</span>
+          <span class="text-red-500">{{ 'NAVBAR.LOGOUT' | translate }}</span>
         </button>
       </mat-menu>
     </div>

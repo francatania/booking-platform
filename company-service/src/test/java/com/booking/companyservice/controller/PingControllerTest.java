@@ -1,5 +1,6 @@
 package com.booking.companyservice.controller;
 
+import com.booking.companyservice.service.impl.MessageService;
 import com.booking.companyservice.service.interfaces.IJwtService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ class PingControllerTest {
 
     @MockBean
     private IJwtService jwtService;
+
+    @MockBean
+    private MessageService messageService;
 
     @Test
     void ping_returns200AndPong() throws Exception {

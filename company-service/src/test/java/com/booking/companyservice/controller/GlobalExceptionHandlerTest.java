@@ -3,6 +3,7 @@ package com.booking.companyservice.controller;
 import com.booking.companyservice.exception.CompanyAlreadyExistsException;
 import com.booking.companyservice.exception.CompanyNotFoundException;
 import com.booking.companyservice.exception.CompanyServiceNotFoundException;
+import com.booking.companyservice.service.impl.MessageService;
 import com.booking.companyservice.service.interfaces.IJwtService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ class GlobalExceptionHandlerTest {
 
     @MockBean
     private PingController pingController;
+
+    @MockBean
+    private MessageService messageService;
 
     @Test
     void handleCompanyAlreadyExists_returns409() throws Exception {

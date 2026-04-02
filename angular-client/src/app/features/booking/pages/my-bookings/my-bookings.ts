@@ -7,10 +7,11 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { AppStateService } from '../../../../core/services/app-state.service';
 import { BookingResponse } from '../../../../core/models/booking.model';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-my-bookings',
-  imports: [FullCalendarModule, CommonModule],
+  imports: [FullCalendarModule, CommonModule, TranslateModule],
   templateUrl: './my-bookings.html',
   styles: ``,
 })
@@ -31,6 +32,7 @@ export class MyBookings implements OnInit {
     height: '80vh',
     scrollTime: new Date().toTimeString().slice(0, 8),
     editable: true,
+    eventDurationEditable: false,
     events: [],
     eventClick: (info: EventClickArg) => this.handleEventClick(info),
     eventDrop: (info: EventDropArg) => this.handleEventDrop(info)
@@ -49,10 +51,10 @@ export class MyBookings implements OnInit {
         ...this.calendarOptions,
         events: bookings.map(b => ({
           id: String(b.id),
-          title: `Service #${b.service_id}`,
+          title: `${b.service_name}`,
           start: b.start_time,
           end: b.end_time,
-          color: b.status === 'CANCELLED' ? '#9ca3af' : '#3b82f6',
+          color: b.status === 'PENDING' ? '#f59e0b' : b.status === 'CONFIRMED' ? '#3b82f6' : b.status === 'COMPLETED' ? '#10b981' : '#9ca3af',
           extendedProps: { booking: b }
         }))
       };

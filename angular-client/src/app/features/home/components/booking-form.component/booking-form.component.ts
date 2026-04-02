@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CompanyServiceResponse } from '../../../../core/models/company.model';
 import { AppStateService } from '../../../../core/services/app-state.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-booking-form',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './booking-form.component.html',
   styles: ``,
 })

@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CompanyServiceResponse } from '../../../../core/models/company.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-service-list',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './service-list.component.html',
   styles: ``,
 })

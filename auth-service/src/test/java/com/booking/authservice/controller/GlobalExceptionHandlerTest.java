@@ -1,6 +1,7 @@
 package com.booking.authservice.controller;
 
 import com.booking.authservice.model.dto.LoginRequest;
+import com.booking.authservice.service.impl.MessageService;
 import com.booking.authservice.service.interfaces.IJwtService;
 import com.booking.authservice.service.interfaces.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +34,9 @@ class GlobalExceptionHandlerTest {
 
     @MockBean
     private IJwtService jwtService;
+
+    @MockBean
+    private MessageService messageService;
 
     @Test
     void whenIllegalArgumentException_returns400() throws Exception {

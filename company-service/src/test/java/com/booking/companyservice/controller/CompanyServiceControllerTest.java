@@ -7,6 +7,7 @@ import com.booking.companyservice.exception.CompanyServiceNotFoundException;
 import com.booking.companyservice.model.dto.CompanyServiceResponse;
 import com.booking.companyservice.model.dto.CreateCompanyServiceRequest;
 import com.booking.companyservice.model.dto.UpdateCompanyServiceRequest;
+import com.booking.companyservice.service.impl.MessageService;
 import com.booking.companyservice.service.interfaces.ICompanyServiceService;
 import com.booking.companyservice.service.interfaces.IJwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +50,9 @@ class CompanyServiceControllerTest {
 
     @MockBean
     private IJwtService jwtService;
+
+    @MockBean
+    private MessageService messageService;
 
     @BeforeEach
     void setUpJwt() {

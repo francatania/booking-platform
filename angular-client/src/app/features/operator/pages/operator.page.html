@@ -1,6 +1,6 @@
 <div class="bg-gray-50 min-h-screen p-8">
   <div class="max-w-5xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Operator Panel</h1>
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ 'OPERATOR.TITLE' | translate }}</h1>
 
     <div class="flex border-b border-gray-200 mb-6">
       <button
@@ -9,7 +9,7 @@
           ? 'px-6 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600'
           : 'px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer'"
       >
-        Pending <span class="ml-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 text-xs">{{ pendingBookings.length }}</span>
+        {{ 'OPERATOR.PENDING' | translate }} <span class="ml-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 text-xs">{{ pendingBookings.length }}</span>
       </button>
       <button
         (click)="activeTab = 'confirmed'"
@@ -17,13 +17,13 @@
           ? 'px-6 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600'
           : 'px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer'"
       >
-        Confirmed <span class="ml-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs">{{ confirmedBookings.length }}</span>
+        {{ 'OPERATOR.CONFIRMED' | translate }} <span class="ml-1 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs">{{ confirmedBookings.length }}</span>
       </button>
     </div>
 
     @if (activeTab === 'pending') {
       @if (pendingBookings.length === 0) {
-        <p class="text-gray-400 text-sm">No pending bookings.</p>
+        <p class="text-gray-400 text-sm">{{ 'OPERATOR.NO_PENDING' | translate }}</p>
       } @else {
         <div class="flex flex-col gap-3">
           @for (booking of pendingBookings; track booking.id) {
@@ -35,10 +35,10 @@
               </div>
               <div class="flex gap-2">
                 <button (click)="onConfirm(booking.id)" class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 cursor-pointer">
-                  Confirm
+                  {{ 'OPERATOR.CONFIRM' | translate }}
                 </button>
                 <button (click)="onCancel(booking.id)" class="px-3 py-1.5 bg-red-100 text-red-600 text-sm rounded-md hover:bg-red-200 cursor-pointer">
-                  Cancel
+                  {{ 'OPERATOR.CANCEL' | translate }}
                 </button>
               </div>
             </div>
@@ -49,7 +49,7 @@
 
     @if (activeTab === 'confirmed') {
       @if (confirmedBookings.length === 0) {
-        <p class="text-gray-400 text-sm">No confirmed bookings.</p>
+        <p class="text-gray-400 text-sm">{{ 'OPERATOR.NO_CONFIRMED' | translate }}</p>
       } @else {
         <div class="flex flex-col gap-3">
           @for (booking of confirmedBookings; track booking.id) {
@@ -60,7 +60,7 @@
                 <span class="text-xs text-gray-500">{{ booking.user_first_name }} {{ booking.user_last_name }} · ${{ booking.price }}</span>
               </div>
               <button (click)="onComplete(booking.id)" class="px-3 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 cursor-pointer">
-                Mark as Completed
+                {{ 'OPERATOR.COMPLETE' | translate }}
               </button>
             </div>
           }

@@ -7,10 +7,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../../core/services/language.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterLink, MatMenuModule, MatButtonModule, MatIconModule, MatDividerModule],
+  imports: [CommonModule, RouterLink, MatMenuModule, MatButtonModule, MatIconModule, MatDividerModule, TranslateModule],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
@@ -19,7 +21,7 @@ export class NavbarComponent {
   @Input() email: string = "";
   @Input() companyName: string = "";
 
-  constructor(private userService: UserService, private router: Router){}
+  constructor(private userService: UserService, private router: Router, public lang: LanguageService){}
 
   onLogout(){
     this.userService.logout();

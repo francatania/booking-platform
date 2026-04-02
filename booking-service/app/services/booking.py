@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.models.booking import Booking, BookingStatus
 from app.models.booking_config import BookingConfig
-from app.schemas.booking import BookingCreate, BookingDetailResponse, RescheduleRequest, BookingStatsResponse, BookingPeriodStat
+from app.schemas.booking import BookingCreate, BookingDetailResponse, BookingResponse, RescheduleRequest, BookingStatsResponse, BookingPeriodStat
 from app.dependencies.auth import UserPrincipal
 from app.dependencies.company_client import validate_service, get_services_by_ids
 from app.dependencies.auth_client import get_users_by_ids
@@ -43,7 +43,19 @@ class BookingService:
         db.add(booking)
         db.commit()
         db.refresh(booking)
-        return booking
+
+        service_names = get_services_by_ids([booking.service_id])
+        return BookingResponse(
+            id=booking.id,
+            user_id=booking.user_id,
+            service_id=booking.service_id,
+            service_name=service_names.get(booking.service_id, ""),
+            price=booking.price,
+            start_time=booking.start_time,
+            end_time=booking.end_time,
+            status=booking.status.value,
+            created_at=booking.created_at,
+        )
     
     def _find_booking_to_patch(self, booking_id: int, current_user: UserPrincipal, db: Session):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()
@@ -88,20 +100,38 @@ class BookingService:
 
     
     def get_my_bookings(self, user_id: int, db:Session):
-        return db.query(Booking).filter(Booking.user_id == user_id).all()
+        bookings: list[Booking] =  db.query(Booking).filter(Booking.user_id == user_id).all()
+        service_ids = list({b.service_id for b in bookings})
+        services = get_services_by_ids(service_ids)
+
+        return [ 
+            BookingResponse(
+                id=b.id,
+                user_id=b.user_id,
+                service_id=b.service_id,
+                service_name=services.get(b.service_id, ""),
+                price=b.price,
+                start_time=b.start_time,
+                end_time=b.end_time,
+                status=b.status,
+                created_at=b.created_at
+            )
+            for b in bookings
+        ]
+
     
     def get_booking(self, booking_id: int, db: Session):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()
         if booking is None:
             raise BookingNotFoundException()
-        return booking
+        return self._to_response(booking)
 
     def cancel_booking(self, booking_id: int, current_user: UserPrincipal, db: Session):
         booking = self._find_booking_to_patch(booking_id, current_user, db)
         booking.status = BookingStatus.CANCELLED
         db.commit()
         db.refresh(booking)
-        return booking
+        return self._to_response(booking)
 
     def reschedule(self, booking_id:int, current_user: UserPrincipal, dto: RescheduleRequest, db: Session):
 
@@ -115,7 +145,22 @@ class BookingService:
         booking.end_time = dto.end_time
         db.commit()
         db.refresh(booking)
-        return booking
+        return self._to_response(booking)
+
+    def _to_response(self, booking: Booking) -> BookingResponse:
+        service_names = get_services_by_ids([booking.service_id])
+        return BookingResponse(
+            id=booking.id,
+            user_id=booking.user_id,
+            service_id=booking.service_id,
+            service_name=service_names.get(booking.service_id, ""),
+            price=booking.price,
+            start_time=booking.start_time,
+            end_time=booking.end_time,
+            status=booking.status.value,
+            created_at=booking.created_at,
+            updated_at=booking.updated_at,
+        )
     
     def get_company_bookings(self, company_id: int, status: str | None, db: Session) -> list[BookingDetailResponse]:
         query = db.query(Booking).filter(Booking.company_id == company_id)
