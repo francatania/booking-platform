@@ -46,6 +46,7 @@ export interface PageResponse<T> {
 export interface CompanyServiceResponse {
   id: number;
   companyId: number;
+  companyName: string;
   name: string;
   description: string;
   durationMinutes: number;

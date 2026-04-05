@@ -16,6 +16,7 @@ public class CompanyServiceResponse {
 
     private Long id;
     private Long companyId;
+    private String companyName;
     private String name;
     private String description;
     private Integer durationMinutes;
@@ -28,6 +29,7 @@ public class CompanyServiceResponse {
         return CompanyServiceResponse.builder()
                 .id(service.getId())
                 .companyId(service.getCompany().getId())
+                .companyName(service.getCompany().getName())
                 .name(service.getName())
                 .description(service.getDescription())
                 .durationMinutes(service.getDurationMinutes())

@@ -2,6 +2,7 @@
   <table class="min-w-full divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'SERVICE_LIST.COMPANY' | translate }}</th>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'SERVICE_LIST.SERVICE' | translate }}</th>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'SERVICE_LIST.DESCRIPTION' | translate }}</th>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'SERVICE_LIST.DURATION' | translate }}</th>
@@ -12,6 +13,7 @@
     <tbody class="bg-white divide-y divide-gray-200">
       @for (service of services; track service.id) {
         <tr class="hover:bg-gray-50 transition-colors">
+          <td class="px-6 py-4 font-medium text-gray-900">{{ service.companyName }}</td>
           <td class="px-6 py-4 font-medium text-gray-900">{{ service.name }}</td>
           <td class="px-6 py-4 text-gray-500">{{ service.description }}</td>
           <td class="px-6 py-4 text-gray-500">{{ service.durationMinutes }} {{ 'SERVICE_LIST.MINS' | translate }}</td>

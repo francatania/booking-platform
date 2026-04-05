@@ -17,6 +17,7 @@
 
   "HOME.TITLE": "Servicios Disponibles",
 
+  "SERVICE_LIST.COMPANY": "Empresa",
   "SERVICE_LIST.SERVICE": "Servicio",
   "SERVICE_LIST.DESCRIPTION": "Descripcion",
   "SERVICE_LIST.DURATION": "Duracion",
