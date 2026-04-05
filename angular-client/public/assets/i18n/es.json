@@ -60,6 +60,11 @@
   "MY_BOOKINGS.CANCEL_CONFIRM_TEXT": "Esta seguro que desea cancelar esta reserva? Esta accion no se puede deshacer.",
   "MY_BOOKINGS.YES_CANCEL": "Si, cancelar",
 
+  "OPERATOR.FILTER_FROM": "Desde",
+  "OPERATOR.FILTER_TO": "Hasta",
+  "OPERATOR.FILTER_NAME": "Nombre completo",
+  "OPERATOR.FILTER_APPLY": "Aplicar",
+  "OPERATOR.FILTER_RESET": "Limpiar",
   "OPERATOR.TITLE": "Panel de Operador",
   "OPERATOR.PENDING": "Pendientes",
   "OPERATOR.CONFIRMED": "Confirmadas",

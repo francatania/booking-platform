@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies.auth import get_current_user, UserPrincipal, require_roles
 from app.schemas.booking import BookingCreate, BookingResponse, BookingDetailResponse, RescheduleRequest, BookingStatsResponse
-from datetime import datetime
+from datetime import datetime, date
 from app.services.booking import BookingService
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
@@ -27,10 +27,13 @@ def get_my_bookings(
 @router.get("/company", response_model=list[BookingDetailResponse])
 def get_company_bookings(
     status: str | None = None,
+    from_date: date | None = None,
+    to_date: date | None = None,
+    full_name: str | None = None,
     db: Session = Depends(get_db),
     current_user: UserPrincipal = Depends(require_roles("OPERATOR", "ADMIN"))
 ):
-    return service.get_company_bookings(current_user.company_id, status, db)
+    return service.get_company_bookings(current_user.company_id, status, from_date, to_date, full_name, db)
 
 @router.patch("/{booking_id}/confirm", response_model=BookingResponse)
 def confirm_booking(

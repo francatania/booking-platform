@@ -34,9 +34,12 @@ export class BookingService {
     });
   }
 
-  getCompanyBookings(status?: string): Observable<BookingDetailResponse[]> {
+  getCompanyBookings(status?: string, fromDate?: string, toDate?: string, fullName?: string): Observable<BookingDetailResponse[]> {
     const params: Record<string, string> = {};
     if (status) params['status'] = status;
+    if (fromDate) params['from_date'] = fromDate;
+    if (toDate) params['to_date'] = toDate;
+    if (fullName?.trim()) params['full_name'] = fullName.trim();
     return this.http.get<BookingDetailResponse[]>(`${this.BASE_URL}/bookings/company`, { params });
   }
 

@@ -91,8 +91,8 @@ export class AppStateService {
     });
   }
 
-  getCompanyBookings(status: string, onSuccess: (bookings: BookingDetailResponse[]) => void) {
-    this.bookingService.getCompanyBookings(status).subscribe({
+  getCompanyBookings(status: string, onSuccess: (bookings: BookingDetailResponse[]) => void, fromDate?: string, toDate?: string, fullName?: string) {
+    this.bookingService.getCompanyBookings(status, fromDate, toDate, fullName).subscribe({
       next: onSuccess,
       error: () => this.notificationService.error(this.translate.instant('NOTIFY.ERROR_LOAD_BOOKINGS'))
     });

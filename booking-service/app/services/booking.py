@@ -16,7 +16,7 @@ from app.exceptions import (
     BookingForbiddenException,
     BookingAlreadyCancelledException,
 )
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 class BookingService:
     def create_booking(self, dto: BookingCreate, current_user: UserPrincipal, db:Session):
@@ -162,10 +162,14 @@ class BookingService:
             updated_at=booking.updated_at,
         )
     
-    def get_company_bookings(self, company_id: int, status: str | None, db: Session) -> list[BookingDetailResponse]:
+    def get_company_bookings(self, company_id: int, status: str | None, from_date: date | None, to_date: date | None, full_name: str | None, db: Session) -> list[BookingDetailResponse]:
         query = db.query(Booking).filter(Booking.company_id == company_id)
         if status:
             query = query.filter(Booking.status == BookingStatus[status])
+        if from_date:
+            query = query.filter(Booking.start_time >= datetime.combine(from_date, datetime.min.time()))
+        if to_date:
+            query = query.filter(Booking.start_time <= datetime.combine(to_date, datetime.max.time()))
         bookings = query.order_by(Booking.start_time).all()
 
         service_ids = list({b.service_id for b in bookings})
@@ -174,7 +178,7 @@ class BookingService:
         services = get_services_by_ids(service_ids)
         users = get_users_by_ids(user_ids)
 
-        return [
+        results = [
             BookingDetailResponse(
                 id=b.id,
                 user_id=b.user_id,
@@ -192,6 +196,17 @@ class BookingService:
             )
             for b in bookings
         ]
+
+        if full_name:
+            search = full_name.lower()
+            results = [
+                r for r in results
+                if search in r.user_first_name.lower()
+                or search in r.user_last_name.lower()
+                or search in f"{r.user_first_name} {r.user_last_name}".lower()
+            ]
+
+        return results
 
     def confirm_booking(self, booking_id: int, db: Session):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()

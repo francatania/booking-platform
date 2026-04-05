@@ -60,6 +60,11 @@
   "MY_BOOKINGS.CANCEL_CONFIRM_TEXT": "Are you sure you want to cancel this booking? This action cannot be undone.",
   "MY_BOOKINGS.YES_CANCEL": "Yes, cancel",
 
+  "OPERATOR.FILTER_FROM": "From",
+  "OPERATOR.FILTER_TO": "To",
+  "OPERATOR.FILTER_NAME": "Full name",
+  "OPERATOR.FILTER_APPLY": "Apply",
+  "OPERATOR.FILTER_RESET": "Reset",
   "OPERATOR.TITLE": "Operator Panel",
   "OPERATOR.PENDING": "Pending",
   "OPERATOR.CONFIRMED": "Confirmed",
