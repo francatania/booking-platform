@@ -71,5 +71,22 @@
   "ADMIN.COMPLETED": "Completadas",
   "ADMIN.BOOKINGS_BY_STATUS": "Reservas por Estado",
   "ADMIN.REVENUE_BY_DAY": "Ingresos por Dia",
-  "ADMIN.REVENUE_BY_MONTH": "Ingresos por Mes"
+  "ADMIN.REVENUE_BY_MONTH": "Ingresos por Mes",
+
+  "NOTIFY.BOOKING_CREATED": "Tu reserva fue confirmada!",
+  "NOTIFY.BOOKING_CANCELLED": "Reserva cancelada.",
+  "NOTIFY.BOOKING_RESCHEDULED": "Reserva reprogramada.",
+  "NOTIFY.BOOKING_CONFIRMED": "Reserva confirmada.",
+  "NOTIFY.BOOKING_COMPLETED": "Reserva marcada como completada.",
+  "NOTIFY.NO_SERVICES": "No hay servicios disponibles en este momento.",
+  "NOTIFY.ERROR_GENERIC": "Algo salio mal. Por favor intente de nuevo.",
+  "NOTIFY.ERROR_SLOT_TAKEN": "Ese horario ya esta ocupado. Por favor elija otro.",
+  "NOTIFY.ERROR_FORBIDDEN": "No esta autorizado para hacer reservas.",
+  "NOTIFY.ERROR_SERVICE_NOT_FOUND": "El servicio seleccionado ya no esta disponible.",
+  "NOTIFY.ERROR_LOAD_SERVICES": "No se pudieron cargar los servicios. Por favor intente de nuevo.",
+  "NOTIFY.ERROR_LOAD_BOOKINGS": "No se pudieron cargar las reservas.",
+  "NOTIFY.ERROR_CONFIRM": "No se pudo confirmar la reserva.",
+  "NOTIFY.ERROR_COMPLETE": "No se pudo completar la reserva.",
+  "NOTIFY.ERROR_RESCHEDULE": "No se pudo reprogramar la reserva.",
+  "NOTIFY.ERROR_LOAD_STATS": "No se pudieron cargar las estadisticas."
 }

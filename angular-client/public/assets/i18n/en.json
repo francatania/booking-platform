@@ -71,5 +71,22 @@
   "ADMIN.COMPLETED": "Completed",
   "ADMIN.BOOKINGS_BY_STATUS": "Bookings by Status",
   "ADMIN.REVENUE_BY_DAY": "Revenue by Day",
-  "ADMIN.REVENUE_BY_MONTH": "Revenue by Month"
+  "ADMIN.REVENUE_BY_MONTH": "Revenue by Month",
+
+  "NOTIFY.BOOKING_CREATED": "Your booking was confirmed!",
+  "NOTIFY.BOOKING_CANCELLED": "Booking cancelled.",
+  "NOTIFY.BOOKING_RESCHEDULED": "Booking rescheduled.",
+  "NOTIFY.BOOKING_CONFIRMED": "Booking confirmed.",
+  "NOTIFY.BOOKING_COMPLETED": "Booking marked as completed.",
+  "NOTIFY.NO_SERVICES": "No services available at the moment.",
+  "NOTIFY.ERROR_GENERIC": "Something went wrong. Please try again.",
+  "NOTIFY.ERROR_SLOT_TAKEN": "That time slot is already taken. Please choose another time.",
+  "NOTIFY.ERROR_FORBIDDEN": "You are not allowed to make bookings.",
+  "NOTIFY.ERROR_SERVICE_NOT_FOUND": "The selected service is no longer available.",
+  "NOTIFY.ERROR_LOAD_SERVICES": "Could not load services. Please try again.",
+  "NOTIFY.ERROR_LOAD_BOOKINGS": "Could not load bookings.",
+  "NOTIFY.ERROR_CONFIRM": "Could not confirm booking.",
+  "NOTIFY.ERROR_COMPLETE": "Could not complete booking.",
+  "NOTIFY.ERROR_RESCHEDULE": "Could not reschedule booking.",
+  "NOTIFY.ERROR_LOAD_STATS": "Could not load stats."
 }

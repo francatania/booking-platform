@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { BookingService } from './booking.service';
 import { NotificationService } from './notification.service';
 import { BookingCreate, BookingDetailResponse, BookingResponse, BookingStats, RescheduleRequest } from '../models/booking.model';
@@ -12,23 +13,24 @@ export class AppStateService {
   constructor(
     private bookingService: BookingService,
     private notificationService: NotificationService,
-    private companyServiceService: CompanyServiceService
+    private companyServiceService: CompanyServiceService,
+    private translate: TranslateService
   ) {}
 
   createBooking(dto: BookingCreate, onSuccess?: () => void, onError?: (msg: string) => void) {
     this.bookingService.createBooking(dto).subscribe({
       next: () => {
-        this.notificationService.success('Your booking was confirmed!');
+        this.notificationService.success(this.translate.instant('NOTIFY.BOOKING_CREATED'));
         onSuccess?.();
       },
       error: (err) => {
         const msg = err.status === 409
-          ? 'That time slot is already taken. Please choose another time.'
+          ? this.translate.instant('NOTIFY.ERROR_SLOT_TAKEN')
           : err.status === 403
-          ? 'You are not allowed to make bookings.'
+          ? this.translate.instant('NOTIFY.ERROR_FORBIDDEN')
           : err.status === 404
-          ? 'The selected service is no longer available.'
-          : 'Something went wrong. Please try again.';
+          ? this.translate.instant('NOTIFY.ERROR_SERVICE_NOT_FOUND')
+          : this.translate.instant('NOTIFY.ERROR_GENERIC');
         onError?.(msg);
       }
     });
@@ -37,12 +39,11 @@ export class AppStateService {
   cancelBooking(id: number, onSuccess?: () => void) {
     this.bookingService.cancelBooking(id).subscribe({
       next: () => {
-        this.notificationService.success('Booking cancelled.');
+        this.notificationService.success(this.translate.instant('NOTIFY.BOOKING_CANCELLED'));
         onSuccess?.();
       },
       error: (err) => {
-        this.notificationService.error(err.error?.error || err.error?.detail || 'Something went wrong.');
-        
+        this.notificationService.error(err.error?.error || err.error?.detail || this.translate.instant('NOTIFY.ERROR_GENERIC'));
       }
     });
   }
@@ -50,14 +51,14 @@ export class AppStateService {
   rescheduleBooking(id: number, dto: RescheduleRequest, onSuccess?: () => void, onError?: () => void) {
     this.bookingService.rescheduleBooking(id, dto).subscribe({
       next: () => {
-        this.notificationService.success('Booking rescheduled.');
+        this.notificationService.success(this.translate.instant('NOTIFY.BOOKING_RESCHEDULED'));
         onSuccess?.();
       },
       error: (err) => {
         this.notificationService.error(
           err.status === 409
-            ? 'That time slot is already taken. Please choose another time.'
-            : err.error?.detail || 'Could not reschedule booking.'
+            ? this.translate.instant('NOTIFY.ERROR_SLOT_TAKEN')
+            : err.error?.detail || this.translate.instant('NOTIFY.ERROR_RESCHEDULE')
         );
         onError?.();
       }
@@ -75,39 +76,39 @@ export class AppStateService {
     this.companyServiceService.getServices(page).subscribe({
       next: (response) => {
         if (response.content.length === 0) {
-          this.notificationService.warning('No services available at the moment.');
+          this.notificationService.warning(this.translate.instant('NOTIFY.NO_SERVICES'));
         }
         onSuccess(response);
       },
-      error: () => this.notificationService.error('Could not load services. Please try again.')
+      error: () => this.notificationService.error(this.translate.instant('NOTIFY.ERROR_LOAD_SERVICES'))
     });
   }
 
   getCompanyBookings(status: string, onSuccess: (bookings: BookingDetailResponse[]) => void) {
     this.bookingService.getCompanyBookings(status).subscribe({
       next: onSuccess,
-      error: () => this.notificationService.error('Could not load bookings.')
+      error: () => this.notificationService.error(this.translate.instant('NOTIFY.ERROR_LOAD_BOOKINGS'))
     });
   }
 
   confirmBooking(id: number, onSuccess?: () => void) {
     this.bookingService.confirmBooking(id).subscribe({
-      next: () => { this.notificationService.success('Booking confirmed.'); onSuccess?.(); },
-      error: (err) => this.notificationService.error(err.error?.detail || 'Could not confirm booking.')
+      next: () => { this.notificationService.success(this.translate.instant('NOTIFY.BOOKING_CONFIRMED')); onSuccess?.(); },
+      error: (err) => this.notificationService.error(err.error?.detail || this.translate.instant('NOTIFY.ERROR_CONFIRM'))
     });
   }
 
   completeBooking(id: number, onSuccess?: () => void) {
     this.bookingService.completeBooking(id).subscribe({
-      next: () => { this.notificationService.success('Booking marked as completed.'); onSuccess?.(); },
-      error: (err) => this.notificationService.error(err.error?.detail || 'Could not complete booking.')
+      next: () => { this.notificationService.success(this.translate.instant('NOTIFY.BOOKING_COMPLETED')); onSuccess?.(); },
+      error: (err) => this.notificationService.error(err.error?.detail || this.translate.instant('NOTIFY.ERROR_COMPLETE'))
     });
   }
 
   getStats(fromDate: string, toDate: string, onSuccess: (stats: BookingStats) => void) {
     this.bookingService.getStats(fromDate, toDate).subscribe({
       next: onSuccess,
-      error: () => this.notificationService.error('Could not load stats.')
+      error: () => this.notificationService.error(this.translate.instant('NOTIFY.ERROR_LOAD_STATS'))
     });
   }
 }
