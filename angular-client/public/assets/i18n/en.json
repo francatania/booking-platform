@@ -17,6 +17,13 @@
 
   "HOME.TITLE": "Available Services",
 
+  "SERVICE_LIST.FILTER_COMPANY": "Company",
+  "SERVICE_LIST.FILTER_ALL_COMPANIES": "All companies",
+  "SERVICE_LIST.FILTER_NAME": "Service name",
+  "SERVICE_LIST.FILTER_MIN_PRICE": "Min price",
+  "SERVICE_LIST.FILTER_MAX_PRICE": "Max price",
+  "SERVICE_LIST.FILTER_APPLY": "Apply",
+  "SERVICE_LIST.FILTER_RESET": "Reset",
   "SERVICE_LIST.COMPANY": "Company",
   "SERVICE_LIST.SERVICE": "Service",
   "SERVICE_LIST.DESCRIPTION": "Description",

@@ -3,8 +3,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { BookingService } from './booking.service';
 import { NotificationService } from './notification.service';
 import { BookingCreate, BookingDetailResponse, BookingResponse, BookingStats, RescheduleRequest } from '../models/booking.model';
-import { CompanyServiceService } from './company.service.service';
-import { CompanyServiceResponse, PageResponse } from '../models/company.model';
+import { CompanyServiceService, ServiceFilters } from './company.service.service';
+import { CompanyResponse, CompanyServiceResponse, PageResponse } from '../models/company.model';
 
 @Injectable({
   providedIn: 'root',
@@ -72,14 +72,21 @@ export class AppStateService {
     })
   }
 
-  getServices(page: number, onSuccess: (response: PageResponse<CompanyServiceResponse>) => void) {
-    this.companyServiceService.getServices(page).subscribe({
+  getServices(page: number, filters: ServiceFilters, onSuccess: (response: PageResponse<CompanyServiceResponse>) => void) {
+    this.companyServiceService.getServices(page, 10, filters).subscribe({
       next: (response) => {
         if (response.content.length === 0) {
           this.notificationService.warning(this.translate.instant('NOTIFY.NO_SERVICES'));
         }
         onSuccess(response);
       },
+      error: () => this.notificationService.error(this.translate.instant('NOTIFY.ERROR_LOAD_SERVICES'))
+    });
+  }
+
+  getCompanies(onSuccess: (companies: CompanyResponse[]) => void) {
+    this.companyServiceService.getCompanies().subscribe({
+      next: onSuccess,
       error: () => this.notificationService.error(this.translate.instant('NOTIFY.ERROR_LOAD_SERVICES'))
     });
   }

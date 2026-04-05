@@ -1,5 +1,6 @@
 package com.booking.companyservice.service.interfaces;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -24,5 +25,5 @@ public interface ICompanyServiceService {
 
     CompanyServiceResponse getServiceById(Long id);
     List<CompanyServiceResponse> getServicesByIds(List<Long> ids);
-    Page<CompanyServiceResponse> getAllServices(Pageable pageable);
+    Page<CompanyServiceResponse> getAllServices(Pageable pageable, Long companyId, String name, BigDecimal minPrice, BigDecimal maxPrice);
 }

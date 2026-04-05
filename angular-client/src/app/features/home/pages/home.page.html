@@ -1,6 +1,80 @@
-<div class="bg-gray-50">
+<div class="bg-gray-50 min-h-screen">
   <div class="max-w-6xl mx-auto p-8">
     <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ 'HOME.TITLE' | translate }}</h1>
+
+
+      <div class="bg-white rounded-lg shadow p-4 mb-6 flex flex-wrap gap-4 items-end justify-between">
+
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500 uppercase">{{ 'SERVICE_LIST.FILTER_COMPANY' | translate }}</label>
+            <select
+              [(ngModel)]="filters.companyId"
+              class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option [ngValue]="undefined">{{ 'SERVICE_LIST.FILTER_ALL_COMPANIES' | translate }}</option>
+              @for (company of companies; track company.companyId) {
+                <option [ngValue]="company.companyId">{{ company.companyName }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500 uppercase">{{ 'SERVICE_LIST.FILTER_NAME' | translate }}</label>
+            <input
+              type="text"
+              [(ngModel)]="filters.name"
+              class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500 uppercase">{{ 'SERVICE_LIST.FILTER_MIN_PRICE' | translate }}</label>
+            <input
+              type="number"
+              [(ngModel)]="filters.minPrice"
+              min="0"
+              class="px-3 py-2 border border-gray-300 rounded-md text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-gray-500 uppercase">{{ 'SERVICE_LIST.FILTER_MAX_PRICE' | translate }}</label>
+            <input
+              type="number"
+              [(ngModel)]="filters.maxPrice"
+              min="0"
+              class="px-3 py-2 border border-gray-300 rounded-md text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+
+          </div>
+        <div class="flex">
+          <div class="flex gap-2">
+              <button
+                (click)="onFilterApply()"
+                class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                {{ 'SERVICE_LIST.FILTER_APPLY' | translate }}
+              </button>
+              <button
+                (click)="onFilterReset()"
+                class="px-4 py-2 border border-gray-300 text-gray-600 text-sm rounded-md hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                {{ 'SERVICE_LIST.FILTER_RESET' | translate }}
+              </button>
+            </div>
+        </div>
+
+
+
+
+      </div>
+
+
+
+
     <app-service-list
       [services]="services"
       [currentPage]="currentPage"
@@ -8,6 +82,7 @@
       (pageChange)="onPageChange($event)"
       (serviceSelected)="onServiceSelected($event)"
     />
+
     @if (serviceSelected) {
       <app-booking-form
         [service]="serviceSelected"

@@ -1,10 +1,12 @@
 package com.booking.companyservice.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import com.booking.companyservice.model.dto.CreateCompanyServiceRequest;
 import com.booking.companyservice.model.dto.UpdateCompanyServiceRequest;
 import com.booking.companyservice.exception.CompanyServiceNotFoundException;
 import com.booking.companyservice.repository.CompanyServiceRepository;
+import com.booking.companyservice.repository.CompanyServiceSpecification;
 import com.booking.companyservice.service.interfaces.ICompanyService;
 import com.booking.companyservice.service.interfaces.ICompanyServiceService;
 
@@ -118,7 +121,12 @@ public class CompanyServiceService implements ICompanyServiceService {
     }
 
     @Override
-    public Page<CompanyServiceResponse> getAllServices(Pageable pageable) {
-        return repository.findAll(pageable).map(CompanyServiceResponse::from);
+    public Page<CompanyServiceResponse> getAllServices(Pageable pageable, Long companyId, String name, BigDecimal minPrice, BigDecimal maxPrice) {
+        Specification<CompanyServiceEntity> spec = CompanyServiceSpecification.isActive();
+        if (companyId != null) spec = spec.and(CompanyServiceSpecification.hasCompany(companyId));
+        if (name != null && !name.isBlank()) spec = spec.and(CompanyServiceSpecification.nameContains(name));
+        if (minPrice != null) spec = spec.and(CompanyServiceSpecification.priceFrom(minPrice));
+        if (maxPrice != null) spec = spec.and(CompanyServiceSpecification.priceTo(maxPrice));
+        return repository.findAll(spec, pageable).map(CompanyServiceResponse::from);
     }
 }

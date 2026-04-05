@@ -1,5 +1,6 @@
 package com.booking.companyservice.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.booking.companyservice.config.UserPrincipal;
@@ -31,8 +33,13 @@ public class CompanyServiceController {
     private final ICompanyServiceService service;
 
     @GetMapping("/services")
-    public ResponseEntity<Page<CompanyServiceResponse>> getAllServices(@PageableDefault(size = 10, sort = "name") Pageable pageable){
-        return ResponseEntity.ok(service.getAllServices(pageable));
+    public ResponseEntity<Page<CompanyServiceResponse>> getAllServices(
+            @PageableDefault(size = 10, sort = "name") Pageable pageable,
+            @RequestParam(required = false) Long companyId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice) {
+        return ResponseEntity.ok(service.getAllServices(pageable, companyId, name, minPrice, maxPrice));
     }
 
     @GetMapping("/companies/{companyId}/services")
