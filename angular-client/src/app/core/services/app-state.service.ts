@@ -4,7 +4,7 @@ import { BookingService } from './booking.service';
 import { NotificationService } from './notification.service';
 import { BookingCreate, BookingDetailResponse, BookingResponse, BookingStats, RescheduleRequest } from '../models/booking.model';
 import { CompanyServiceService, ServiceFilters } from './company.service.service';
-import { CompanyResponse, CompanyServiceResponse, PageResponse } from '../models/company.model';
+import { CompanyResponse, CompanyServiceResponse, CreateCompanyServiceRequest, PageResponse, UpdateCompanyServiceRequest } from '../models/company.model';
 
 @Injectable({
   providedIn: 'root',
@@ -116,6 +116,37 @@ export class AppStateService {
     this.bookingService.getStats(fromDate, toDate).subscribe({
       next: onSuccess,
       error: () => this.notificationService.error(this.translate.instant('NOTIFY.ERROR_LOAD_STATS'))
+    });
+  }
+
+  getServicesByCompany(companyId: number, onSuccess: (services: CompanyServiceResponse[]) => void) {
+    this.companyServiceService.getServicesByCompany(companyId).subscribe({
+      next: onSuccess,
+      error: () => this.notificationService.error(this.translate.instant('NOTIFY.ERROR_LOAD_SERVICES'))
+    });
+  }
+
+  createService(companyId: number, dto: CreateCompanyServiceRequest, onSuccess?: () => void) {
+    this.companyServiceService.createService(companyId, dto).subscribe({
+      next: () => { this.notificationService.success(this.translate.instant('NOTIFY.SERVICE_CREATED')); onSuccess?.(); },
+      error: (err) => this.notificationService.error(err.error?.error || this.translate.instant('NOTIFY.ERROR_GENERIC'))
+    });
+  }
+
+  editService(id: number, dto: UpdateCompanyServiceRequest, onSuccess?: () => void) {
+    this.companyServiceService.editService(id, dto).subscribe({
+      next: () => { this.notificationService.success(this.translate.instant('NOTIFY.SERVICE_UPDATED')); onSuccess?.(); },
+      error: (err) => this.notificationService.error(err.error?.error || this.translate.instant('NOTIFY.ERROR_GENERIC'))
+    });
+  }
+
+  toggleServiceActive(id: number, isActive: boolean, onSuccess?: () => void) {
+    const call = isActive
+      ? this.companyServiceService.deactivateService(id)
+      : this.companyServiceService.activateService(id);
+    call.subscribe({
+      next: () => { this.notificationService.success(this.translate.instant(isActive ? 'NOTIFY.SERVICE_DEACTIVATED' : 'NOTIFY.SERVICE_ACTIVATED')); onSuccess?.(); },
+      error: (err) => this.notificationService.error(err.error?.error || this.translate.instant('NOTIFY.ERROR_GENERIC'))
     });
   }
 }

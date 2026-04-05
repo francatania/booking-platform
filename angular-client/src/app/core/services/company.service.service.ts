@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CompanyResponse, CompanyServiceResponse, PageResponse } from '../models/company.model';
+import { CompanyResponse, CompanyServiceResponse, CreateCompanyServiceRequest, PageResponse, UpdateCompanyServiceRequest } from '../models/company.model';
 
 export interface ServiceFilters {
   companyId?: number;
@@ -30,5 +30,25 @@ export class CompanyServiceService {
 
   getCompanies(): Observable<CompanyResponse[]> {
     return this.http.get<CompanyResponse[]>(`${this.BASE_URL}/companies`);
+  }
+
+  getServicesByCompany(companyId: number): Observable<CompanyServiceResponse[]> {
+    return this.http.get<CompanyServiceResponse[]>(`${this.BASE_URL}/companies/${companyId}/services`);
+  }
+
+  createService(companyId: number, dto: CreateCompanyServiceRequest): Observable<CompanyServiceResponse> {
+    return this.http.post<CompanyServiceResponse>(`${this.BASE_URL}/companies/${companyId}/services`, dto);
+  }
+
+  editService(id: number, dto: UpdateCompanyServiceRequest): Observable<CompanyServiceResponse> {
+    return this.http.patch<CompanyServiceResponse>(`${this.BASE_URL}/services/${id}`, dto);
+  }
+
+  activateService(id: number): Observable<CompanyServiceResponse> {
+    return this.http.patch<CompanyServiceResponse>(`${this.BASE_URL}/services/${id}/activate`, {});
+  }
+
+  deactivateService(id: number): Observable<CompanyServiceResponse> {
+    return this.http.patch<CompanyServiceResponse>(`${this.BASE_URL}/services/${id}/deactivate`, {});
   }
 }

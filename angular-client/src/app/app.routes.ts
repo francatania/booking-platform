@@ -7,6 +7,7 @@ import { AuthLayoutComponent } from './shared/layouts/auth-layout.component/auth
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { OperatorPage } from './features/operator/pages/operator.page';
+import { MyServicesPage } from './features/services/pages/my-services.page';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPage },
@@ -19,6 +20,7 @@ export const routes: Routes = [
       { path: 'my-bookings', component: MyBookings, canActivate: [roleGuard(['USER'])] },
       { path: 'admin', component: AdminPage, canActivate: [roleGuard(['ADMIN', 'MANAGER', 'SUPER_ADMIN'])] },
       { path: 'operator', component: OperatorPage, canActivate: [roleGuard(['OPERATOR', 'ADMIN', 'SUPER_ADMIN'])] },
+      { path: 'my-services', component: MyServicesPage, canActivate: [roleGuard(['OPERATOR', 'ADMIN'])] },
     ]
   },
   { path: '**', redirectTo: 'login' },
