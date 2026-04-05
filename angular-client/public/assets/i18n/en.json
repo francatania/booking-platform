@@ -1,4 +1,20 @@
 {
+  "REGISTER.TITLE": "Create account",
+  "REGISTER.FIRST_NAME": "First name",
+  "REGISTER.LAST_NAME": "Last name",
+  "REGISTER.FIRST_NAME_PLACEHOLDER": "Enter your first name",
+  "REGISTER.LAST_NAME_PLACEHOLDER": "Enter your last name",
+  "REGISTER.USERNAME": "Username",
+  "REGISTER.EMAIL": "Email",
+  "REGISTER.PASSWORD": "Password",
+  "REGISTER.USERNAME_PLACEHOLDER": "Choose a username",
+  "REGISTER.EMAIL_PLACEHOLDER": "Enter your email",
+  "REGISTER.PASSWORD_PLACEHOLDER": "Choose a password",
+  "REGISTER.SUBMIT": "Register",
+  "REGISTER.LOADING": "Registering...",
+  "REGISTER.FAILED": "Registration failed",
+  "REGISTER.LOGIN_LINK": "Already have an account? Sign in",
+
   "LOGIN.TITLE": "Bookly",
   "LOGIN.USERNAME": "Username",
   "LOGIN.PASSWORD": "Password",
@@ -7,6 +23,7 @@
   "LOGIN.SUBMIT": "Login",
   "LOGIN.LOADING": "Logging in...",
   "LOGIN.FAILED": "Login failed",
+  "LOGIN.REGISTER_LINK": "Don't have an account? Register",
 
   "NAVBAR.BRAND": "Bookly",
   "NAVBAR.SERVICES": "Services",

@@ -8,9 +8,11 @@ import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { OperatorPage } from './features/operator/pages/operator.page';
 import { MyServicesPage } from './features/services/pages/my-services.page';
+import { RegisterPage } from './features/auth/pages/register.page';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPage },
+  { path: 'register', component: RegisterPage },
   {
     path: '',
     component: AuthLayoutComponent,

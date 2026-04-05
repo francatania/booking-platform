@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { LoginRequest } from '../../../core/models/auth.model';
@@ -10,7 +10,7 @@ import { LanguageSwitcherComponent } from '../../../shared/components/language-s
 
 @Component({
   selector: 'app-login-form',
-  imports: [CommonModule, FormsModule, TranslateModule, LanguageSwitcherComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, LanguageSwitcherComponent, RouterLink],
   templateUrl: './login-form.component.html'
 })
 export class LoginFormComponent {
