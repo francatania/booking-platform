@@ -6,6 +6,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     CREATE DATABASE auth_db;
     CREATE DATABASE company_db;
     CREATE DATABASE booking_db;
+    CREATE DATABASE notification_db;
 EOSQL
 
 # Seed auth_db
@@ -155,4 +156,21 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "booking_db" <<-'EO
         (4, 3, 1, '2026-03-22 11:00:00', '2026-03-22 11:45:00', 7000.00, 'COMPLETED'),
         (5, 1, 1, '2026-03-25 09:00:00', '2026-03-25 09:30:00', 5000.00, 'PENDING'),
         (6, 2, 1, '2026-03-27 10:00:00', '2026-03-27 10:20:00', 3000.00, 'PENDING');
+EOSQL
+
+# Seed notification_db
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "notification_db" <<-'EOSQL'
+    CREATE TABLE notification (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        type VARCHAR(50) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        is_read BOOLEAN NOT NULL DEFAULT false,
+        booking_id INTEGER,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX idx_notification_user_id ON notification(user_id);
+    CREATE INDEX idx_notification_user_read ON notification(user_id, is_read);
 EOSQL
