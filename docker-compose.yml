@@ -62,8 +62,11 @@ services:
       JWT_SECRET: mySecretKey1234567890mySecretKey1234567890
       COMPANY_SERVICE_URL: http://company-service:8082/api
       AUTH_SERVICE_URL: http://auth-service:8081/api
+      RABBITMQ_URL: amqp://franco:franco123@rabbitmq:5672/
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   rabbitmq:
@@ -83,6 +86,27 @@ services:
       timeout: 3s
       retries: 5
 
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: notification_db
+      DB_USER: franco
+      DB_PASSWORD: franco123
+      JWT_SECRET: mySecretKey1234567890mySecretKey1234567890
+      RABBITMQ_URL: amqp://franco:franco123@rabbitmq:5672/
+      AUTH_SERVICE_URL: http://auth-service:8081/api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
   gateway:
     build: ./gateway
     container_name: gateway
@@ -92,6 +116,7 @@ services:
       - auth-service
       - company-service
       - booking-service
+      - notification-service
 
 volumes:
   postgres_data:
