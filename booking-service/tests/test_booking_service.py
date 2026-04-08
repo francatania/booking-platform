@@ -45,7 +45,7 @@ def build_booking(id=1, user_id=1, status=BookingStatus.PENDING):
     booking.created_at = datetime(2025, 6, 1, 9, 0)
     return booking
 
-def build_booking_dto(service_id=5, company_id=5, start_time=START, end_time=END, user_id=None, price=5000.00):
+def build_booking_dto(service_id=5, company_id=5, start_time=START, end_time=END, user_id=None, price=5000.00, service_name=None):
     dto = MagicMock(spec=BookingCreate)
     dto.service_id = service_id
     dto.company_id = company_id
@@ -53,6 +53,7 @@ def build_booking_dto(service_id=5, company_id=5, start_time=START, end_time=END
     dto.end_time = end_time
     dto.user_id = user_id
     dto.price = price
+    dto.service_name = service_name
     return dto
 
 def make_query_side_effect(gap_minutes=0, raw_collision=False, gap_collision=False):
@@ -81,7 +82,8 @@ def test_create_booking_whenIsUser(service, db):
     db.refresh.side_effect = mock_refresh
 
     with patch("app.services.booking.validate_service"), \
-         patch("app.services.booking.get_services_by_ids", return_value={}):
+         patch("app.services.booking.get_services_by_ids", return_value={}), \
+         patch("app.services.booking.publish_event"):
         result = service.create_booking(dto, USER, db)
 
     db.add.assert_called_once()
@@ -98,7 +100,8 @@ def test_create_booking_whenIsAdmin(service, db):
     db.refresh.side_effect = mock_refresh
 
     with patch("app.services.booking.validate_service"), \
-         patch("app.services.booking.get_services_by_ids", return_value={}):
+         patch("app.services.booking.get_services_by_ids", return_value={}), \
+         patch("app.services.booking.publish_event"):
         result = service.create_booking(dto, ADMIN, db)
 
     db.add.assert_called_once()

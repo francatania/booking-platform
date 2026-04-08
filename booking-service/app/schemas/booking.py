@@ -9,6 +9,7 @@ class BookingCreate(BaseModel):
     end_time: datetime
     price: Decimal
     user_id: int | None = None
+    service_name: str | None = None
 
 class BookingResponse(BaseModel):
     id: int

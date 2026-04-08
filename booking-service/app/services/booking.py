@@ -20,7 +20,7 @@ from datetime import datetime, timedelta, date
 from app.dependencies.rabbitmq_publisher import publish_event
 
 class BookingService:
-    def create_booking(self, dto: BookingCreate, current_user: UserPrincipal, db:Session):
+    def create_booking(self, dto: BookingCreate, current_user: UserPrincipal, db: Session, language: str = "en"):
         if current_user.role == "USER":
             target_user_id = current_user.user_id
         else:
@@ -50,8 +50,10 @@ class BookingService:
             "userId": booking.user_id,
             "operatorId": booking.company_id,
             "serviceId": booking.service_id,
+            "serviceName": dto.service_name or "",
             "date": booking.start_time.strftime("%Y-%m-%d"),
             "startTime": booking.start_time.strftime("%H:%M"),
+            "language": language,
         })
 
         service_names = get_services_by_ids([booking.service_id])
@@ -218,7 +220,7 @@ class BookingService:
 
         return results
 
-    def confirm_booking(self, booking_id: int, db: Session):
+    def confirm_booking(self, booking_id: int, db: Session, language: str = "en"):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()
         if booking is None:
             raise BookingNotFoundException()
@@ -228,16 +230,30 @@ class BookingService:
         db.commit()
         db.refresh(booking)
 
+        service_names = get_services_by_ids([booking.service_id])
         publish_event("booking.confirmed", {
             "bookingId": booking.id,
             "userId": booking.user_id,
             "operatorId": booking.company_id,
             "serviceId": booking.service_id,
+            "serviceName": service_names.get(booking.service_id, ""),
             "date": booking.start_time.strftime("%Y-%m-%d"),
             "startTime": booking.start_time.strftime("%H:%M"),
+            "language": language,
         })
 
-        return booking
+        return BookingResponse(
+            id=booking.id,
+            user_id=booking.user_id,
+            service_id=booking.service_id,
+            service_name=service_names.get(booking.service_id, ""),
+            price=booking.price,
+            start_time=booking.start_time,
+            end_time=booking.end_time,
+            status=booking.status.value,
+            created_at=booking.created_at,
+            updated_at=booking.updated_at,
+        )
 
     def complete_booking(self, booking_id: int, db: Session):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()

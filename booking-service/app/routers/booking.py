@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies.auth import get_current_user, UserPrincipal, require_roles
@@ -11,11 +11,13 @@ service = BookingService()
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=BookingResponse)
 def create_booking(
+    request: Request,
     dto: BookingCreate,
     db: Session = Depends(get_db),
     current_user: UserPrincipal = Depends(get_current_user)
 ):
-    return service.create_booking(dto, current_user, db)
+    language = request.headers.get("accept-language", "en")
+    return service.create_booking(dto, current_user, db, language)
 
 @router.get("/my", response_model=list[BookingResponse])
 def get_my_bookings(
@@ -38,10 +40,12 @@ def get_company_bookings(
 @router.patch("/{booking_id}/confirm", response_model=BookingResponse)
 def confirm_booking(
     booking_id: int,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: UserPrincipal = Depends(require_roles("OPERATOR"))
 ):
-    return service.confirm_booking(booking_id, db)
+    language = request.headers.get("accept-language", "en")
+    return service.confirm_booking(booking_id, db, language)
 
 @router.patch("/{booking_id}/complete", response_model=BookingResponse)
 def complete_booking(

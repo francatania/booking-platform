@@ -10,6 +10,7 @@ export interface BookingCreate {
   start_time: string;
   end_time: string;
   user_id?: number;
+  service_name?: string;
 }
 
 export interface BookingPeriodStat {

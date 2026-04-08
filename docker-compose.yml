@@ -101,6 +101,11 @@ services:
       JWT_SECRET: mySecretKey1234567890mySecretKey1234567890
       RABBITMQ_URL: amqp://franco:franco123@rabbitmq:5672/
       AUTH_SERVICE_URL: http://auth-service:8081/api
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_USER}
     depends_on:
       postgres:
         condition: service_healthy

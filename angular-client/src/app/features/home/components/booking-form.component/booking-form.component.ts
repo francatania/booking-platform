@@ -55,11 +55,12 @@ export class BookingFormComponent {
     const endIso = `${this.date}T${this.computedEndTime}:00`;
 
     this.appState.createBooking(
-      { service_id: this.service.id, 
-        company_id: this.service.companyId, 
-        start_time: startIso, 
+      { service_id: this.service.id,
+        company_id: this.service.companyId,
+        start_time: startIso,
         end_time: endIso,
-      price: this.service.price },
+        price: this.service.price,
+        service_name: this.service.name },
       () => { this.isLoading = false; this.bookingCreated.emit(); },
       (msg) => { this.isLoading = false; this.errorMessage = msg; }
     );
