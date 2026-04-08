@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByUsername(String email);
 
     List<User> findAllByIdIn(List<Long> ids);
+
+    List<User> findAllByCompanyIdAndRole(Long companyId, com.booking.authservice.model.enums.UserRole role);
 }

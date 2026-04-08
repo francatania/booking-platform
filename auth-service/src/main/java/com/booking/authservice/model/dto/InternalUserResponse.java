@@ -16,6 +16,7 @@ public class InternalUserResponse {
     private String username;
     private String firstName;
     private String lastName;
+    private String email;
 
     public static InternalUserResponse from(User user) {
         return InternalUserResponse.builder()
@@ -23,6 +24,7 @@ public class InternalUserResponse {
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .email(user.getEmail())
                 .build();
     }
 }
