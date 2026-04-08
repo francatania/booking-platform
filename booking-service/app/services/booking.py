@@ -17,6 +17,7 @@ from app.exceptions import (
     BookingAlreadyCancelledException,
 )
 from datetime import datetime, timedelta, date
+from app.dependencies.rabbitmq_publisher import publish_event
 
 class BookingService:
     def create_booking(self, dto: BookingCreate, current_user: UserPrincipal, db:Session):
@@ -43,6 +44,15 @@ class BookingService:
         db.add(booking)
         db.commit()
         db.refresh(booking)
+
+        publish_event("booking.created", {
+            "bookingId": booking.id,
+            "userId": booking.user_id,
+            "operatorId": booking.company_id,
+            "serviceId": booking.service_id,
+            "date": booking.start_time.strftime("%Y-%m-%d"),
+            "startTime": booking.start_time.strftime("%H:%M"),
+        })
 
         service_names = get_services_by_ids([booking.service_id])
         return BookingResponse(
@@ -217,6 +227,16 @@ class BookingService:
         booking.status = BookingStatus.CONFIRMED
         db.commit()
         db.refresh(booking)
+
+        publish_event("booking.confirmed", {
+            "bookingId": booking.id,
+            "userId": booking.user_id,
+            "operatorId": booking.company_id,
+            "serviceId": booking.service_id,
+            "date": booking.start_time.strftime("%Y-%m-%d"),
+            "startTime": booking.start_time.strftime("%H:%M"),
+        })
+
         return booking
 
     def complete_booking(self, booking_id: int, db: Session):

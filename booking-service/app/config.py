@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     jwt_secret: str = "mySecretKey1234567890mySecretKey1234567890"
     company_service_url: str = "http://localhost:8082/api"
     auth_service_url: str = "http://localhost:8081/api"
+    rabbitmq_url: str = "amqp://franco:franco123@localhost:5672/"
 
     @property
     def database_url(self) -> str:
