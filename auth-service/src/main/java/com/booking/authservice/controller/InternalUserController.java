@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.booking.authservice.entity.User;
 import com.booking.authservice.model.dto.InternalUserResponse;
 import com.booking.authservice.model.enums.UserRole;
 import com.booking.authservice.repository.UserRepository;

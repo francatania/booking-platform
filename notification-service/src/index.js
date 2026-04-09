@@ -1,12 +1,10 @@
 const express = require('express');
-const cors = require('cors');
 const config = require('./config');
 const rabbitmq = require('./rabbitmq');
 const bookingConsumer = require('./consumers/bookingConsumer');
 const notificationsRouter = require('./routes/notifications');
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
 app.use('/api/notifications', notificationsRouter);

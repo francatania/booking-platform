@@ -20,6 +20,46 @@
       }
 
 
+      <button mat-icon-button [matMenuTriggerFor]="notifMenu" (click)="openNotifications()">
+        <mat-icon
+          [matBadge]="unreadCount"
+          [matBadgeHidden]="unreadCount === 0"
+          matBadgeColor="warn"
+          matBadgeSize="medium">
+          notifications
+        </mat-icon>
+      </button>
+
+      <mat-menu #notifMenu="matMenu" class="notif-menu">
+        <div class="px-4 py-2 flex justify-between items-center pointer-events-none">
+          <span class="text-sm font-semibold text-gray-700">{{ 'NAVBAR.NOTIFICATIONS' | translate }}</span>
+          <button mat-button class="pointer-events-auto text-xs text-blue-600" (click)="markAllRead()">
+            {{ 'NAVBAR.MARK_ALL_READ' | translate }}
+          </button>
+        </div>
+        <mat-divider />
+
+        @if (notifications.length === 0) {
+          <div class="px-4 py-4 text-sm text-gray-400 text-center pointer-events-none">
+            {{ 'NAVBAR.NO_NOTIFICATIONS' | translate }}
+          </div>
+        }
+
+        @for (n of notifications; track n.id) {
+          <button mat-menu-item (click)="markRead(n)" class="flex flex-col items-start">
+            <div class="flex items-center gap-2 w-full">
+              @if (!n.is_read) {
+                <span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
+              } @else {
+                <span class="w-2 h-2 flex-shrink-0"></span>
+              }
+              <span class="text-sm font-medium text-gray-800 truncate">{{ n.title }}</span>
+            </div>
+            <span class="text-xs text-gray-500 ml-4 whitespace-normal">{{ n.message }}</span>
+          </button>
+        }
+      </mat-menu>
+
       <button mat-icon-button [matMenuTriggerFor]="userMenu">
         <mat-icon>menu</mat-icon>
       </button>

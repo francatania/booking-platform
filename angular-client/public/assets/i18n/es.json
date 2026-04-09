@@ -32,6 +32,9 @@
   "NAVBAR.OPERATOR": "Operador",
   "NAVBAR.MY_SERVICES": "Mis Servicios",
   "NAVBAR.LOGOUT": "Cerrar sesion",
+  "NAVBAR.NOTIFICATIONS": "Notificaciones",
+  "NAVBAR.MARK_ALL_READ": "Marcar todas como leídas",
+  "NAVBAR.NO_NOTIFICATIONS": "No tenés notificaciones",
 
   "HOME.TITLE": "Servicios Disponibles",
 
