@@ -6,3 +6,10 @@
   min-width: 380px !important;
   max-width: 380px !important;
 }
+
+.notif-menu .mat-mdc-menu-item-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}

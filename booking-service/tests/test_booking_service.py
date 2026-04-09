@@ -186,7 +186,9 @@ def test_cancel_booking_whenIsOk_returnsNone(service, db):
     booking = build_booking()
     db.query.return_value.filter.return_value.first.return_value = booking
 
-    result = service.cancel_booking(1, USER, db)
+    with patch("app.services.booking.get_services_by_ids", return_value={}), \
+         patch("app.services.booking.publish_event"):
+        result = service.cancel_booking(1, USER, db)
 
     assert result is None
     assert booking.status == BookingStatus.CANCELLED

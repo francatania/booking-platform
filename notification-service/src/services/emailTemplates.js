@@ -14,6 +14,13 @@ const translations = {
         `Your booking for <strong>${serviceName}</strong> on <strong>${date}</strong> at <strong>${startTime}</strong> has been confirmed.`,
       footer: 'Thank you for choosing us!',
     },
+    booking_cancelled: {
+      subject: 'Booking cancelled',
+      greeting: 'Hello',
+      body: (serviceName, date, startTime) =>
+        `The booking for <strong>${serviceName}</strong> on <strong>${date}</strong> at <strong>${startTime}</strong> has been cancelled.`,
+      footer: 'If you have any questions, please contact us.',
+    },
   },
   es: {
     booking_created: {
@@ -29,6 +36,13 @@ const translations = {
       body: (serviceName, date, startTime) =>
         `Tu reserva para <strong>${serviceName}</strong> del día <strong>${date}</strong> a las <strong>${startTime}</strong> ha sido confirmada.`,
       footer: '¡Gracias por elegirnos!',
+    },
+    booking_cancelled: {
+      subject: 'Reserva cancelada',
+      greeting: 'Hola',
+      body: (serviceName, date, startTime) =>
+        `La reserva para <strong>${serviceName}</strong> del día <strong>${date}</strong> a las <strong>${startTime}</strong> ha sido cancelada.`,
+      footer: 'Si tenés alguna pregunta, no dudes en contactarnos.',
     },
   },
 };

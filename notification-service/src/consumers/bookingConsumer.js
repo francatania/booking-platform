@@ -43,6 +43,35 @@ async function notifyUsers(users, { type, message, bookingId, emailType, emailDa
   );
 }
 
+const handlers = {
+  'booking.created': async (event) => ({
+    users: await fetchCompanyStaff(event.operatorId),
+    type: 'BOOKING_CREATED',
+    emailType: 'booking_created',
+  }),
+
+  'booking.confirmed': async (event) => {
+    const user = await fetchUser(event.userId);
+    return {
+      users: user ? [user] : [],
+      type: 'BOOKING_CONFIRMED',
+      emailType: 'booking_confirmed',
+    };
+  },
+
+  'booking.cancelled': async (event) => {
+    const cancelledByStaff = event.cancelledBy !== 'USER';
+    const users = cancelledByStaff
+      ? [await fetchUser(event.userId)].filter(Boolean)
+      : await fetchCompanyStaff(event.operatorId);
+    return {
+      users,
+      type: 'BOOKING_CANCELLED',
+      emailType: 'booking_cancelled',
+    };
+  },
+};
+
 async function start(channel) {
   console.log('Booking consumer started');
 
@@ -54,38 +83,23 @@ async function start(channel) {
       const event = JSON.parse(msg.content.toString());
       console.log(`[Event] ${routingKey}:`, event);
 
-      if (routingKey === 'booking.created') {
-        const staff = await fetchCompanyStaff(event.operatorId);
-        await notifyUsers(staff, {
-          type: 'BOOKING_CREATED',
-          message: `${event.serviceName};${event.date};${event.startTime}`,
-          bookingId: event.bookingId,
-          emailType: 'booking_created',
-          emailData: {
-            serviceName: event.serviceName,
-            date: event.date,
-            startTime: event.startTime,
-            language: event.language,
-          },
-        });
-
-      } else if (routingKey === 'booking.confirmed') {
-        const user = await fetchUser(event.userId);
-        if (user) {
-          await notifyUsers([user], {
-            type: 'BOOKING_CONFIRMED',
-            message: `${event.serviceName};${event.date};${event.startTime}`,
-            bookingId: event.bookingId,
-            emailType: 'booking_confirmed',
-            emailData: {
-              serviceName: event.serviceName,
-              date: event.date,
-              startTime: event.startTime,
-              language: event.language,
-            },
-          });
-        }
+      const handler = handlers[routingKey];
+      if (!handler) {
+        console.warn(`[Consumer] No handler for routing key: ${routingKey}`);
+        channel.ack(msg);
+        return;
       }
+
+      const { users, type, emailType } = await handler(event);
+      const message = `${event.serviceName};${event.date};${event.startTime}`;
+      const emailData = {
+        serviceName: event.serviceName,
+        date: event.date,
+        startTime: event.startTime,
+        language: event.language,
+      };
+
+      await notifyUsers(users, { type, message, bookingId: event.bookingId, emailType, emailData });
 
       channel.ack(msg);
     } catch (err) {

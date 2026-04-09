@@ -24,16 +24,17 @@
   }
 
   @for (n of parsedNotification; track n.id) {
-    <button mat-menu-item (click)="markRead(n)" class="flex flex-col items-start">
-      <div class="flex items-center gap-2 w-full">
+    <button mat-menu-item (click)="markRead(n)" class="flex flex-col items-start mb-2">
+      <div class="flex justify-between gap-2 w-full">
+        <span class="text-sm font-medium text-gray-800 truncate">{{ n.titleParsed }}</span>
+
         @if (!n.is_read) {
           <span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
         } @else {
           <span class="w-2 h-2 flex-shrink-0"></span>
         }
-        <span class="text-sm font-medium text-gray-800 truncate">{{ n.titleParsed }}</span>
       </div>
-      <span class="text-xs text-gray-500 whitespace-normal">{{ n.messageParsed }}</span>
+      <span class="text-xs text-gray-500 whitespace-normal mb-2">{{ n.messageParsed }}</span>
     </button>
   }
 </mat-menu>

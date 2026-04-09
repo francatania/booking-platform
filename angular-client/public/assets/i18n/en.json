@@ -47,6 +47,8 @@
   "NOTIFICATION.BOOKING_CREATED.MESSAGE": "New booking: {{serviceName}} on {{date}} at {{startTime}}.",
   "NOTIFICATION.BOOKING_CONFIRMED.TITLE": "Booking confirmed",
   "NOTIFICATION.BOOKING_CONFIRMED.MESSAGE": "Your booking for {{serviceName}} on {{date}} at {{startTime}} has been confirmed.",
+  "NOTIFICATION.BOOKING_CANCELLED.TITLE": "Booking cancelled",
+  "NOTIFICATION.BOOKING_CANCELLED.MESSAGE": "The booking for {{serviceName}} on {{date}} at {{startTime}} has been cancelled.",
 
   "HOME.TITLE": "Available Services",
 

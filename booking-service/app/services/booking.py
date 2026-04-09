@@ -143,6 +143,17 @@ class BookingService:
         booking.status = BookingStatus.CANCELLED
         db.commit()
 
+        service_names = get_services_by_ids([booking.service_id])
+        publish_event("booking.cancelled", {
+            "bookingId": booking.id,
+            "userId": booking.user_id,
+            "operatorId": booking.company_id,
+            "serviceName": service_names.get(booking.service_id, ""),
+            "date": booking.start_time.strftime("%Y-%m-%d"),
+            "startTime": booking.start_time.strftime("%H:%M"),
+            "cancelledBy": current_user.role,
+        })
+
     def reschedule(self, booking_id:int, current_user: UserPrincipal, dto: RescheduleRequest, db: Session):
 
         if dto.start_time >= dto.end_time:

@@ -3,7 +3,7 @@ const config = require('./config');
 
 const EXCHANGE = 'booking_events';
 const QUEUE = 'notification_queue';
-const ROUTING_KEYS = ['booking.created', 'booking.confirmed'];
+const ROUTING_KEYS = ['booking.created', 'booking.confirmed', 'booking.cancelled'];
 
 let connection = null;
 let channel = null;
