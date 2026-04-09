@@ -106,3 +106,12 @@
     }
   </div>
 </div>
+
+@if (showConfirm) {
+  <app-confirmation-dialog
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    (confirmed)="onDialogConfirmed()"
+    (cancelled)="onDialogCancelled()"
+  />
+}

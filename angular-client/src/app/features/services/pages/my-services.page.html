@@ -67,7 +67,6 @@
   </div>
 </div>
 
-<!-- Modal: form -->
 @if (showForm) {
   <div class="fixed inset-0 z-40 flex items-center justify-center bg-black/50" (click)="onCancel()">
     <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 z-50" (click)="$event.stopPropagation()">
@@ -105,18 +104,10 @@
 }
 
 @if (showConfirm) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
-      <h2 class="text-lg font-semibold text-gray-800 mb-2">{{ 'MY_SERVICES.CONFIRM_TITLE' | translate }}</h2>
-      <p class="text-sm text-gray-500 mb-6">{{ 'MY_SERVICES.CONFIRM_TEXT' | translate }}</p>
-      <div class="flex gap-2 justify-end">
-        <button (click)="onCancelConfirm()" class="px-4 py-2 border border-gray-300 text-gray-600 text-sm rounded-md hover:bg-gray-50 cursor-pointer">
-          {{ 'MY_SERVICES.CONFIRM_NO' | translate }}
-        </button>
-        <button (click)="onConfirmSave()" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 cursor-pointer">
-          {{ 'MY_SERVICES.CONFIRM_YES' | translate }}
-        </button>
-      </div>
-    </div>
-  </div>
+  <app-confirmation-dialog
+    [title]="'MY_SERVICES.CONFIRM_TITLE' | translate"
+    [message]="'MY_SERVICES.CONFIRM_TEXT' | translate"
+    (confirmed)="onConfirmSave()"
+    (cancelled)="onCancelConfirm()"
+  />
 }

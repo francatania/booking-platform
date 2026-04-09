@@ -5,10 +5,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { UserService } from '../../../core/services/user.service';
 import { CompanyServiceResponse, CreateCompanyServiceRequest, UpdateCompanyServiceRequest } from '../../../core/models/company.model';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog.component/confirmation-dialog.component';
 
 @Component({
   selector: 'app-my-services-page',
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, ConfirmationDialogComponent],
   templateUrl: './my-services.page.html'
 })
 export class MyServicesPage implements OnInit {

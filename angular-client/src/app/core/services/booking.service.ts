@@ -20,8 +20,8 @@ export class BookingService {
     return this.http.get<BookingResponse[]>(`${this.BASE_URL}/bookings/my`);
   }
 
-  cancelBooking(id: number): Observable<BookingResponse> {
-    return this.http.patch<BookingResponse>(`${this.BASE_URL}/bookings/${id}/cancel`, {});
+  cancelBooking(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.BASE_URL}/bookings/${id}/cancel`, {});
   }
 
   rescheduleBooking(id: number, dto: RescheduleRequest): Observable<BookingResponse> {
@@ -43,12 +43,12 @@ export class BookingService {
     return this.http.get<BookingDetailResponse[]>(`${this.BASE_URL}/bookings/company`, { params });
   }
 
-  confirmBooking(id: number): Observable<BookingResponse> {
-    return this.http.patch<BookingResponse>(`${this.BASE_URL}/bookings/${id}/confirm`, {});
+  confirmBooking(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.BASE_URL}/bookings/${id}/confirm`, {});
   }
 
-  completeBooking(id: number): Observable<BookingResponse> {
-    return this.http.patch<BookingResponse>(`${this.BASE_URL}/bookings/${id}/complete`, {});
+  completeBooking(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.BASE_URL}/bookings/${id}/complete`, {});
   }
 
 

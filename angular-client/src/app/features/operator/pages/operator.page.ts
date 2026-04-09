@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { BookingDetailResponse } from '../../../core/models/booking.model';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog.component/confirmation-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-operator-page',
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, ConfirmationDialogComponent],
   templateUrl: './operator.page.html'
 })
 export class OperatorPage implements OnInit {
@@ -19,7 +21,12 @@ export class OperatorPage implements OnInit {
   toDate: string = '';
   fullName: string = '';
 
-  constructor(private appState: AppStateService) {
+  showConfirm = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  private pendingAction: (() => void) | null = null;
+
+  constructor(private appState: AppStateService, private translate: TranslateService) {
     const saved = localStorage.getItem('operator_tab');
     if (saved === 'pending' || saved === 'confirmed') this.activeTab = saved;
   }
@@ -59,14 +66,44 @@ export class OperatorPage implements OnInit {
   }
 
   onConfirm(id: number) {
-    this.appState.confirmBooking(id, () => { this.loadPending(); this.loadConfirmed(); });
+    this.openConfirm(
+      this.translate.instant('OPERATOR.CONFIRM_TITLE'),
+      this.translate.instant('OPERATOR.CONFIRM_TEXT'),
+      () => this.appState.confirmBooking(id, () => { this.loadPending(); this.loadConfirmed(); })
+    );
   }
 
   onCancel(id: number) {
-    this.appState.cancelBooking(id, () => { this.loadPending(); this.loadConfirmed(); });
+    this.openConfirm(
+      this.translate.instant('OPERATOR.CANCEL_TITLE'),
+      this.translate.instant('OPERATOR.CANCEL_TEXT'),
+      () => this.appState.cancelBooking(id, () => { this.loadPending(); this.loadConfirmed(); })
+    );
   }
 
   onComplete(id: number) {
-    this.appState.completeBooking(id, () => this.loadConfirmed());
+    this.openConfirm(
+      this.translate.instant('OPERATOR.COMPLETE_TITLE'),
+      this.translate.instant('OPERATOR.COMPLETE_TEXT'),
+      () => this.appState.completeBooking(id, () => this.loadConfirmed())
+    );
+  }
+
+  openConfirm(title: string, message: string, action: () => void) {
+    this.confirmTitle = title;
+    this.confirmMessage = message;
+    this.pendingAction = action;
+    this.showConfirm = true;
+  }
+
+  onDialogConfirmed() {
+    this.pendingAction?.();
+    this.showConfirm = false;
+    this.pendingAction = null;
+  }
+
+  onDialogCancelled() {
+    this.showConfirm = false;
+    this.pendingAction = null;
   }
 }

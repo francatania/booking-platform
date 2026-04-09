@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { InboxService, InboxNotification } from '../../../core/services/inbox.service';
+import { Subscription, interval } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 
 interface ParsedNotification extends InboxNotification {
   titleParsed: string;
@@ -18,14 +20,22 @@ interface ParsedNotification extends InboxNotification {
   imports: [CommonModule, MatMenuModule, MatButtonModule, MatIconModule, MatDividerModule, MatBadgeModule, TranslateModule],
   templateUrl: './notification-bell.component.html',
 })
-export class NotificationBellComponent implements OnInit {
+export class NotificationBellComponent implements OnInit, OnDestroy {
   unreadCount = 0;
   parsedNotification: ParsedNotification[] = [];
+
+  private poller$?: Subscription;
 
   constructor(private inbox: InboxService, private translate: TranslateService) {}
 
   ngOnInit() {
-    this.loadUnreadCount();
+    this.poller$ = interval(2 * 60 * 1000).pipe(startWith(0)).subscribe(() => {
+      this.loadUnreadCount();
+    });
+  }
+
+  ngOnDestroy() {
+    this.poller$?.unsubscribe();
   }
 
   loadUnreadCount() {

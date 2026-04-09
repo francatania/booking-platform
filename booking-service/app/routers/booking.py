@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies.auth import get_current_user, UserPrincipal, require_roles
@@ -37,7 +37,7 @@ def get_company_bookings(
 ):
     return service.get_company_bookings(current_user.company_id, status, from_date, to_date, full_name, db)
 
-@router.patch("/{booking_id}/confirm", response_model=BookingResponse)
+@router.patch("/{booking_id}/confirm", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def confirm_booking(
     booking_id: int,
     request: Request,
@@ -45,15 +45,15 @@ def confirm_booking(
     current_user: UserPrincipal = Depends(require_roles("OPERATOR"))
 ):
     language = request.headers.get("accept-language", "en")
-    return service.confirm_booking(booking_id, db, language)
+    service.confirm_booking(booking_id, db, language)
 
-@router.patch("/{booking_id}/complete", response_model=BookingResponse)
+@router.patch("/{booking_id}/complete", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def complete_booking(
     booking_id: int,
     db: Session = Depends(get_db),
     current_user: UserPrincipal = Depends(require_roles("OPERATOR", "SUPER_ADMIN"))
 ):
-    return service.complete_booking(booking_id, db)
+    service.complete_booking(booking_id, db)
 
 @router.get("/stats", response_model=BookingStatsResponse)
 def get_stats(
@@ -70,13 +70,13 @@ def get_booking(
     db: Session = Depends(get_db),):
     return service.get_booking(booking_id, db)
 
-@router.patch("/{booking_id}/cancel", response_model=BookingResponse)
+@router.patch("/{booking_id}/cancel", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def cancel_booking(
     booking_id: int,
     db: Session = Depends(get_db),
     current_user: UserPrincipal = Depends(get_current_user)
 ):
-    return service.cancel_booking(booking_id, current_user, db)
+    service.cancel_booking(booking_id, current_user, db)
 
 
 @router.patch("/{booking_id}/reschedule", response_model=BookingResponse)

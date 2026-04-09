@@ -142,8 +142,6 @@ class BookingService:
         booking = self._find_booking_to_patch(booking_id, current_user, db)
         booking.status = BookingStatus.CANCELLED
         db.commit()
-        db.refresh(booking)
-        return self._to_response(booking)
 
     def reschedule(self, booking_id:int, current_user: UserPrincipal, dto: RescheduleRequest, db: Session):
 
@@ -242,19 +240,6 @@ class BookingService:
             "language": language,
         })
 
-        return BookingResponse(
-            id=booking.id,
-            user_id=booking.user_id,
-            service_id=booking.service_id,
-            service_name=service_names.get(booking.service_id, ""),
-            price=booking.price,
-            start_time=booking.start_time,
-            end_time=booking.end_time,
-            status=booking.status.value,
-            created_at=booking.created_at,
-            updated_at=booking.updated_at,
-        )
-
     def complete_booking(self, booking_id: int, db: Session):
         booking = db.query(Booking).filter(Booking.id == booking_id).first()
         if booking is None:
@@ -263,8 +248,6 @@ class BookingService:
             raise InvalidStatusTransitionException(booking.status.value, "COMPLETED")
         booking.status = BookingStatus.COMPLETED
         db.commit()
-        db.refresh(booking)
-        return booking
 
     def getStats(self, company_id: int, start_date: datetime, end_date: datetime, db:Session):
         bookings = db.query(Booking).filter(Booking.company_id == company_id,

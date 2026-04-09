@@ -124,14 +124,13 @@ def test_get_booking_whenNotFound_returns404():
 
 
 
-def test_cancel_booking_whenOwner_returns200():
+def test_cancel_booking_whenOwner_returns204():
     with patch("app.routers.booking.BookingService.cancel_booking") as mock_cancel:
-        mock_cancel.return_value = build_booking_response()
+        mock_cancel.return_value = None
 
         response = client.patch("/bookings/1/cancel")
 
-        assert response.status_code == 200
-        assert response.json()["id"] == 1
+        assert response.status_code == 204
 
 def test_cancel_booking_whenNotFound_returns404():
     with patch("app.routers.booking.BookingService.cancel_booking") as mock_cancel:

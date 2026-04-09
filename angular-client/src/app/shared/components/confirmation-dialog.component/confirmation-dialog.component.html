@@ -1,0 +1,22 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">{{ title }}</h2>
+    <p class="text-sm text-gray-500 mb-6">{{ message }}</p>
+    <div class="flex gap-2 justify-end">
+      <button
+        type="button"
+        (click)="cancelled.emit()"
+        class="px-4 py-2 border border-gray-300 text-gray-600 text-sm rounded-md hover:bg-gray-50 cursor-pointer"
+      >
+        {{ cancelLabel | translate }}
+      </button>
+      <button
+        type="button"
+        (click)="confirmed.emit()"
+        class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 cursor-pointer"
+      >
+        {{ confirmLabel | translate }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -182,13 +182,11 @@ def test_cancel_booking_whenBookingAlreadyCancelled_raisesBookingAlreadyCancelle
     with pytest.raises(BookingAlreadyCancelledException):
         service.cancel_booking(1, USER, db)
 
-def test_cancel_booking_whenIsOk_returnsBooking(service, db):
+def test_cancel_booking_whenIsOk_returnsNone(service, db):
     booking = build_booking()
     db.query.return_value.filter.return_value.first.return_value = booking
 
-    with patch("app.services.booking.get_services_by_ids", return_value={}):
-        result = service.cancel_booking(1, USER, db)
+    result = service.cancel_booking(1, USER, db)
 
-    assert result.user_id == booking.user_id
-    assert result.id == booking.id
-    assert result.status == BookingStatus.CANCELLED.value
+    assert result is None
+    assert booking.status == BookingStatus.CANCELLED

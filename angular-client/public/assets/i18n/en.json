@@ -1,4 +1,12 @@
 {
+  "DIALOG.CONFIRM": "Confirm",
+  "DIALOG.CANCEL": "Cancel",
+  "OPERATOR.CONFIRM_TITLE": "Confirm booking",
+  "OPERATOR.CONFIRM_TEXT": "Are you sure you want to confirm this booking?",
+  "OPERATOR.CANCEL_TITLE": "Cancel booking",
+  "OPERATOR.CANCEL_TEXT": "Are you sure you want to cancel this booking?",
+  "OPERATOR.COMPLETE_TITLE": "Complete booking",
+  "OPERATOR.COMPLETE_TEXT": "Are you sure you want to mark this booking as completed?",
   "REGISTER.TITLE": "Create account",
   "REGISTER.FIRST_NAME": "First name",
   "REGISTER.LAST_NAME": "Last name",
