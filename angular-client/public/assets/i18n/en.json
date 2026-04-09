@@ -35,6 +35,10 @@
   "NAVBAR.NOTIFICATIONS": "Notifications",
   "NAVBAR.MARK_ALL_READ": "Mark all as read",
   "NAVBAR.NO_NOTIFICATIONS": "No notifications yet",
+  "NOTIFICATION.BOOKING_CREATED.TITLE": "New booking received",
+  "NOTIFICATION.BOOKING_CREATED.MESSAGE": "New booking: {{serviceName}} on {{date}} at {{startTime}}.",
+  "NOTIFICATION.BOOKING_CONFIRMED.TITLE": "Booking confirmed",
+  "NOTIFICATION.BOOKING_CONFIRMED.MESSAGE": "Your booking for {{serviceName}} on {{date}} at {{startTime}} has been confirmed.",
 
   "HOME.TITLE": "Available Services",
 

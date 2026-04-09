@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { NotificationType } from '../enums/notification.enum';
 
 export interface InboxNotification {
   id: number;
   user_id: number;
-  type: string;
-  title: string;
+  type: NotificationType;
   message: string;
   is_read: boolean;
   booking_id: number | null;

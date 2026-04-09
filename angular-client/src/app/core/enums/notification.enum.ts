@@ -1,0 +1,4 @@
+export enum NotificationType {
+  BOOKING_CREATED = 'BOOKING_CREATED',
+  BOOKING_CONFIRMED = 'BOOKING_CONFIRMED',
+}

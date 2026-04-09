@@ -35,6 +35,10 @@
   "NAVBAR.NOTIFICATIONS": "Notificaciones",
   "NAVBAR.MARK_ALL_READ": "Marcar todas como leídas",
   "NAVBAR.NO_NOTIFICATIONS": "No tenés notificaciones",
+  "NOTIFICATION.BOOKING_CREATED.TITLE": "Nueva reserva recibida",
+  "NOTIFICATION.BOOKING_CREATED.MESSAGE": "Nueva reserva: {{serviceName}} para el día {{date}} a las {{startTime}}.",
+  "NOTIFICATION.BOOKING_CONFIRMED.TITLE": "Reserva confirmada",
+  "NOTIFICATION.BOOKING_CONFIRMED.MESSAGE": "Tu reserva para {{serviceName}} del día {{date}} a las {{startTime}} fue confirmada.",
 
   "HOME.TITLE": "Servicios Disponibles",
 
@@ -145,5 +149,9 @@
   "NOTIFY.ERROR_CONFIRM": "No se pudo confirmar la reserva.",
   "NOTIFY.ERROR_COMPLETE": "No se pudo completar la reserva.",
   "NOTIFY.ERROR_RESCHEDULE": "No se pudo reprogramar la reserva.",
-  "NOTIFY.ERROR_LOAD_STATS": "No se pudieron cargar las estadisticas."
+  "NOTIFY.ERROR_LOAD_STATS": "No se pudieron cargar las estadisticas.",
+
+  "NOTIFICATION.NEW_BOOKING_TITLE": "Nueva reserva",
+  "NOTIFICATION.BOOKING_CONFIRMED_TITLE": "Nueva reserva"
+  
 }

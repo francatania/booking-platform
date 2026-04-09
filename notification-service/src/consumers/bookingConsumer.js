@@ -28,16 +28,16 @@ async function fetchCompanyStaff(companyId) {
   return [...operators, ...admins];
 }
 
-async function notifyUsers(users, { type, title, message, bookingId, emailType, emailData }) {
+async function notifyUsers(users, { type, message, bookingId, emailType, emailData }) {
   await Promise.all(
     users.map(async (user) => {
-      await notificationService.create({ userId: user.id, type, title, message, bookingId });
+      await notificationService.create({ userId: user.id, type, message, bookingId });
       if (user.email) {
         const template = buildEmail(emailType, { ...emailData, userName: user.firstName });
-        const subject = template ? template.subject : title;
-        const html = template ? template.html : `<p>${message}</p>`;
-        await emailService.sendEmail(user.email, subject, html)
-          .catch((err) => console.error('[Email error]', err.message));
+        if (template) {
+          await emailService.sendEmail(user.email, template.subject, template.html)
+            .catch((err) => console.error('[Email error]', err.message));
+        }
       }
     }),
   );
@@ -58,8 +58,7 @@ async function start(channel) {
         const staff = await fetchCompanyStaff(event.operatorId);
         await notifyUsers(staff, {
           type: 'BOOKING_CREATED',
-          title: 'New booking received',
-          message: `New booking #${event.bookingId}: ${event.serviceName} on ${event.date} at ${event.startTime}.`,
+          message: `${event.serviceName};${event.date};${event.startTime}`,
           bookingId: event.bookingId,
           emailType: 'booking_created',
           emailData: {
@@ -75,8 +74,7 @@ async function start(channel) {
         if (user) {
           await notifyUsers([user], {
             type: 'BOOKING_CONFIRMED',
-            title: 'Booking confirmed',
-            message: `Your booking #${event.bookingId} for ${event.serviceName} on ${event.date} at ${event.startTime} has been confirmed.`,
+            message: `${event.serviceName};${event.date};${event.startTime}`,
             bookingId: event.bookingId,
             emailType: 'booking_confirmed',
             emailData: {

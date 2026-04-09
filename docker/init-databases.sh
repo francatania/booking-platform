@@ -164,7 +164,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "notification_db" <
         id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL,
         type VARCHAR(50) NOT NULL,
-        title VARCHAR(255) NOT NULL,
         message TEXT NOT NULL,
         is_read BOOLEAN NOT NULL DEFAULT false,
         booking_id INTEGER,

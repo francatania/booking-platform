@@ -1,10 +1,10 @@
 const db = require('../database');
 
-async function create({ userId, type, title, message, bookingId }) {
+async function create({ userId, type, message, bookingId }) {
   const result = await db.query(
-    `INSERT INTO notification (user_id, type, title, message, booking_id)
-     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-    [userId, type, title, message, bookingId || null],
+    `INSERT INTO notification (user_id, type, message, booking_id)
+     VALUES ($1, $2, $3, $4) RETURNING *`,
+    [userId, type, message, bookingId || null],
   );
   return result.rows[0];
 }
