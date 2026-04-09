@@ -8,7 +8,6 @@ from app.dependencies.company_client import validate_service, get_services_by_id
 from app.dependencies.auth_client import get_users_by_ids
 from app.exceptions import (
     InvalidBookingTimeException,
-    InvalidStatusTransitionException,
     MissingUserIdException,
     BookingNotFoundException,
     BookingConflictException,
@@ -16,6 +15,7 @@ from app.exceptions import (
     BookingForbiddenException,
     BookingAlreadyCancelledException,
 )
+from app.state_machine import transition
 from datetime import datetime, timedelta, date
 from app.dependencies.rabbitmq_publisher import publish_event
 
@@ -140,7 +140,7 @@ class BookingService:
 
     def cancel_booking(self, booking_id: int, current_user: UserPrincipal, db: Session):
         booking = self._find_booking_to_patch(booking_id, current_user, db)
-        booking.status = BookingStatus.CANCELLED
+        transition(booking, BookingStatus.CANCELLED)
         db.commit()
 
         service_names = get_services_by_ids([booking.service_id])
@@ -233,9 +233,7 @@ class BookingService:
         booking = db.query(Booking).filter(Booking.id == booking_id).first()
         if booking is None:
             raise BookingNotFoundException()
-        if booking.status != BookingStatus.PENDING:
-            raise InvalidStatusTransitionException(booking.status.value, "CONFIRMED")
-        booking.status = BookingStatus.CONFIRMED
+        transition(booking, BookingStatus.CONFIRMED)
         db.commit()
         db.refresh(booking)
 
@@ -255,9 +253,7 @@ class BookingService:
         booking = db.query(Booking).filter(Booking.id == booking_id).first()
         if booking is None:
             raise BookingNotFoundException()
-        if booking.status != BookingStatus.CONFIRMED:
-            raise InvalidStatusTransitionException(booking.status.value, "COMPLETED")
-        booking.status = BookingStatus.COMPLETED
+        transition(booking, BookingStatus.COMPLETED)
         db.commit()
 
     def getStats(self, company_id: int, start_date: datetime, end_date: datetime, db:Session):
