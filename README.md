@@ -2,41 +2,53 @@
 
 Microservices-based booking platform for scheduling appointments at service-oriented businesses (barbershops, spas, studios, etc.).
 
-Built with **Spring Boot**, **FastAPI**, **Nginx**, **PostgreSQL** and **Docker Compose**.
+Built with **Spring Boot**, **FastAPI**, **Node.js**, **Angular**, **RabbitMQ**, **Nginx**, **PostgreSQL** and **Docker Compose**.
 
 ---
 
 ## Architecture
 
 ```
-                         ┌──────────────────┐
-                         │     Client       │
-                         │  (Postman/Web)   │
-                         └────────┬─────────┘
-                                  │ :80
-                         ┌────────▼─────────┐
-                         │   Nginx Gateway  │
-                         │   Rate Limiting  │
-                         │   Reverse Proxy  │
-                         └──┬─────┬──────┬──┘
-                            │     │      │
-              ┌─────────────┘     │      └─────────────┐
-              │                   │                    │
-    ┌─────────▼──────┐  ┌────────▼───────┐  ┌─────────▼──────┐
-    │  auth-service   │  │ company-service │  │ booking-service │
-    │  Spring Boot    │  │  Spring Boot    │  │    FastAPI       │
-    │  :8081          │  │  :8082          │  │    :8000         │
-    └─────────┬──────┘  └────────┬───────┘  └──┬──────────────┘
-              │                  │   ▲          │
-              │ ◄────────────────┼───┼──────────┘
-              │  (GET /internal/ │   │  HTTP calls:
-              │   users?ids=)    │   │  - validate service
-              │                  │   │  - GET /internal/services?ids=
-              │                  │   │    (API Composition)
-    ┌─────────▼──────────────────▼──────────────────────────┐
-    │                    PostgreSQL                          │
-    │         auth_db  │  company_db  │  booking_db          │
-    └───────────────────────────────────────────────────────┘
+                         ┌──────────────────────┐
+                         │   Angular Client      │
+                         │   (SPA - port 4200)   │
+                         └──────────┬────────────┘
+                                    │ HTTP :80
+                         ┌──────────▼────────────┐
+                         │     Nginx Gateway      │
+                         │   Rate Limiting        │
+                         │   Reverse Proxy        │
+                         └──┬──────┬────────┬────┘
+                            │      │        │
+          ┌─────────────────┘      │        └────────────────┐
+          │                        │                         │
+┌─────────▼──────┐      ┌──────────▼──────┐      ┌──────────▼──────┐
+│  auth-service  │      │ company-service  │      │ booking-service  │
+│  Spring Boot   │      │  Spring Boot     │      │    FastAPI       │
+│  :8081         │      │  :8082           │      │    :8000         │
+└─────────┬──────┘      └──────────┬───────┘      └──────┬──────────┘
+          │                        │   ▲                  │
+          │ ◄──────────────────────┼───┼──────────────────┘
+          │  (GET /internal/users) │   │  HTTP calls:
+          │                        │   │  - validate service
+          │                        │   │  - GET /internal/services
+          │                        │   │
+          │                        │             ┌─────────────────────┐
+          │                        │             │   RabbitMQ          │
+          │                        │             │   booking_events     │
+          │                        │             │   (topic exchange)   │
+          │                        │             └──────────┬──────────┘
+          │                        │                        │
+          │                        │             ┌──────────▼──────────┐
+          │                        │             │ notification-service │
+          │◄───────────────────────┼─────────────│   Node.js / Express  │
+          │  (GET /internal/users) │             │   :3000              │
+          │                        │             └─────────────────────┘
+          │                        │
+┌─────────▼────────────────────────▼──────────────────────────────────┐
+│                           PostgreSQL                                  │
+│     auth_db  │  company_db  │  booking_db  │  notification_db        │
+└───────────────────────────────────────────────────────────────────────┘
 ```
 
 **Key design decisions:**
@@ -44,6 +56,8 @@ Built with **Spring Boot**, **FastAPI**, **Nginx**, **PostgreSQL** and **Docker 
 - **JWT-based auth** — stateless, tokens validated locally by each service
 - **API Composition** — when the operator panel fetches bookings, booking-service makes two parallel batch calls (`/internal/users?ids=` and `/internal/services?ids=`) to enrich the response with names, avoiding N+1 calls
 - **Gateway pattern** — single entry point, `/internal/*` is blocked externally (403)
+- **Event-driven notifications** — booking-service publishes domain events to RabbitMQ after DB commit; notification-service consumes them asynchronously and sends in-app notifications + emails
+- **Fire-and-forget events** — if the broker is down, the booking succeeds and the notification is silently skipped (acceptable tradeoff)
 
 ---
 
@@ -53,8 +67,11 @@ Built with **Spring Boot**, **FastAPI**, **Nginx**, **PostgreSQL** and **Docker 
 |-----------|-----------|
 | Auth Service | Java 17, Spring Boot 3.2, Spring Security, JJWT |
 | Company Service | Java 17, Spring Boot 3.2, Spring Security, JJWT |
-| Booking Service | Python 3.12, FastAPI, SQLAlchemy, httpx |
+| Booking Service | Python 3.12, FastAPI, SQLAlchemy, httpx, pika |
+| Notification Service | Node.js, Express, amqplib, nodemailer, pg |
+| Frontend | Angular 18, Angular Material, Tailwind CSS, ngx-translate |
 | Gateway | Nginx 1.25 |
+| Message Broker | RabbitMQ 3 (topic exchange) |
 | Database | PostgreSQL 16 |
 | Containerization | Docker, Docker Compose |
 | Testing | JUnit + Mockito (Java), pytest + unittest.mock (Python) |
@@ -78,10 +95,12 @@ Handles user registration, login and JWT issuance.
 
 JWT payload includes: `userId`, `username`, `email`, `role`, `companyId`
 
-**Internal endpoint (not accessible via gateway):**
+**Internal endpoints (not accessible via gateway):**
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/internal/users?ids=1,2,3` | Batch fetch user names (used by booking-service) |
+| GET | `/internal/users/{id}` | Fetch single user (used by notification-service) |
+| GET | `/internal/users/by-company?companyId=1&role=OPERATOR` | Fetch users by company and role (used by notification-service) |
 
 ---
 
@@ -99,9 +118,13 @@ Manages companies and their service catalog.
 | PATCH | `/services/{id}` | ADMIN (owner) | Update service |
 | PATCH | `/services/{id}/activate` | ADMIN (owner) | Activate service |
 | PATCH | `/services/{id}/deactivate` | ADMIN (owner) | Deactivate service |
-| GET | `/internal/services/{id}` | Internal only | Validate service (blocked by gateway) |
-| GET | `/internal/services?ids=1,2,3` | Internal only | Batch fetch service names (blocked by gateway) |
 | GET | `/companies/ping` | Public | Health check |
+
+**Internal endpoints (not accessible via gateway):**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/internal/services/{id}` | Validate service exists and is active |
+| GET | `/internal/services?ids=1,2,3` | Batch fetch service names |
 
 **Ownership check:** ADMINs can only manage services from their own company.
 
@@ -109,32 +132,33 @@ Manages companies and their service catalog.
 
 ### booking-service
 
-Handles reservations with anti-collision logic.
+Handles reservations with anti-collision logic and publishes domain events after state transitions.
 
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
-| POST | `/bookings` | USER | Create booking |
+| POST | `/bookings` | USER | Create booking → publishes `booking.created` |
 | GET | `/bookings/my` | USER | List own bookings |
 | GET | `/bookings/{id}` | Authenticated | Get booking details |
-| PATCH | `/bookings/{id}/cancel` | USER (owner) / ADMIN | Cancel booking |
+| PATCH | `/bookings/{id}/cancel` | USER (owner) / OPERATOR / ADMIN | Cancel booking → publishes `booking.cancelled` |
 | PATCH | `/bookings/{id}/reschedule` | USER (owner) | Reschedule booking |
-| GET | `/bookings/company` | OPERATOR / ADMIN | List company bookings (with user & service names) |
-| PATCH | `/bookings/{id}/confirm` | OPERATOR | Confirm a pending booking |
-| PATCH | `/bookings/{id}/complete` | OPERATOR | Mark a confirmed booking as completed |
+| GET | `/bookings/company` | OPERATOR / ADMIN | List company bookings (enriched with user & service names) |
+| PATCH | `/bookings/{id}/confirm` | OPERATOR / ADMIN | Confirm pending booking → 204, publishes `booking.confirmed` |
+| PATCH | `/bookings/{id}/complete` | OPERATOR / ADMIN | Complete confirmed booking → 204 |
 | GET | `/bookings/stats` | ADMIN / MANAGER | Aggregated stats: counts, revenue, period breakdown |
 | GET | `/bookings/ping` | Public | Health check |
 
 **Booking lifecycle:**
 ```
 PENDING → CONFIRMED → COMPLETED
-   └──────────────────────────→ CANCELLED (from any state)
+   └──────────────────────────→ CANCELLED
 ```
+State transitions are enforced by a dedicated `BookingStateMachine` module. Invalid transitions return `409`.
 
 **Role rules:**
 - `USER` — creates and manages their own bookings
-- `OPERATOR` — sees all company bookings, can confirm and complete them
-- `MANAGER` / `ADMIN` — read-only access to stats dashboard
-- `SUPER_ADMIN` — platform-level role (creates companies, registers admins); not intended for booking operations
+- `OPERATOR` / `ADMIN` — sees all company bookings, can confirm, complete and cancel them
+- `MANAGER` — read-only access to stats dashboard
+- `SUPER_ADMIN` — platform-level role (creates companies, registers admins)
 
 **Anti-collision logic (two independent checks):**
 1. **Global overlap check** — the user cannot have two bookings that overlap in time, regardless of company. If any existing active booking conflicts with the requested time window → `409`
@@ -149,6 +173,71 @@ Example: Company A has `gap_minutes = 30`. If a user has a booking at Company A 
 
 ---
 
+### notification-service
+
+Consumes booking domain events from RabbitMQ and delivers in-app notifications and emails.
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET | `/api/notifications` | Authenticated | List own notifications |
+| GET | `/api/notifications/unread-count` | Authenticated | Unread notification count |
+| PATCH | `/api/notifications/:id/read` | Authenticated | Mark one as read |
+| PATCH | `/api/notifications/read-all` | Authenticated | Mark all as read |
+| GET | `/notifications/ping` | Public | Health check |
+
+**Event handling:**
+
+| Routing key | Who gets notified | Email sent |
+|-------------|------------------|------------|
+| `booking.created` | All OPERATORs + ADMINs of the company | Yes |
+| `booking.confirmed` | The user who made the booking | Yes |
+| `booking.cancelled` (by user) | All OPERATORs + ADMINs of the company | Yes |
+| `booking.cancelled` (by operator/admin) | The booking owner | Yes |
+
+**In-app messages** are stored as structured data (`serviceName;date;startTime`) and translated client-side using the active language. Email templates are rendered server-side in `es`/`en` based on the `Accept-Language` header sent at booking creation time.
+
+---
+
+## Design Patterns
+
+### booking-service
+
+**State Machine** (`app/state_machine.py`)
+Centralizes all booking status transition rules in an explicit `TRANSITIONS` map. `BookingService` delegates all transition validation to a single `transition(booking, target)` function. Adding a new state only requires updating the map.
+
+```python
+TRANSITIONS = {
+    BookingStatus.PENDING:   {BookingStatus.CONFIRMED, BookingStatus.CANCELLED},
+    BookingStatus.CONFIRMED: {BookingStatus.COMPLETED, BookingStatus.CANCELLED},
+    BookingStatus.COMPLETED: set(),
+    BookingStatus.CANCELLED: set(),
+}
+```
+
+**Repository** (`app/repositories/booking_repository.py`)
+Isolates all SQLAlchemy queries from business logic. `BookingRepository` is instantiated once per request via FastAPI's dependency injection (`get_repo = Depends(get_db)`). `BookingService` receives a `BookingRepository` and has no knowledge of the ORM.
+
+```
+Router → Service → StateMachine
+  ↓
+get_repo()  →  BookingRepository  →  PostgreSQL
+```
+
+### notification-service
+
+**Handler Map** (`src/consumers/bookingConsumer.js`)
+Each routing key maps to an async handler that resolves recipients and notification metadata. The consumer loop is generic and routing-key-agnostic — adding a new event type only requires adding a new entry to the `handlers` object.
+
+```js
+const handlers = {
+  'booking.created':   async (event) => ({ users: await fetchCompanyStaff(...), ... }),
+  'booking.confirmed': async (event) => ({ users: [await fetchUser(...)], ... }),
+  'booking.cancelled': async (event) => ({ users: cancelledByStaff ? [user] : staff, ... }),
+};
+```
+
+---
+
 ## Gateway (Nginx)
 
 Single entry point on port 80. All external traffic flows through here.
@@ -160,6 +249,8 @@ Single entry point on port 80. All external traffic flows through here.
 | `/companies/*` | company-service:8082 |
 | `/services/*` | company-service:8082 |
 | `/bookings/*` | booking-service:8000 |
+| `/api/notifications/*` | notification-service:3000 |
+| `/notifications/ping` | notification-service:3000 |
 | `/internal/*` | Blocked (403) |
 | `/health` | Gateway status |
 
@@ -168,7 +259,7 @@ Single entry point on port 80. All external traffic flows through here.
 - API endpoints: **30 req/s**
 - Returns `429 Too Many Requests` when exceeded
 
-**Other features:** gzip compression, proxy timeouts, hidden server tokens
+**Other features:** gzip compression, CORS headers, proxy timeouts, hidden server tokens
 
 ---
 
@@ -176,6 +267,18 @@ Single entry point on port 80. All external traffic flows through here.
 
 ### Prerequisites
 - Docker and Docker Compose
+- (Optional) Gmail app password for email notifications
+
+### Environment variables
+
+Create a `.env` file at the project root for SMTP support:
+
+```env
+SMTP_USER=your-gmail@gmail.com
+SMTP_PASS=your-app-password
+```
+
+Without these variables the service still works — notifications are created in-app but emails are skipped.
 
 ### Start everything
 ```bash
@@ -183,10 +286,11 @@ docker compose up --build
 ```
 
 This will:
-1. Start PostgreSQL and create 3 databases (`auth_db`, `company_db`, `booking_db`)
+1. Start PostgreSQL and create 4 databases (`auth_db`, `company_db`, `booking_db`, `notification_db`)
 2. Run the seed script with test users, companies, services and bookings
-3. Build and start all three services (running unit tests during build)
-4. Start the Nginx gateway
+3. Start RabbitMQ
+4. Build and start all services (unit tests run during build for Java/Python services)
+5. Start the Nginx gateway
 
 ### Default test credentials
 | Username | Email | Password | Role |
@@ -198,8 +302,6 @@ This will:
 
 ### Happy path (backend walkthrough)
 
-A full end-to-end flow using Postman or curl. All requests go to `http://localhost`.
-
 **1. Login as a USER and create a booking**
 ```
 POST /auth/login
@@ -207,11 +309,8 @@ POST /auth/login
 → copy the token
 ```
 ```
-GET /companies
-→ pick a companyId (e.g. 1)
-
-GET /companies/1/services
-→ pick a serviceId and its price (e.g. serviceId: 1, price: 5000)
+GET /companies             → pick a companyId
+GET /companies/1/services  → pick a serviceId and price
 ```
 ```
 POST /bookings
@@ -220,60 +319,42 @@ Authorization: Bearer <token>
   "company_id": 1,
   "service_id": 1,
   "price": 5000,
+  "service_name": "Haircut",
   "start_time": "2026-04-10T10:00:00",
   "end_time": "2026-04-10T10:30:00"
 }
 → 201 Created, status: PENDING
+→ OPERATORs and ADMINs of the company receive an in-app notification + email
 ```
 
-**2. View your bookings**
+**2. Login as OPERATOR and manage the booking**
 ```
-GET /bookings/my
-Authorization: Bearer <user token>
-→ list of bookings with status PENDING
-```
+POST /auth/login  { "username": "operator1", "password": "password123" }
 
-**3. Login as OPERATOR and manage the booking**
-```
-POST /auth/login
-{ "username": "operator1", "password": "password123" }
-→ copy the operator token
-```
-```
 GET /bookings/company?status=PENDING
-Authorization: Bearer <operator token>
-→ returns enriched list with user full name and service name
-```
-```
-PATCH /bookings/{id}/confirm
-Authorization: Bearer <operator token>
-→ status changes to CONFIRMED
-```
-```
-PATCH /bookings/{id}/complete
-Authorization: Bearer <operator token>
-→ status changes to COMPLETED
+→ enriched list with user full name and service name
+
+PATCH /bookings/{id}/confirm   → 204, status: CONFIRMED
+→ the booking owner receives an in-app notification + email
+
+PATCH /bookings/{id}/complete  → 204, status: COMPLETED
 ```
 
-**4. View stats as ADMIN**
+**3. View stats as ADMIN**
 ```
-POST /auth/login
-{ "username": "admin", "password": "password123" }
-→ copy the admin token
-```
-```
+POST /auth/login  { "username": "admin", "password": "password123" }
+
 GET /bookings/stats?from_date=2026-01-01T00:00:00&to_date=2026-12-31T23:59:59
-Authorization: Bearer <admin token>
-→ returns total bookings, revenue, breakdown by status and by day
+→ total bookings, revenue, breakdown by status and by day
 ```
 
 ### Useful commands
 ```bash
-docker compose up -d                    # Start in background
-docker compose up --build gateway       # Rebuild a single service
-docker compose down                     # Stop all containers
-docker compose down -v                  # Stop and reset databases
-docker compose logs -f booking-service  # Follow logs of a service
+docker compose up -d                          # Start in background
+docker compose up --build booking-service -d  # Rebuild a single service
+docker compose down                           # Stop all containers
+docker compose down -v                        # Stop and reset databases
+docker compose logs -f booking-service        # Follow logs of a service
 ```
 
 ### Testing with Postman
@@ -304,11 +385,30 @@ pytest tests/ --cov=app --cov-report=term-missing
 
 ```
 booking-platform/
-├── auth-service/          # Spring Boot - Authentication & JWT
-├── company-service/       # Spring Boot - Companies & Services
-├── booking-service/       # FastAPI - Reservations
-├── gateway/               # Nginx config
-├── docker/                # DB init script with seed data
-├── docker-compose.yml     # Full stack orchestration
+├── auth-service/           # Spring Boot — Authentication & JWT
+├── company-service/        # Spring Boot — Companies & Services catalog
+├── booking-service/        # FastAPI — Reservations, state machine, repository pattern
+│   ├── app/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── repositories/   # BookingRepository (data access layer)
+│   │   ├── services/       # BookingService (business logic)
+│   │   ├── routers/
+│   │   ├── state_machine.py
+│   │   └── dependencies/
+│   └── tests/
+├── notification-service/   # Node.js — RabbitMQ consumer, in-app notifications, email
+│   └── src/
+│       ├── consumers/      # bookingConsumer (handler map pattern)
+│       ├── services/       # notificationService, emailService, emailTemplates
+│       └── routes/
+├── angular-client/         # Angular 18 SPA — booking UI, operator panel, notifications
+│   └── src/app/
+│       ├── core/           # services, models, guards, enums
+│       ├── features/       # home, operator, services pages
+│       └── shared/         # navbar, notification-bell, confirmation-dialog components
+├── gateway/                # Nginx config
+├── docker/                 # DB init script + seed data
+├── docker-compose.yml      # Full stack orchestration
 └── booking-platform.postman_collection.json
 ```
