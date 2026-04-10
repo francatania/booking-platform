@@ -23,7 +23,7 @@
   "REGISTER.FAILED": "Error al registrarse",
   "REGISTER.LOGIN_LINK": "¿Ya tenés cuenta? Iniciar sesion",
 
-  "LOGIN.TITLE": "Bookly",
+  "LOGIN.TITLE": "BooklyNow",
   "LOGIN.USERNAME": "Usuario",
   "LOGIN.PASSWORD": "Contrasena",
   "LOGIN.USERNAME_PLACEHOLDER": "Ingrese su usuario",
@@ -33,10 +33,10 @@
   "LOGIN.FAILED": "Error al iniciar sesion",
   "LOGIN.REGISTER_LINK": "¿No tenés cuenta? Registrate",
 
-  "NAVBAR.BRAND": "Bookly",
+  "NAVBAR.BRAND": "BooklyNow",
   "NAVBAR.SERVICES": "Servicios",
   "NAVBAR.MY_BOOKINGS": "Mis Reservas",
-  "NAVBAR.DASHBOARD": "Panel de Control",
+  "NAVBAR.DASHBOARD": "Panel de Administración",
   "NAVBAR.OPERATOR": "Operador",
   "NAVBAR.MY_SERVICES": "Mis Servicios",
   "NAVBAR.LOGOUT": "Cerrar sesion",
@@ -129,7 +129,7 @@
   "OPERATOR.CANCEL": "Cancelar",
   "OPERATOR.COMPLETE": "Marcar como Completada",
 
-  "ADMIN.TITLE": "Panel de Administracion",
+  "ADMIN.TITLE": "Panel de Administración",
   "ADMIN.FROM": "Desde",
   "ADMIN.TO": "Hasta",
   "ADMIN.APPLY": "Aplicar",

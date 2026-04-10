@@ -23,7 +23,7 @@
   "REGISTER.FAILED": "Registration failed",
   "REGISTER.LOGIN_LINK": "Already have an account? Sign in",
 
-  "LOGIN.TITLE": "Bookly",
+  "LOGIN.TITLE": "BooklyNow",
   "LOGIN.USERNAME": "Username",
   "LOGIN.PASSWORD": "Password",
   "LOGIN.USERNAME_PLACEHOLDER": "Enter your username",
@@ -33,7 +33,7 @@
   "LOGIN.FAILED": "Login failed",
   "LOGIN.REGISTER_LINK": "Don't have an account? Register",
 
-  "NAVBAR.BRAND": "Bookly",
+  "NAVBAR.BRAND": "BooklyNow",
   "NAVBAR.SERVICES": "Services",
   "NAVBAR.MY_BOOKINGS": "My Bookings",
   "NAVBAR.DASHBOARD": "Dashboard",

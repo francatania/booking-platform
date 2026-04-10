@@ -29,7 +29,7 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   constructor(private inbox: InboxService, private translate: TranslateService) {}
 
   ngOnInit() {
-    this.poller$ = interval(2 * 60 * 1000).pipe(startWith(0)).subscribe(() => {
+    this.poller$ = interval(60 * 1000).pipe(startWith(0)).subscribe(() => {
       this.loadUnreadCount();
     });
   }

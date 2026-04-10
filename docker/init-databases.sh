@@ -26,11 +26,11 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "auth_db" <<-'EOSQL
 
     INSERT INTO users (username, first_name, last_name, email, password_hash, role, company_id) VALUES
         ('superadmin', 'Super', 'Admin', 'superadmin@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'SUPER_ADMIN', NULL),
-        ('admin', 'Admin', 'User', 'admin@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'ADMIN', 1),
-        ('operator1', 'Carlos', 'Gomez', 'operator@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'OPERATOR', 1),
-        ('user', 'John', 'Doe', 'user@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL),
-        ('user2', 'Jane', 'Smith', 'user2@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL),
-        ('user3', 'Michael', 'Brown', 'user3@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL);
+        ('admin', 'Marcos', 'Fernández', 'admin@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'ADMIN', 1),
+        ('operator1', 'Carlos', 'Gómez', 'opbooklynow@yopmail.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'OPERATOR', 1),
+        ('user', 'Juan', 'Pérez', 'user@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL),
+        ('user2', 'Valentina', 'López', 'user2@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL),
+        ('user3', 'Sebastián', 'Rodríguez', 'user3@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL);
 EOSQL
 
 # Seed company_db
@@ -58,37 +58,37 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "company_db" <<-'EO
     );
 
     INSERT INTO company (name, description, address, phone) VALUES
-        ('Classic Barber Shop', 'The best barber shop in town', '1234 Corrientes Ave, CABA', '+54 11 1234-5678'),
-        ('Relax Spa', 'Premium spa and wellness center', '5678 Santa Fe Ave, CABA', '+54 11 8765-4321'),
-        ('Smile Dental Clinic', 'Comprehensive dental care', '890 Callao Ave, CABA', '+54 11 2233-4455'),
-        ('Yoga Center', 'Yoga and meditation classes', '3456 Libertador Ave, CABA', '+54 11 6677-8899'),
-        ('Movement Physiotherapy', 'Rehabilitation and physiotherapy', '7890 Rivadavia Ave, CABA', '+54 11 9988-7766');
+        ('Barbería Clásica', 'La mejor barbería de la ciudad', 'Av. Corrientes 1234, CABA', '+54 11 1234-5678'),
+        ('Spa Relax', 'Centro de bienestar y relajación premium', 'Av. Santa Fe 5678, CABA', '+54 11 8765-4321'),
+        ('Clínica Dental Sonrisa', 'Atención odontológica integral', 'Av. Callao 890, CABA', '+54 11 2233-4455'),
+        ('Centro de Yoga', 'Clases de yoga y meditación', 'Av. del Libertador 3456, CABA', '+54 11 6677-8899'),
+        ('Fisioterapia Movimiento', 'Rehabilitación y fisioterapia', 'Av. Rivadavia 7890, CABA', '+54 11 9988-7766');
 
     INSERT INTO company_services (company_id, name, description, duration_minutes, price, is_active) VALUES
-        (1, 'Haircut', 'Classic or modern haircut', 30, 5000.00, true),
-        (1, 'Beard Trim', 'Beard shaping and trimming', 20, 3000.00, true),
-        (1, 'Haircut + Beard', 'Full combo', 45, 7000.00, true),
-        (1, 'Hair Coloring', 'Full hair coloring', 60, 10000.00, false),
-        (1, 'Keratin Treatment', 'Professional keratin treatment', 120, 18000.00, true),
-        (2, 'Relaxing Massage', 'Full body relaxing massage', 60, 15000.00, true),
-        (2, 'Express Facial', 'Deep facial cleansing', 30, 8000.00, true),
-        (2, 'Sports Massage', 'Muscle recovery massage', 45, 12000.00, true),
-        (2, 'Aromatherapy', 'Aromatherapy session with essential oils', 60, 14000.00, true),
-        (2, 'Body Scrub', 'Full body exfoliation treatment', 50, 11000.00, true),
-        (3, 'Dental Cleaning', 'Prophylaxis and dental polish', 45, 9000.00, true),
-        (3, 'Teeth Whitening', 'Professional teeth whitening', 60, 25000.00, true),
-        (3, 'General Checkup', 'Dental revision and diagnosis', 30, 6000.00, true),
-        (3, 'Orthodontics Consult', 'Evaluation for braces or aligners', 40, 8000.00, true),
-        (3, 'Simple Extraction', 'Tooth extraction', 30, 12000.00, true),
-        (4, 'Yoga Class', 'Group yoga class', 60, 4000.00, true),
-        (4, 'Private Yoga Session', 'Personalized one-on-one class', 60, 9000.00, true),
-        (4, 'Guided Meditation', 'Meditation and mindfulness session', 45, 5000.00, true),
-        (4, 'Prenatal Yoga', 'Special class for pregnant women', 60, 5500.00, true),
-        (5, 'Physiotherapy Session', 'Physiotherapy and rehabilitation', 50, 8000.00, true),
-        (5, 'Therapeutic Massage', 'Massage for muscular conditions', 40, 10000.00, true),
-        (5, 'Electrotherapy', 'Treatment with therapeutic currents', 30, 7000.00, true),
-        (5, 'Postural Assessment', 'Postural analysis and correction', 60, 9500.00, true),
-        (5, 'Therapeutic Pilates', 'Pilates focused on rehabilitation', 50, 8500.00, true);
+        (1, 'Corte de Cabello', 'Corte clásico o moderno', 30, 5000.00, true),
+        (1, 'Arreglo de Barba', 'Perfilado y recorte de barba', 20, 3000.00, true),
+        (1, 'Corte + Barba', 'Combo completo', 45, 7000.00, true),
+        (1, 'Coloración', 'Coloración completa de cabello', 60, 10000.00, false),
+        (1, 'Tratamiento de Keratina', 'Keratina profesional', 120, 18000.00, true),
+        (2, 'Masaje Relajante', 'Masaje corporal completo', 60, 15000.00, true),
+        (2, 'Facial Express', 'Limpieza facial profunda', 30, 8000.00, true),
+        (2, 'Masaje Deportivo', 'Masaje de recuperación muscular', 45, 12000.00, true),
+        (2, 'Aromaterapia', 'Sesión de aromaterapia con aceites esenciales', 60, 14000.00, true),
+        (2, 'Exfoliación Corporal', 'Tratamiento de exfoliación de cuerpo completo', 50, 11000.00, true),
+        (3, 'Limpieza Dental', 'Profilaxis y pulido dental', 45, 9000.00, true),
+        (3, 'Blanqueamiento Dental', 'Blanqueamiento profesional', 60, 25000.00, true),
+        (3, 'Revisión General', 'Revisión y diagnóstico dental', 30, 6000.00, true),
+        (3, 'Consulta de Ortodoncia', 'Evaluación para brackets o alineadores', 40, 8000.00, true),
+        (3, 'Extracción Simple', 'Extracción de pieza dental', 30, 12000.00, true),
+        (4, 'Clase de Yoga', 'Clase grupal de yoga', 60, 4000.00, true),
+        (4, 'Sesión Privada de Yoga', 'Clase personalizada uno a uno', 60, 9000.00, true),
+        (4, 'Meditación Guiada', 'Sesión de meditación y mindfulness', 45, 5000.00, true),
+        (4, 'Yoga Prenatal', 'Clase especial para embarazadas', 60, 5500.00, true),
+        (5, 'Sesión de Fisioterapia', 'Fisioterapia y rehabilitación', 50, 8000.00, true),
+        (5, 'Masaje Terapéutico', 'Masaje para afecciones musculares', 40, 10000.00, true),
+        (5, 'Electroterapia', 'Tratamiento con corrientes terapéuticas', 30, 7000.00, true),
+        (5, 'Evaluación Postural', 'Análisis y corrección postural', 60, 9500.00, true),
+        (5, 'Pilates Terapéutico', 'Pilates orientado a la rehabilitación', 50, 8500.00, true);
 EOSQL
 
 # Seed booking_db
@@ -120,7 +120,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "booking_db" <<-'EO
         (5, 10);
 
     INSERT INTO booking (user_id, service_id, company_id, start_time, end_time, price, status) VALUES
-        -- January 2026
+        -- Enero 2026
         (4, 1, 1, '2026-01-03 09:00:00', '2026-01-03 09:30:00', 5000.00, 'COMPLETED'),
         (5, 2, 1, '2026-01-05 10:00:00', '2026-01-05 10:20:00', 3000.00, 'COMPLETED'),
         (6, 3, 1, '2026-01-07 11:00:00', '2026-01-07 11:45:00', 7000.00, 'COMPLETED'),
@@ -131,7 +131,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "booking_db" <<-'EO
         (5, 1, 1, '2026-01-20 09:00:00', '2026-01-20 09:30:00', 5000.00, 'COMPLETED'),
         (6, 5, 1, '2026-01-22 10:00:00', '2026-01-22 12:00:00', 18000.00, 'CANCELLED'),
         (4, 3, 1, '2026-01-25 11:00:00', '2026-01-25 11:45:00', 7000.00, 'COMPLETED'),
-        -- February 2026
+        -- Febrero 2026
         (5, 1, 1, '2026-02-02 09:00:00', '2026-02-02 09:30:00', 5000.00, 'COMPLETED'),
         (6, 2, 1, '2026-02-04 10:00:00', '2026-02-04 10:20:00', 3000.00, 'COMPLETED'),
         (4, 5, 1, '2026-02-06 10:00:00', '2026-02-06 12:00:00', 18000.00, 'COMPLETED'),
@@ -142,20 +142,41 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "booking_db" <<-'EO
         (6, 5, 1, '2026-02-19 10:00:00', '2026-02-19 12:00:00', 18000.00, 'COMPLETED'),
         (4, 1, 1, '2026-02-21 09:00:00', '2026-02-21 09:30:00', 5000.00, 'CANCELLED'),
         (5, 3, 1, '2026-02-24 11:00:00', '2026-02-24 11:45:00', 7000.00, 'COMPLETED'),
-        -- March 2026
+        -- Marzo 2026
         (6, 1, 1, '2026-03-01 09:00:00', '2026-03-01 09:30:00', 5000.00, 'COMPLETED'),
         (4, 2, 1, '2026-03-01 10:00:00', '2026-03-01 10:20:00', 3000.00, 'COMPLETED'),
         (5, 3, 1, '2026-03-03 11:00:00', '2026-03-03 11:45:00', 7000.00, 'COMPLETED'),
         (6, 1, 1, '2026-03-05 09:00:00', '2026-03-05 09:30:00', 5000.00, 'CANCELLED'),
-        (4, 5, 1, '2026-03-07 10:00:00', '2026-03-07 12:00:00', 18000.00, 'CONFIRMED'),
+        (4, 5, 1, '2026-03-07 10:00:00', '2026-03-07 12:00:00', 18000.00, 'COMPLETED'),
         (5, 1, 1, '2026-03-10 09:00:00', '2026-03-10 09:30:00', 5000.00, 'COMPLETED'),
         (6, 3, 1, '2026-03-12 11:00:00', '2026-03-12 11:45:00', 7000.00, 'COMPLETED'),
-        (4, 2, 1, '2026-03-15 10:00:00', '2026-03-15 10:20:00', 3000.00, 'CONFIRMED'),
+        (4, 2, 1, '2026-03-15 10:00:00', '2026-03-15 10:20:00', 3000.00, 'COMPLETED'),
         (5, 1, 1, '2026-03-18 09:00:00', '2026-03-18 09:30:00', 5000.00, 'CANCELLED'),
         (6, 5, 1, '2026-03-20 10:00:00', '2026-03-20 12:00:00', 18000.00, 'COMPLETED'),
         (4, 3, 1, '2026-03-22 11:00:00', '2026-03-22 11:45:00', 7000.00, 'COMPLETED'),
         (5, 1, 1, '2026-03-25 09:00:00', '2026-03-25 09:30:00', 5000.00, 'PENDING'),
-        (6, 2, 1, '2026-03-27 10:00:00', '2026-03-27 10:20:00', 3000.00, 'PENDING');
+        (6, 2, 1, '2026-03-27 10:00:00', '2026-03-27 10:20:00', 3000.00, 'PENDING'),
+        -- Abril 2026
+        (4, 1, 1, '2026-04-01 09:00:00', '2026-04-01 09:30:00', 5000.00, 'COMPLETED'),
+        (5, 3, 1, '2026-04-01 10:00:00', '2026-04-01 10:45:00', 7000.00, 'COMPLETED'),
+        (6, 2, 1, '2026-04-02 09:00:00', '2026-04-02 09:20:00', 3000.00, 'COMPLETED'),
+        (4, 5, 1, '2026-04-02 10:00:00', '2026-04-02 12:00:00', 18000.00, 'COMPLETED'),
+        (5, 1, 1, '2026-04-03 09:00:00', '2026-04-03 09:30:00', 5000.00, 'COMPLETED'),
+        (6, 3, 1, '2026-04-03 11:00:00', '2026-04-03 11:45:00', 7000.00, 'CANCELLED'),
+        (4, 2, 1, '2026-04-04 10:00:00', '2026-04-04 10:20:00', 3000.00, 'COMPLETED'),
+        (5, 5, 1, '2026-04-05 10:00:00', '2026-04-05 12:00:00', 18000.00, 'COMPLETED'),
+        (6, 1, 1, '2026-04-05 09:00:00', '2026-04-05 09:30:00', 5000.00, 'COMPLETED'),
+        (4, 3, 1, '2026-04-07 11:00:00', '2026-04-07 11:45:00', 7000.00, 'COMPLETED'),
+        (5, 2, 1, '2026-04-07 09:00:00', '2026-04-07 09:20:00', 3000.00, 'COMPLETED'),
+        (6, 1, 1, '2026-04-08 09:00:00', '2026-04-08 09:30:00', 5000.00, 'COMPLETED'),
+        (4, 5, 1, '2026-04-09 10:00:00', '2026-04-09 12:00:00', 18000.00, 'CANCELLED'),
+        (5, 3, 1, '2026-04-09 11:00:00', '2026-04-09 11:45:00', 7000.00, 'COMPLETED'),
+        (6, 2, 1, '2026-04-10 09:00:00', '2026-04-10 09:20:00', 3000.00, 'COMPLETED'),
+        (4, 1, 1, '2026-04-11 09:00:00', '2026-04-11 09:30:00', 5000.00, 'COMPLETED'),
+        (5, 3, 1, '2026-04-12 11:00:00', '2026-04-12 11:45:00', 7000.00, 'COMPLETED'),
+        (6, 5, 1, '2026-04-14 10:00:00', '2026-04-14 12:00:00', 18000.00, 'COMPLETED'),
+        (4, 2, 1, '2026-04-14 09:00:00', '2026-04-14 09:20:00', 3000.00, 'COMPLETED'),
+        (5, 1, 1, '2026-04-15 09:00:00', '2026-04-15 09:30:00', 5000.00, 'COMPLETED');
 EOSQL
 
 # Seed notification_db

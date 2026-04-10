@@ -74,10 +74,12 @@ def get_booking(
 @router.patch("/{booking_id}/cancel", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def cancel_booking(
     booking_id: int,
+    request: Request,
     repo: BookingRepository = Depends(get_repo),
     current_user: UserPrincipal = Depends(get_current_user),
 ):
-    service.cancel_booking(booking_id, current_user, repo)
+    language = request.headers.get("accept-language", "en")
+    service.cancel_booking(booking_id, current_user, repo, language)
 
 @router.patch("/{booking_id}/reschedule", response_model=BookingResponse)
 def reschedule_booking(

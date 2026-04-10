@@ -110,7 +110,7 @@ class BookingService:
         booking = repo.get_or_raise(booking_id)
         return self._to_response(booking)
 
-    def cancel_booking(self, booking_id: int, current_user: UserPrincipal, repo: BookingRepository):
+    def cancel_booking(self, booking_id: int, current_user: UserPrincipal, repo: BookingRepository, language: str = "en"):
         booking = self._find_booking_to_patch(repo, booking_id, current_user)
         transition(booking, BookingStatus.CANCELLED)
         repo.commit()
@@ -124,6 +124,7 @@ class BookingService:
             "date": booking.start_time.strftime("%Y-%m-%d"),
             "startTime": booking.start_time.strftime("%H:%M"),
             "cancelledBy": current_user.role,
+            "language": language,
         })
 
     def reschedule(self, booking_id: int, current_user: UserPrincipal, dto: RescheduleRequest, repo: BookingRepository):
