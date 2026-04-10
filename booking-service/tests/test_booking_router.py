@@ -9,7 +9,8 @@ with patch("app.database.engine") as mock_engine, \
     from fastapi.testclient import TestClient
     from app.main import app
     from app.dependencies.auth import UserPrincipal, get_current_user
-    from app.database import get_db
+    from app.database import get_repo
+    from app.repositories.booking_repository import BookingRepository
     from app.models.booking import Booking, BookingStatus
     from app.exceptions import (
         BookingNotFoundException,
@@ -22,9 +23,9 @@ with patch("app.database.engine") as mock_engine, \
 USER = UserPrincipal(user_id=1, email="user@test.com", role="USER", company_id=None)
 ADMIN = UserPrincipal(user_id=2, email="admin@test.com", role="ADMIN", company_id=10)
 
-mock_db = MagicMock()
+mock_repo = MagicMock(spec=BookingRepository)
 
-app.dependency_overrides[get_db] = lambda: mock_db
+app.dependency_overrides[get_repo] = lambda: mock_repo
 app.dependency_overrides[get_current_user] = lambda: USER
 
 client = TestClient(app)

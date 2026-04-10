@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from sqlalchemy.orm import Session
-from app.database import get_db
+from fastapi import APIRouter, Depends, Request, Response, status
+from app.database import get_repo
 from app.dependencies.auth import get_current_user, UserPrincipal, require_roles
+from app.repositories.booking_repository import BookingRepository
 from app.schemas.booking import BookingCreate, BookingResponse, BookingDetailResponse, RescheduleRequest, BookingStatsResponse
 from datetime import datetime, date
 from app.services.booking import BookingService
@@ -13,18 +13,18 @@ service = BookingService()
 def create_booking(
     request: Request,
     dto: BookingCreate,
-    db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(get_current_user)
+    repo: BookingRepository = Depends(get_repo),
+    current_user: UserPrincipal = Depends(get_current_user),
 ):
     language = request.headers.get("accept-language", "en")
-    return service.create_booking(dto, current_user, db, language)
+    return service.create_booking(dto, current_user, repo, language)
 
 @router.get("/my", response_model=list[BookingResponse])
 def get_my_bookings(
-    db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(get_current_user)
+    repo: BookingRepository = Depends(get_repo),
+    current_user: UserPrincipal = Depends(get_current_user),
 ):
-    return service.get_my_bookings(current_user.user_id, db)
+    return service.get_my_bookings(current_user.user_id, repo)
 
 @router.get("/company", response_model=list[BookingDetailResponse])
 def get_company_bookings(
@@ -32,57 +32,58 @@ def get_company_bookings(
     from_date: date | None = None,
     to_date: date | None = None,
     full_name: str | None = None,
-    db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(require_roles("OPERATOR", "ADMIN"))
+    repo: BookingRepository = Depends(get_repo),
+    current_user: UserPrincipal = Depends(require_roles("OPERATOR", "ADMIN")),
 ):
-    return service.get_company_bookings(current_user.company_id, status, from_date, to_date, full_name, db)
+    return service.get_company_bookings(current_user.company_id, status, from_date, to_date, full_name, repo)
 
 @router.patch("/{booking_id}/confirm", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def confirm_booking(
     booking_id: int,
     request: Request,
-    db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(require_roles("OPERATOR"))
+    repo: BookingRepository = Depends(get_repo),
+    current_user: UserPrincipal = Depends(require_roles("OPERATOR", "ADMIN")),
 ):
     language = request.headers.get("accept-language", "en")
-    service.confirm_booking(booking_id, db, language)
+    service.confirm_booking(booking_id, repo, language)
 
 @router.patch("/{booking_id}/complete", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def complete_booking(
     booking_id: int,
-    db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(require_roles("OPERATOR", "SUPER_ADMIN"))
+    repo: BookingRepository = Depends(get_repo),
+    current_user: UserPrincipal = Depends(require_roles("OPERATOR", "ADMIN")),
 ):
-    service.complete_booking(booking_id, db)
+    service.complete_booking(booking_id, repo)
 
 @router.get("/stats", response_model=BookingStatsResponse)
 def get_stats(
     from_date: datetime,
     to_date: datetime,
-    db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(require_roles("ADMIN", "MANAGER"))
+    repo: BookingRepository = Depends(get_repo),
+    current_user: UserPrincipal = Depends(require_roles("ADMIN", "MANAGER")),
 ):
-    return service.getStats(current_user.company_id, from_date, to_date, db)
+    return service.getStats(current_user.company_id, from_date, to_date, repo)
 
 @router.get("/{booking_id}", response_model=BookingResponse)
 def get_booking(
     booking_id: int,
-    db: Session = Depends(get_db),):
-    return service.get_booking(booking_id, db)
+    repo: BookingRepository = Depends(get_repo),
+):
+    return service.get_booking(booking_id, repo)
 
 @router.patch("/{booking_id}/cancel", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def cancel_booking(
     booking_id: int,
-    db: Session = Depends(get_db),
-    current_user: UserPrincipal = Depends(get_current_user)
+    repo: BookingRepository = Depends(get_repo),
+    current_user: UserPrincipal = Depends(get_current_user),
 ):
-    service.cancel_booking(booking_id, current_user, db)
-
+    service.cancel_booking(booking_id, current_user, repo)
 
 @router.patch("/{booking_id}/reschedule", response_model=BookingResponse)
 def reschedule_booking(
-    booking_id:int,
+    booking_id: int,
     dto: RescheduleRequest,
+    repo: BookingRepository = Depends(get_repo),
     current_user: UserPrincipal = Depends(get_current_user),
-    db: Session = Depends(get_db)):
-        return service.reschedule(booking_id, current_user, dto, db)
+):
+    return service.reschedule(booking_id, current_user, dto, repo)

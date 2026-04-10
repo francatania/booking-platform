@@ -1,5 +1,6 @@
+from fastapi import Depends
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase
 from app.config import settings
 
 engine = create_engine(settings.database_url)
@@ -14,3 +15,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def get_repo(db: Session = Depends(get_db)):
+    from app.repositories.booking_repository import BookingRepository
+    return BookingRepository(db)
