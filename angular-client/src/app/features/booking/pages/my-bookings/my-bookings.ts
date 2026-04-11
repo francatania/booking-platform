@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CalendarOptions, EventClickArg, EventDropArg } from '@fullcalendar/core';
+import { CalendarOptions, EventClickArg, EventDropArg, EventContentArg } from '@fullcalendar/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -34,6 +34,17 @@ export class MyBookings implements OnInit {
     editable: true,
     eventDurationEditable: false,
     events: [],
+    eventContent: (arg: EventContentArg) => {
+      const start = arg.event.start ? arg.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+      const end = arg.event.end ? arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+      return {
+        html: `
+          <div style="padding: 2px 4px; overflow: hidden; height: 100%;">
+            <div style="font-weight: 400; font-size: 0.8rem; white-space: normal; word-break: break-word; line-height: 1.2;">${arg.event.title}</div>
+            <div style="font-size: 0.72rem; opacity: 0.9; margin-top: 2px;">${start} – ${end}</div>
+          </div>`
+      };
+    },
     eventClick: (info: EventClickArg) => this.handleEventClick(info),
     eventDrop: (info: EventDropArg) => this.handleEventDrop(info)
   };
