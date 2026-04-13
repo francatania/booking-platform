@@ -9,7 +9,7 @@ from app.services.booking import BookingService
 router = APIRouter(prefix="/bookings", tags=["bookings"])
 service = BookingService()
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=BookingResponse)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=BookingResponse, summary="Create a booking")
 def create_booking(
     request: Request,
     dto: BookingCreate,
@@ -19,14 +19,14 @@ def create_booking(
     language = request.headers.get("accept-language", "en")
     return service.create_booking(dto, current_user, repo, language)
 
-@router.get("/my", response_model=list[BookingResponse])
+@router.get("/my", response_model=list[BookingResponse], summary="Get current user's bookings")
 def get_my_bookings(
     repo: BookingRepository = Depends(get_repo),
     current_user: UserPrincipal = Depends(get_current_user),
 ):
     return service.get_my_bookings(current_user.user_id, repo)
 
-@router.get("/company", response_model=list[BookingDetailResponse])
+@router.get("/company", response_model=list[BookingDetailResponse], summary="Get company bookings (operator/admin)")
 def get_company_bookings(
     status: str | None = None,
     from_date: date | None = None,
@@ -37,7 +37,7 @@ def get_company_bookings(
 ):
     return service.get_company_bookings(current_user.company_id, status, from_date, to_date, full_name, repo)
 
-@router.patch("/{booking_id}/confirm", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.patch("/{booking_id}/confirm", status_code=status.HTTP_204_NO_CONTENT, response_class=Response, summary="Confirm a booking (operator/admin)")
 def confirm_booking(
     booking_id: int,
     request: Request,
@@ -47,7 +47,7 @@ def confirm_booking(
     language = request.headers.get("accept-language", "en")
     service.confirm_booking(booking_id, repo, language)
 
-@router.patch("/{booking_id}/complete", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.patch("/{booking_id}/complete", status_code=status.HTTP_204_NO_CONTENT, response_class=Response, summary="Mark a booking as completed (operator/admin)")
 def complete_booking(
     booking_id: int,
     repo: BookingRepository = Depends(get_repo),
@@ -55,7 +55,7 @@ def complete_booking(
 ):
     service.complete_booking(booking_id, repo)
 
-@router.get("/stats", response_model=BookingStatsResponse)
+@router.get("/stats", response_model=BookingStatsResponse, summary="Get booking stats for a date range (admin/manager)")
 def get_stats(
     from_date: datetime,
     to_date: datetime,
@@ -64,14 +64,14 @@ def get_stats(
 ):
     return service.getStats(current_user.company_id, from_date, to_date, repo)
 
-@router.get("/{booking_id}", response_model=BookingResponse)
+@router.get("/{booking_id}", response_model=BookingResponse, summary="Get booking by ID")
 def get_booking(
     booking_id: int,
     repo: BookingRepository = Depends(get_repo),
 ):
     return service.get_booking(booking_id, repo)
 
-@router.patch("/{booking_id}/cancel", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.patch("/{booking_id}/cancel", status_code=status.HTTP_204_NO_CONTENT, response_class=Response, summary="Cancel a booking")
 def cancel_booking(
     booking_id: int,
     request: Request,
@@ -81,7 +81,7 @@ def cancel_booking(
     language = request.headers.get("accept-language", "en")
     service.cancel_booking(booking_id, current_user, repo, language)
 
-@router.patch("/{booking_id}/reschedule", response_model=BookingResponse)
+@router.patch("/{booking_id}/reschedule", response_model=BookingResponse, summary="Reschedule a booking")
 def reschedule_booking(
     booking_id: int,
     dto: RescheduleRequest,

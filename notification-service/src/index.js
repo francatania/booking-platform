@@ -1,4 +1,6 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 const config = require('./config');
 const rabbitmq = require('./rabbitmq');
 const bookingConsumer = require('./consumers/bookingConsumer');
@@ -8,6 +10,7 @@ const app = express();
 app.use(express.json());
 
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 

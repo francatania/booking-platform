@@ -6,3 +6,4 @@ venv/
 htmlcov/
 .coverage
 coverage.lcov
+node_modules

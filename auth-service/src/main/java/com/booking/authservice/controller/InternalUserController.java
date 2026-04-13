@@ -13,15 +13,19 @@ import com.booking.authservice.model.dto.InternalUserResponse;
 import com.booking.authservice.model.enums.UserRole;
 import com.booking.authservice.repository.UserRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/internal")
+@Tag(name = "Internal - Users", description = "Service-to-service user lookups")
 public class InternalUserController {
 
     private final UserRepository userRepository;
 
+    @Operation(summary = "Get users by list of IDs")
     @GetMapping("/users")
     public ResponseEntity<List<InternalUserResponse>> getByIds(@RequestParam List<Long> ids) {
         List<InternalUserResponse> users = userRepository.findAllByIdIn(ids)
@@ -31,6 +35,7 @@ public class InternalUserController {
         return ResponseEntity.ok(users);
     }
 
+    @Operation(summary = "Get user by ID")
     @GetMapping("/users/{id}")
     public ResponseEntity<InternalUserResponse> getById(@PathVariable Long id) {
         return userRepository.findById(id)
@@ -38,6 +43,7 @@ public class InternalUserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Get users by company and role")
     @GetMapping("/users/by-company")
     public ResponseEntity<List<InternalUserResponse>> getByCompanyAndRole(
             @RequestParam Long companyId,

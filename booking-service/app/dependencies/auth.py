@@ -5,7 +5,7 @@ from jose import jwt, JWTError
 from app.config import settings
 from app.exceptions import InvalidTokenException, InsufficientPermissionsException
 
-bearer_scheme = HTTPBearer()
+bearer_scheme = HTTPBearer(auto_error=False)
 
 @dataclass
 class UserPrincipal:
@@ -14,7 +14,9 @@ class UserPrincipal:
     role: str
     company_id: int | None
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -> UserPrincipal:
+def get_current_user(credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme)) -> UserPrincipal:
+    if credentials is None:
+        raise InvalidTokenException()
     token = credentials.credentials
 
     try:

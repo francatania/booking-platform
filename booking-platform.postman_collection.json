@@ -99,7 +99,29 @@
           "name": "GET /internal/users?ids=",
           "request": {
             "method": "GET",
-            "url": "{{auth_url}}/internal/users?ids=1,2,3"
+            "url": "{{base_url}}/internal/users?ids=1,2,3"
+          }
+        },
+        {
+          "name": "GET /internal/users/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/internal/users/1"
+          }
+        },
+        {
+          "name": "GET /internal/users/by-company",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/internal/users/by-company?companyId=1&role=OPERATOR",
+              "host": ["{{base_url}}"],
+              "path": ["internal", "users", "by-company"],
+              "query": [
+                { "key": "companyId", "value": "1" },
+                { "key": "role", "value": "OPERATOR" }
+              ]
+            }
           }
         }
       ]
@@ -152,7 +174,11 @@
               "query": [
                 { "key": "page", "value": "0" },
                 { "key": "size", "value": "10" },
-                { "key": "sort", "value": "name,asc" }
+                { "key": "sort", "value": "name,asc" },
+                { "key": "companyId", "value": "1", "disabled": true },
+                { "key": "name", "value": "corte", "disabled": true },
+                { "key": "minPrice", "value": "1000", "disabled": true },
+                { "key": "maxPrice", "value": "5000", "disabled": true }
               ]
             }
           }
@@ -220,6 +246,13 @@
             "method": "GET",
             "url": "{{base_url}}/internal/services?ids=1,2,3"
           }
+        },
+        {
+          "name": "GET /internal/services/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/internal/services/1"
+          }
         }
       ]
     },
@@ -252,10 +285,50 @@
           }
         },
         {
+          "name": "GET /bookings/company",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/bookings/company",
+              "host": ["{{base_url}}"],
+              "path": ["bookings", "company"],
+              "query": [
+                { "key": "status", "value": "PENDING", "disabled": true },
+                { "key": "from_date", "value": "2026-04-01", "disabled": true },
+                { "key": "to_date", "value": "2026-04-30", "disabled": true },
+                { "key": "full_name", "value": "garcia", "disabled": true }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ]
+          }
+        },
+        {
           "name": "GET /bookings/:id",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/bookings/1",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ]
+          }
+        },
+        {
+          "name": "PATCH /bookings/:id/confirm",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/bookings/1/confirm",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ]
+          }
+        },
+        {
+          "name": "PATCH /bookings/:id/complete",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/bookings/1/complete",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ]
@@ -291,12 +364,12 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/bookings/stats?from_date=2026-03-01T00:00:00&to_date=2026-03-31T23:59:59",
+              "raw": "{{base_url}}/bookings/stats?from_date=2026-04-01T00:00:00&to_date=2026-04-30T23:59:59",
               "host": ["{{base_url}}"],
               "path": ["bookings", "stats"],
               "query": [
-                { "key": "from_date", "value": "2026-03-01T00:00:00" },
-                { "key": "to_date", "value": "2026-03-31T23:59:59" }
+                { "key": "from_date", "value": "2026-04-01T00:00:00" },
+                { "key": "to_date", "value": "2026-04-30T23:59:59" }
               ]
             },
             "header": [

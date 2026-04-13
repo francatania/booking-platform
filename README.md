@@ -65,10 +65,10 @@ Built with **Spring Boot**, **FastAPI**, **Node.js**, **Angular**, **RabbitMQ**,
 
 | Component | Technology |
 |-----------|-----------|
-| Auth Service | Java 17, Spring Boot 3.2, Spring Security, JJWT |
-| Company Service | Java 17, Spring Boot 3.2, Spring Security, JJWT |
+| Auth Service | Java 17, Spring Boot 3.2, Spring Security, JJWT, springdoc-openapi |
+| Company Service | Java 17, Spring Boot 3.2, Spring Security, JJWT, springdoc-openapi |
 | Booking Service | Python 3.12, FastAPI, SQLAlchemy, httpx, pika |
-| Notification Service | Node.js, Express, amqplib, nodemailer, pg |
+| Notification Service | Node.js, Express, amqplib, nodemailer, pg, swagger-ui-express |
 | Frontend | Angular 18, Angular Material, Tailwind CSS, ngx-translate |
 | Gateway | Nginx 1.25 |
 | Message Broker | RabbitMQ 3 (topic exchange) |
@@ -356,6 +356,17 @@ docker compose down                           # Stop all containers
 docker compose down -v                        # Stop and reset databases
 docker compose logs -f booking-service        # Follow logs of a service
 ```
+
+### API Documentation (Swagger UI)
+
+Each service exposes its own Swagger UI when running locally:
+
+| Service | URL |
+|---------|-----|
+| booking-service | http://localhost:8000/docs |
+| auth-service | http://localhost:8081/api/swagger-ui/index.html |
+| company-service | http://localhost:8082/api/swagger-ui/index.html |
+| notification-service | http://localhost:3000/api/docs |
 
 ### Testing with Postman
 Import `booking-platform.postman_collection.json`. The collection uses `http://localhost` as base URL and auto-captures the JWT token on login.

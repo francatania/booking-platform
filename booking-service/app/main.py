@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.openapi.utils import get_openapi
 from app.database import Base, engine
 from app.models import booking, booking_config
 from app.routers import booking as booking_router
@@ -18,7 +19,11 @@ from app.exceptions import (
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(
+    title="Booking Service",
+    description="Manages bookings: creation, cancellation, rescheduling, confirmation, and stats.",
+    version="1.0.0",
+)
 
 
 def _lang(request: Request) -> str:
@@ -66,3 +71,40 @@ app.include_router(booking_router.router)
 @app.get("/ping")
 def ping():
     return {"message": "pong"}
+
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+    schema.setdefault("components", {})["securitySchemes"] = {
+        "Bearer": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
+    schema["security"] = [{"Bearer": []}]
+
+    accept_language_param = {
+        "name": "Accept-Language",
+        "in": "header",
+        "required": False,
+        "description": "Language for error messages",
+        "schema": {"type": "string", "enum": ["en", "es"], "default": "en"},
+    }
+    for path in schema.get("paths", {}).values():
+        for operation in path.values():
+            if isinstance(operation, dict):
+                operation["security"] = [{"Bearer": []}]
+                operation.setdefault("parameters", []).append(accept_language_param)
+
+    app.openapi_schema = schema
+    return schema
+
+app.openapi = custom_openapi

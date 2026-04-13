@@ -30,7 +30,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "auth_db" <<-'EOSQL
         ('operator1', 'Carlos', 'Gómez', 'opbooklynow@yopmail.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'OPERATOR', 1),
         ('user', 'Juan', 'Pérez', 'user@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL),
         ('user2', 'Valentina', 'López', 'user2@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL),
-        ('user3', 'Sebastián', 'Rodríguez', 'user3@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL);
+        ('user3', 'Sebastián', 'Rodríguez', 'user3@test.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'USER', NULL),
+        ('manager', 'Sebastián', 'Rodríguez', 'managbooklynow@yopmail.com', '$2a$10$0ZYC0pyxjVHgZJs0YP1VteiT3ofHmPF.oqzsinDzZ2R8SaM6N2kte', 'MANAGER', 1);
 EOSQL
 
 # Seed company_db

@@ -23,15 +23,19 @@ import com.booking.companyservice.model.dto.CreateCompanyServiceRequest;
 import com.booking.companyservice.model.dto.UpdateCompanyServiceRequest;
 import com.booking.companyservice.service.interfaces.ICompanyServiceService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Services", description = "Company service catalog management")
 public class CompanyServiceController {
 
     private final ICompanyServiceService service;
 
+    @Operation(summary = "List all services (paginated, filterable)")
     @GetMapping("/services")
     public ResponseEntity<Page<CompanyServiceResponse>> getAllServices(
             @PageableDefault(size = 10, sort = "name") Pageable pageable,
@@ -42,11 +46,13 @@ public class CompanyServiceController {
         return ResponseEntity.ok(service.getAllServices(pageable, companyId, name, minPrice, maxPrice));
     }
 
+    @Operation(summary = "Get all services of a company")
     @GetMapping("/companies/{companyId}/services")
     public ResponseEntity<List<CompanyServiceResponse>> getServicesByCompany(@PathVariable Long companyId) {
         return ResponseEntity.ok(service.getServicesByCompany(companyId));
     }
 
+    @Operation(summary = "Create a service for a company (operator/admin)")
     @PostMapping("/companies/{companyId}/services")
     public ResponseEntity<CompanyServiceResponse> createService(
             @PathVariable Long companyId,
@@ -56,6 +62,7 @@ public class CompanyServiceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createService(dto, companyId, principal));
     }
 
+    @Operation(summary = "Update a service (operator/admin)")
     @PatchMapping("/services/{id}")
     public ResponseEntity<CompanyServiceResponse> editService(
             @PathVariable Long id,
@@ -65,6 +72,7 @@ public class CompanyServiceController {
         return ResponseEntity.ok(service.editService(dto, id, principal));
     }
 
+    @Operation(summary = "Activate a service")
     @PatchMapping("/services/{id}/activate")
     public ResponseEntity<CompanyServiceResponse> activateService(
             @PathVariable Long id,
@@ -73,6 +81,7 @@ public class CompanyServiceController {
         return ResponseEntity.ok(service.activateService(id, principal));
     }
 
+    @Operation(summary = "Deactivate a service")
     @PatchMapping("/services/{id}/deactivate")
     public ResponseEntity<CompanyServiceResponse> deactivateService(
             @PathVariable Long id,
