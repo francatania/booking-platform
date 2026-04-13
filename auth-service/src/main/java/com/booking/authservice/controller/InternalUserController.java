@@ -17,6 +17,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Internal endpoints for service-to-service user lookups.
+ * Not exposed through the API gateway; consumed by booking-service and notification-service.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/internal")

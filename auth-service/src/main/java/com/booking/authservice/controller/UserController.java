@@ -17,6 +17,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Handles public authentication endpoints: user registration and login.
+ * Produces JWT tokens consumed by all downstream services.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")

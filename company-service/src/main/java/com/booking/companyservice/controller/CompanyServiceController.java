@@ -28,6 +28,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Manages the service catalog for each company.
+ * Supports filtering, pagination, and CRUD operations restricted to company ADMINs.
+ */
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Services", description = "Company service catalog management")

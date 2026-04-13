@@ -21,6 +21,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Handles CRUD operations for companies.
+ * Company creation is restricted to SUPER_ADMIN; reads are public.
+ */
 @RestController
 @RequestMapping("/companies")
 @RequiredArgsConstructor
