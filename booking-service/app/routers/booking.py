@@ -45,7 +45,7 @@ def confirm_booking(
     current_user: UserPrincipal = Depends(require_roles("OPERATOR", "ADMIN")),
 ):
     language = request.headers.get("accept-language", "en")
-    service.confirm_booking(booking_id, repo, language)
+    service.confirm_booking(booking_id, current_user, repo, language)
 
 @router.patch("/{booking_id}/complete", status_code=status.HTTP_204_NO_CONTENT, response_class=Response, summary="Mark a booking as completed (operator/admin)")
 def complete_booking(
@@ -53,7 +53,7 @@ def complete_booking(
     repo: BookingRepository = Depends(get_repo),
     current_user: UserPrincipal = Depends(require_roles("OPERATOR", "ADMIN")),
 ):
-    service.complete_booking(booking_id, repo)
+    service.complete_booking(booking_id, current_user, repo)
 
 @router.get("/stats", response_model=BookingStatsResponse, summary="Get booking stats for a date range (admin/manager)")
 def get_stats(

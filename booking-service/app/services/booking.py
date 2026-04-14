@@ -110,6 +110,9 @@ class BookingService:
         if current_user.role == "USER" and booking.user_id != current_user.user_id:
             raise BookingForbiddenException()
 
+        if current_user.role in ("OPERATOR", "ADMIN") and booking.company_id != current_user.company_id:
+            raise BookingForbiddenException()
+
         if booking.status == BookingStatus.CANCELLED:
             raise BookingAlreadyCancelledException()
 
@@ -251,19 +254,21 @@ class BookingService:
         repo.commit()
         return self._to_response(booking)
 
-    def confirm_booking(self, booking_id: int, repo: BookingRepository, language: str = "en"):
+    def confirm_booking(self, booking_id: int, current_user: UserPrincipal, repo: BookingRepository, language: str = "en"):
         """Confirms a PENDING booking and publishes a ``booking.confirmed`` event.
 
         Args:
             booking_id: The booking to confirm.
+            current_user: The authenticated operator/admin performing the confirmation.
             repo: The booking repository.
             language: The Accept-Language header value for notification emails.
 
         Raises:
             BookingNotFoundException: If the booking does not exist.
+            BookingForbiddenException: If the booking does not belong to the operator's company.
             InvalidStatusTransitionException: If the booking is not in PENDING status.
         """
-        booking = repo.get_or_raise(booking_id)
+        booking = self._find_booking_to_patch(repo, booking_id, current_user)
         transition(booking, BookingStatus.CONFIRMED)
         repo.commit()
 
@@ -279,18 +284,20 @@ class BookingService:
             "language": language,
         })
 
-    def complete_booking(self, booking_id: int, repo: BookingRepository):
+    def complete_booking(self, booking_id: int, current_user: UserPrincipal, repo: BookingRepository):
         """Marks a CONFIRMED booking as COMPLETED.
 
         Args:
             booking_id: The booking to complete.
+            current_user: The authenticated operator/admin performing the completion.
             repo: The booking repository.
 
         Raises:
             BookingNotFoundException: If the booking does not exist.
+            BookingForbiddenException: If the booking does not belong to the operator's company.
             InvalidStatusTransitionException: If the booking is not in CONFIRMED status.
         """
-        booking = repo.get_or_raise(booking_id)
+        booking = self._find_booking_to_patch(repo, booking_id, current_user)
         transition(booking, BookingStatus.COMPLETED)
         repo.commit()
 
