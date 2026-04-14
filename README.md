@@ -29,10 +29,10 @@ Built with **Spring Boot**, **FastAPI**, **Node.js**, **Angular**, **RabbitMQ**,
 └─────────┬──────┘      └──────────┬───────┘      └──────┬──────────┘
           │                        │   ▲                  │
           │ ◄──────────────────────┼───┼──────────────────┘
-          │  (GET /internal/users) │   │  HTTP calls:
-          │                        │   │  - validate service
-          │                        │   │  - GET /internal/services
-          │                        │   │
+          │  (GET /internal/users) │     HTTP calls:
+          │                        │     - validate service
+          │                        │     - GET /internal/services
+          │                        │   
           │                        │             ┌─────────────────────┐
           │                        │             │   RabbitMQ          │
           │                        │             │   booking_events     │
